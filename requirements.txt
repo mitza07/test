@@ -12,4 +12,9 @@ cryptography==44.0.0
 weasyprint==63.1
 jinja2==3.1.5
 lxml==5.3.0
+# procesor XSLT 2.0/3.0 pentru schematronul CIUS-RO. libxslt (lxml) face doar
+# XSLT 1.0 si refuza queryBinding="xslt2". Wheel binar, fara Java.
+# 12.5.0 e ultima cu wheel cp312 (verificat pe PyPI); 13.x nu publica pentru
+# Python 3.12, iar proiectul tinteste 3.12 peste tot.
+saxonche==12.5.0
 python-multipart==0.0.20

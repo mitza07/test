@@ -23,6 +23,8 @@ def _doc_from(lines_spec, **overrides):
         "tax_currency": "RON",
         "seller": {
             "legal_reg_id": "8609468",
+            "vat_id": "RO8609468",
+            "company_id": "J40/1234/2020",
             "name": "Atelier IT SRL",
             "address1": "Str. Fabricii nr. 10",
             "city": "SECTOR1",
@@ -38,9 +40,14 @@ def _doc_from(lines_spec, **overrides):
             "country": "RO",
         },
         "lines": [
-            {"name": "Consultanta IT", "unit_price": ln.unit_price,
-             "unit_code": "HUR", "net": ln.net(), "saft_tax_code": "20"}
-            for ln in lines
+            # cantitatea, categoria si cota sunt necesare generatorului UBL
+            # (BT-129, BT-151, BT-152); validatorul nu le citeste, dar cele doua
+            # consuma acelasi dict, deci fixture-ul le produce pe amandoua.
+            {"line_id": str(i), "name": "Consultanta IT", "quantity": ln.quantity,
+             "unit_price": ln.unit_price, "unit_code": "HUR", "net": ln.net(),
+             "vat_category": ln.vat_category, "vat_percent": ln.vat_percent,
+             "vat_included": ln.vat_included, "saft_tax_code": "20"}
+            for i, ln in enumerate(lines, start=1)
         ],
         "line_total": totals.line_total,
         "allowance_total": totals.allowance_total,
