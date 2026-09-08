@@ -110,6 +110,29 @@ Ramane de decis cum se leaga in deployment: doua roluri (unul privilegiat pentru
 migratii, unul obisnuit pentru aplicatie) inseamna doua URL-uri de conexiune si
 o parola in plus de administrat. Vezi TODO.md punctul 3.
 
+**Politicile din 0002 acopereau doar tabelele cu `company_id`.** A doua gaura,
+mai grava decat prima pentru ca persista si cu totul configurat corect: cele 12
+politici din migratia 0002 stau pe tabelele care au coloana `company_id`.
+Tabelele-copil nu o au — si exact ele contin continutul facturii.
+
+Cu rol NEPRIVILEGIAT si `app.company_id` setat corect pe firma X:
+
+    document       ->  1 rand
+    document_line  ->  2 randuri   <- ambele firme
+    efactura_job   ->  2 randuri   <- ambele firme
+
+    SELECT bt153_name FROM document_line  ->  'SECRET FIRMA X', 'SECRET FIRMA Y'
+    SELECT xml_ubl    FROM efactura_job   ->  facturile intregi, ale ambelor firme
+
+→ migratia 0003 pune politici pe cele 11 tabele-copil. Politica delega catre
+parinte, printr-o subinterogare care e ea insasi filtrata de politica parintelui:
+
+    USING (EXISTS (SELECT 1 FROM document d WHERE d.id = document_line.document_id))
+
+Fara coloana denormalizata, deci fara backfill si fara riscul ca `company_id` sa
+ajunga desincronizat de parinte. Costul e o subinterogare pe rand; indexul pe
+cheia straina o face ieftina, dar la scanari mari se simte.
+
 ## Idei care nu apar in niciun produs analizat
 
 **Numarul se aloca dupa validare.** O factura care pica validarea nu consuma un numar.

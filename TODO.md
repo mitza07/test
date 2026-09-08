@@ -56,7 +56,10 @@ Aici e toata valoarea. Daca astea sunt corecte, restul e munca obisnuita.
 - [ ] Emitere: draft -> validare -> alocare numar -> UBL -> PDF -> arhivare.
 - [ ] Stergere: verificare "ultimul din serie" + fara `index_incarcare`, atomic.
 - [ ] Storno: document nou cu `ref_kind='storno'` si BG-3 completat.
-- [ ] Teste de concurenta: doua emiteri simultane pe aceeasi serie nu produc duplicat.
+- [x] Teste de concurenta: doua emiteri simultane pe aceeasi serie nu produc
+      duplicat. `tests/test_numbering.py`, pe Postgres real, cu bariera care
+      forteaza suprapunerea. Si varianta cu 10 fire. `numbering.py` era scris,
+      dar nu fusese rulat niciodata pe o baza.
 
 ## 4. Integrarea ANAF
 
