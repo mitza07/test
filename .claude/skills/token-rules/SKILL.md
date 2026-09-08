@@ -1,11 +1,11 @@
+---
+name: token-rules
+description: Reguli de consum de tokeni pentru cod care apelează Claude API, sub două constrângeri stricte — nu se pierde istoric de conversație și nu se sacrifică inteligență pentru cost. Acoperă prompt caching (cache_control, breakpoints, TTL, prefix byte-stabil), istoric append-only, max_tokens, thinking adaptiv și effort, Batch API, subagenți, Files API și logarea de usage. Folosește acest skill ori de câte ori scrii, revizuiești sau depanezi cod care cheamă Claude API — SDK anthropic, client.messages.create, system prompt, tool definitions — și ori de câte ori se discută costul, factura, cache hit rate sau consumul de tokeni al unei aplicații. Folosește-l și înainte de a propune orice optimizare de cost pentru apeluri de model, mai ales când cineva sugerează tăierea istoricului, sliding window, sumarizare periodică, context editing sau plafoane mici de output ca metodă de economie — regulile explică de ce sunt contraproductive pe Claude API și ce se face în loc.
+---
+
 # Reguli de consum de tokeni — Claude API
 
-Se aplică oricărui cod din acest repo care apelează Claude API.
-
-> Regulile stau separat de `CLAUDE.md` (constrângeri și decizii de arhitectură) pentru că se
-> schimbă în alt ritm și nu au legătură cu domeniul aplicației. Ca să fie încărcate automat
-> în sesiunile Claude Code, adaugă în `CLAUDE.md` o linie:
-> `Reguli de consum de tokeni pentru cod care apelează Claude API: vezi docs/token-rules.md`.
+Se aplică oricărui cod care apelează Claude API.
 
 Optimizăm **costul per task finalizat**, nu costul per token.
 
@@ -229,12 +229,16 @@ log(task_id, u.input_tokens, u.cache_creation_input_tokens,
   `cache_creation_input_tokens` e cât un turn, nu cât toată conversația.
 - Re-verifică după **fiecare** modificare a codului care construiește promptul. Regresiile de
   caching sunt tăcute: cererile reușesc, doar factura crește.
-- Rulează verificarea statică înainte de commit; iese cu 1 la încălcări dure:
+- Rulează verificarea statică din `scripts/check-cache-breakers.sh` (lângă acest fișier)
+  înainte de commit; iese cu 1 la încălcări dure:
 
   ```bash
-  ./scripts/check-cache-breakers.sh          # tot repo-ul
-  ./scripts/check-cache-breakers.sh app/     # doar o cale
+  "$SKILL_DIR/scripts/check-cache-breakers.sh"          # tot proiectul
+  "$SKILL_DIR/scripts/check-cache-breakers.sh" app/     # doar o cale
   ```
+
+  Prinde doar ce se vede în cod. Confirmarea reală că prefixul se citește din cache vine
+  din `usage.cache_read_input_tokens` pe a doua cerere identică — rulează asta separat.
 
 ---
 
