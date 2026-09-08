@@ -51,15 +51,36 @@ Aici e toata valoarea. Daca astea sunt corecte, restul e munca obisnuita.
       Ce trebuie: un rol `NOSUPERUSER NOBYPASSRLS` pentru aplicatie, rolul
       privilegiat doar pentru migratii, si `rls.assert_enforced()` la pornire.
       Costa un al doilea URL de conexiune si o parola in plus.
-- [ ] `app/core/numbering.py` — `SELECT ... FOR UPDATE` pe `doc_series`, alocarea
+- [x] `app/core/numbering.py` — `SELECT ... FOR UPDATE` pe `doc_series`, alocarea
       numarului DUPA ce validatorul trece.
-- [ ] Emitere: draft -> validare -> alocare numar -> UBL -> PDF -> arhivare.
-- [ ] Stergere: verificare "ultimul din serie" + fara `index_incarcare`, atomic.
-- [ ] Storno: document nou cu `ref_kind='storno'` si BG-3 completat.
+- [x] Emitere: `app/core/issue.py:issue()`. Ciorna -> validare -> alocare numar ->
+      UBL -> job SPV cu termenul legal. Tot sub acelasi lock pe serie, deci nu
+      exista fereastra intre „ce numar ar primi" si „il primeste".
+      PDF-ul lipseste: e punctul 5.
+- [x] `app/core/documents.py` — un singur dict intre baza de date, validator si
+      generator. Instantaneele se ingheata la emitere (constrangerea 6 acopera
+      si datele partilor).
+- [x] Stergere: `issue.delete_document()`, prin `can_delete` in aceeasi tranzactie.
+      Marcare, nu DELETE fizic.
+- [x] Storno: `issue.create_storno()`. Cod 384 cu cantitati negate (pretul ramane
+      pozitiv, BR-27), sau 381 nota de creditare cu cantitati pozitive. Rezultatul
+      e ciorna: ia numar doar dupa ce valideaza, ca oricare alta.
+- [x] Migratia 0004: ciorna nu are numar. Fara ea, a doua ciorna din aceeasi serie
+      pica pe cheia unica — si atunci punctul 7 e imposibil de implementat.
 - [x] Teste de concurenta: doua emiteri simultane pe aceeasi serie nu produc
       duplicat. `tests/test_numbering.py`, pe Postgres real, cu bariera care
       forteaza suprapunerea. Si varianta cu 10 fire. `numbering.py` era scris,
       dar nu fusese rulat niciodata pe o baza.
+
+### Ramase de lamurit la punctul 3
+
+- `PartyLegalEntity/CompanyID` cere numarul de la Registrul Comertului
+  (`J40/1234/2020`, vezi specificatia sectiunea 1.6), dar schema nu are coloana
+  pentru el: comentariul din `company` il pune in `bt33_legal_info`, amestecat cu
+  capitalul social. Acum se scrie `bt32_legal_reg_id` (CUI-ul). Daca ANAF il vrea
+  pe cel de la Registru, trebuie o coloana separata.
+- PDF-ul si arhivarea din fluxul de emitere sunt la punctul 5. `issue()` creeaza
+  jobul SPV, dar nu pune nimic in coada de randare.
 
 ## 4. Integrarea ANAF
 

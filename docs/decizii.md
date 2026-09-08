@@ -133,6 +133,23 @@ Fara coloana denormalizata, deci fara backfill si fara riscul ca `company_id` sa
 ajunga desincronizat de parinte. Costul e o subinterogare pe rand; indexul pe
 cheia straina o face ieftina, dar la scanari mari se simte.
 
+**Ciorna nu putea exista fara numar.** A treia problema gasita ruland schema:
+
+    number         bigint NOT NULL
+    UNIQUE (company_id, doc_type, series_name, number)
+
+Constrangerea 9 cere ca numarul sa se aloce dupa validare, deci o ciorna nu are
+numar. Dar coloana e NOT NULL, iar daca toate ciornele poarta acelasi marcaj, a
+doua din aceeasi serie pica pe cheia unica. Verificat pe Postgres 16.
+
+Consecinta nu e cosmetica: blocheaza punctul 7 din TODO — „job de noapte:
+genereaza ciornele lunii si le trece prin validator". Nu poti genera ciornele
+lunii daca incape o singura ciorna pe serie.
+
+→ migratia 0004 face `number` si `bt1_invoice_id` NULL-abile. In Postgres, `NULL`
+nu e egal cu `NULL` intr-un index unic, deci constrangerea existenta accepta
+oricate ciorne si ramane in vigoare pentru documentele emise. Fara index partial.
+
 ## Idei care nu apar in niciun produs analizat
 
 **Numarul se aloca dupa validare.** O factura care pica validarea nu consuma un numar.
