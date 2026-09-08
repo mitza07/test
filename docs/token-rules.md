@@ -1,5 +1,12 @@
 # Reguli de consum de tokeni — Claude API
 
+Se aplică oricărui cod din acest repo care apelează Claude API.
+
+> Regulile stau separat de `CLAUDE.md` (constrângeri și decizii de arhitectură) pentru că se
+> schimbă în alt ritm și nu au legătură cu domeniul aplicației. Ca să fie încărcate automat
+> în sesiunile Claude Code, adaugă în `CLAUDE.md` o linie:
+> `Reguli de consum de tokeni pentru cod care apelează Claude API: vezi docs/token-rules.md`.
+
 Optimizăm **costul per task finalizat**, nu costul per token.
 
 ## Invarianți

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verifică regulile de consum de tokeni din CLAUDE.md pe codul care construiește
+# Verifică regulile de consum de tokeni din docs/token-rules.md pe codul care construiește
 # cereri către Claude API.
 #
 #   ./scripts/check-cache-breakers.sh [cale...]     (implicit: directorul curent)
@@ -15,7 +15,7 @@ self="$(basename "${BASH_SOURCE[0]}")"
 exclude=(
   --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.venv
   --exclude-dir=venv --exclude-dir=dist --exclude-dir=build
-  --exclude=CLAUDE.md --exclude="$self"
+  --exclude=token-rules.md --exclude="$self"
 )
 
 hard_hits=0
@@ -41,7 +41,7 @@ check() {
   fi
 }
 
-echo "Verific regulile din CLAUDE.md în: ${targets[*]}"
+echo "Verific regulile din docs/token-rules.md în: ${targets[*]}"
 
 # --- Încălcări dure (R5, R6, I1/R3) ---------------------------------------
 
@@ -84,7 +84,7 @@ check ATENȚIE "context editing" \
 
 echo
 if [ "$hard_hits" -gt 0 ]; then
-  echo "✗ $hard_hits regulă(i) încălcată(e). Vezi CLAUDE.md."
+  echo "✗ $hard_hits regulă(i) încălcată(e). Vezi docs/token-rules.md."
   exit_code=1
 else
   if [ "$soft_hits" -gt 0 ]; then
