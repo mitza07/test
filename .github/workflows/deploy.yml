@@ -2,7 +2,9 @@ name: test si deploy
 
 on:
   push:
-    branches: [main]
+    # Ambele nume, ca sa nu depinda de cum se cheama branch-ul implicit.
+    # Deploy-ul e gardat mai jos pe branch-ul implicit REAL al repo-ului.
+    branches: [main, master]
   pull_request:
 
 jobs:
@@ -22,7 +24,10 @@ jobs:
 
   build-and-deploy:
     needs: test
-    if: github.ref == 'refs/heads/main'
+    # `github.event.repository.default_branch` e numele real, oricare ar fi el.
+    # Scris ca 'refs/heads/main' fix, jobul nu porneste niciodata pe un repo
+    # al carui branch implicit e master — si nici nu spune de ce.
+    if: github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
     permissions:
       contents: read

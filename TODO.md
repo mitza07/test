@@ -25,12 +25,22 @@ Aici e toata valoarea. Daca astea sunt corecte, restul e munca obisnuita.
 
 ## 2. Generatorul UBL
 
-- [ ] `app/core/ubl/generator.py` — UBL 2.1 / CIUS-RO din modelul de date.
-      Atentie la ORDINEA elementelor: XSD-ul OASIS impune secventa fixa.
-- [ ] Validare locala cu schematronul oficial (`ro16931-ubl-1.0.9`, descarcat separat).
-- [ ] Validare la endpointul public ANAF, fara OAuth:
-      `POST https://webservicesp.anaf.ro/prod/FCTEL/rest/validare/FACT1`
-- [ ] Teste: o factura simpla, una in EUR, una cu storno, una cu taxare inversa.
+- [x] `app/core/ubl/generator.py` — UBL 2.1 / CIUS-RO din modelul de date.
+      Invoice pentru 380/384/389/751, CreditNote pentru 381.
+- [x] Ordinea elementelor, ca date verificabile in `app/core/ubl/sequence.py`,
+      cu `violations()` care verifica un arbore intreg. TRANSCRISA din UBL 2.1,
+      nu verificata inca pe XSD-ul oficial — vezi mai jos.
+- [x] `app/core/ubl/schematron.py` — ruleaza artefactele oficiale, intoarce
+      acelasi `Report` ca validatorul local.
+- [ ] **Descarca `ro16931-ubl-1.0.9` in SCHEMATRON_PATH si ruleaza
+      `pytest tests/test_ubl_schematron.py`.** Cele doua teste marcate `skipif`
+      se activeaza singure. Pana atunci ordinea elementelor ramane o ipoteza.
+      Vezi schematron/README.md — iti trebuie si `saxonche`, deja in
+      requirements.txt: schematronul e XSLT 2.0, lxml face doar 1.0.
+- [x] `app/core/anaf/validare.py` — endpointul public, fara OAuth. Esecul de
+      retea da `ok=None`, nu `False`.
+- [ ] Ruleaza o factura generata prin endpointul public ANAF, o data, manual.
+- [x] Teste: o factura simpla, una in EUR, una cu storno, una cu taxare inversa.
 
 ## 3. Numerotare si emitere
 
