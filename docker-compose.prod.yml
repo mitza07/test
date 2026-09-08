@@ -1,0 +1,92 @@
+# Productie — Hetzner. Date reale. SPV pe /prod/.
+# Nimeni nu dezvolta aici. Migratiile se ruleaza prin comanda explicita,
+# NU la pornirea containerului.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      retries: 10
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    restart: always
+
+  api:
+    image: ${IMAGE:-ghcr.io/OWNER/facturare:latest}
+    env_file: .env
+    environment:
+      APP_ENV: prod
+      ANAF_ENVIRONMENT: prod
+    volumes:
+      - storage:/data/storage
+      - schematron:/data/schematron:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 30s
+      retries: 3
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${TRAEFIK_NETWORK}
+      - traefik.http.routers.facturare.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.facturare.entrypoints=websecure
+      - traefik.http.routers.facturare.tls.certresolver=${TRAEFIK_CERTRESOLVER}
+      - traefik.http.services.facturare.loadbalancer.server.port=8000
+    networks: [default, proxy]
+    restart: always
+
+  worker:
+    image: ${IMAGE:-ghcr.io/OWNER/facturare:latest}
+    env_file: .env
+    environment:
+      APP_ENV: prod
+      ANAF_ENVIRONMENT: prod
+    volumes:
+      - storage:/data/storage
+      - schematron:/data/schematron:ro
+    depends_on: [redis, db]
+    command: rq worker --url ${REDIS_URL} pdf spv default
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 1G
+    restart: always
+
+  scheduler:
+    image: ${IMAGE:-ghcr.io/OWNER/facturare:latest}
+    env_file: .env
+    environment:
+      APP_ENV: prod
+      ANAF_ENVIRONMENT: prod
+    depends_on: [redis]
+    # joburi periodice: poll stare SPV, alerta termen legal, alerta refresh token,
+    # alerta fereastra de descarcare de 60 de zile, generare ciorne recurente
+    command: python -m app.workers.scheduler
+    restart: always
+
+volumes:
+  db_data:
+  redis_data:
+  storage:
+  schematron:
+
+networks:
+  proxy:
+    external: true
+    name: ${TRAEFIK_NETWORK}

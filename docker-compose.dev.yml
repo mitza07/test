@@ -1,0 +1,79 @@
+# Dezvoltare — Ubuntu Server in Hyper-V, in spatele Traefik-ului existent.
+# SPV pe /test/. Date de test. Se poate sterge si reconstrui oricand.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      retries: 10
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      args:
+        INSTALL_DEV: "true"
+    env_file: .env
+    environment:
+      APP_ENV: dev
+      ANAF_ENVIRONMENT: test
+    volumes:
+      - .:/srv
+      - storage:/data/storage
+      - ./schematron:/data/schematron:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${TRAEFIK_NETWORK}
+      - traefik.http.routers.facturare-dev.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.facturare-dev.entrypoints=websecure
+      - traefik.http.routers.facturare-dev.tls.certresolver=${TRAEFIK_CERTRESOLVER}
+      - traefik.http.services.facturare-dev.loadbalancer.server.port=8000
+    networks: [default, proxy]
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      args:
+        INSTALL_DEV: "true"
+    env_file: .env
+    environment:
+      APP_ENV: dev
+      ANAF_ENVIRONMENT: test
+    volumes:
+      - .:/srv
+      - storage:/data/storage
+      - ./schematron:/data/schematron:ro
+    depends_on: [redis, db]
+    # WeasyPrint si apelurile SPV ruleaza AICI, niciodata in procesul API.
+    command: rq worker --url ${REDIS_URL} pdf spv default
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  redis_data:
+  storage:
+
+networks:
+  proxy:
+    external: true
+    name: ${TRAEFIK_NETWORK}
