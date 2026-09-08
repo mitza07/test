@@ -38,7 +38,7 @@ def is_valid_cui(raw: str) -> bool:
     body = body.rjust(len(CUI_KEY), "0")
     if len(body) > len(CUI_KEY):
         return False
-    total = sum(int(d) * int(k) for d, k in zip(body, CUI_KEY))
+    total = sum(int(d) * int(k) for d, k in zip(body, CUI_KEY, strict=True))
     computed = (total * 10) % 11
     if computed == 10:
         computed = 0
@@ -50,7 +50,7 @@ def is_valid_cnp(raw: str) -> bool:
     digits = re.sub(r"\D", "", str(raw or ""))
     if len(digits) != 13:
         return False
-    total = sum(int(d) * int(k) for d, k in zip(digits[:12], CNP_KEY))
+    total = sum(int(d) * int(k) for d, k in zip(digits[:12], CNP_KEY, strict=True))
     computed = total % 11
     if computed == 10:
         computed = 1

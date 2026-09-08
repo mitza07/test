@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from collections import OrderedDict
 from dataclasses import dataclass
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import ROUND_HALF_UP, Decimal
 
 CENT = Decimal("0.01")
 CALC = Decimal("0.0001")
@@ -88,8 +88,8 @@ def compute(
     charge_total = q2(doc_charges)                                # BT-108
     tax_exclusive = q2(line_total - allowance_total + charge_total)  # BT-109
 
-    groups: "OrderedDict[tuple[str, Decimal | None], Decimal]" = OrderedDict()
-    for ln, net in zip(lines, nets):
+    groups: OrderedDict[tuple[str, Decimal | None], Decimal] = OrderedDict()
+    for ln, net in zip(lines, nets, strict=True):
         key = (ln.vat_category, ln.vat_percent)
         groups[key] = groups.get(key, Decimal(0)) + net
 

@@ -1,6 +1,5 @@
 """Cazurile de esec care produc respingeri reale la ANAF."""
 
-from datetime import date
 from decimal import Decimal
 
 from app.core.validation.br_ro import validate
