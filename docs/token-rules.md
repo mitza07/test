@@ -229,7 +229,12 @@ log(task_id, u.input_tokens, u.cache_creation_input_tokens,
   `cache_creation_input_tokens` e cât un turn, nu cât toată conversația.
 - Re-verifică după **fiecare** modificare a codului care construiește promptul. Regresiile de
   caching sunt tăcute: cererile reușesc, doar factura crește.
-- Rulează `scripts/check-cache-breakers.sh` înainte de commit.
+- Rulează verificarea statică înainte de commit; iese cu 1 la încălcări dure:
+
+  ```bash
+  ./scripts/check-cache-breakers.sh          # tot repo-ul
+  ./scripts/check-cache-breakers.sh app/     # doar o cale
+  ```
 
 ---
 
