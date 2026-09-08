@@ -83,6 +83,33 @@ respingere in SPV. Trimiterea automata e intarziata cu 1-4 zile, ca fereastra de
 - SAF-T D406: `TaxCode` obligatoriu pe fiecare linie; ANAF cross-verifica automat
   e-Factura cu sectiunea SalesInvoices.
 
+## Descoperit la verificare, 08.09.2026
+
+**RLS-ul e inert cu utilizatorul din `.env.example`.** Postgres ignora complet
+politicile Row Level Security pentru rolurile `SUPERUSER` sau cu `BYPASSRLS`.
+`FORCE ROW LEVEL SECURITY` din migratia 0002 rezolva doar cazul proprietarului
+tabelei, nu si pe cel al superuserului.
+
+Imaginea oficiala `postgres` creeaza `POSTGRES_USER` ca SUPERUSER, iar
+`DATABASE_URL` din `.env.example` se conecteaza cu exact acel rol. Deci
+politicile exista, se vad in `pg_policies`, si nu fac nimic.
+
+Verificat pe Postgres 16, cu doua firme in baza:
+
+| conexiune | `app.company_id` | randuri vizibile |
+|---|---|---|
+| superuser | nesetat | 2 — toate firmele |
+| rol obisnuit | nesetat | 0 |
+| rol obisnuit | firma A | 1 — doar firma A |
+
+Esecul e tacut. Nimic nu se rupe pana cand un endpoint returneaza datele altui
+client. → `app/core/rls.py:assert_enforced()`, de chemat la pornire, plus
+`tests/test_rls.py` care demonstreaza si gaura, si remedierea.
+
+Ramane de decis cum se leaga in deployment: doua roluri (unul privilegiat pentru
+migratii, unul obisnuit pentru aplicatie) inseamna doua URL-uri de conexiune si
+o parola in plus de administrat. Vezi TODO.md punctul 3.
+
 ## Idei care nu apar in niciun produs analizat
 
 **Numarul se aloca dupa validare.** O factura care pica validarea nu consuma un numar.

@@ -44,6 +44,13 @@ Aici e toata valoarea. Daca astea sunt corecte, restul e munca obisnuita.
 
 ## 3. Numerotare si emitere
 
+- [ ] **DE DECIS INAINTE DE ORICE DATE REALE: rolul cu care se conecteaza
+      aplicatia.** Cu `.env.example` asa cum e, aplicatia ruleaza ca SUPERUSER
+      si RLS-ul nu se aplica deloc — izolarea intre firme e inexistenta, tacut.
+      Vezi `docs/decizii.md`, sectiunea „Descoperit la verificare".
+      Ce trebuie: un rol `NOSUPERUSER NOBYPASSRLS` pentru aplicatie, rolul
+      privilegiat doar pentru migratii, si `rls.assert_enforced()` la pornire.
+      Costa un al doilea URL de conexiune si o parola in plus.
 - [ ] `app/core/numbering.py` — `SELECT ... FOR UPDATE` pe `doc_series`, alocarea
       numarului DUPA ce validatorul trece.
 - [ ] Emitere: draft -> validare -> alocare numar -> UBL -> PDF -> arhivare.
