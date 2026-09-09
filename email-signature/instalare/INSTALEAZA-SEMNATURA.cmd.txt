@@ -129,10 +129,11 @@ if exist "%S%\%N%_files" (
   xcopy "%S%\%N%_files" "%DEST%\%N%_files\" /E /I /Y /Q >nul || exit /b 1
 )
 
-rem  Outlook rescrie .htm prin serializatorul Word la fiecare Save din dialogul
-rem  Signatures, ceea ce strica formatarea. Read-only opreste asta.
-rem  Se anuleaza cu:  attrib -R "%%APPDATA%%\Microsoft\Signatures\<nume>.htm"
-attrib +R "%DEST%\%N%.htm" >nul 2>&1
+rem  NU se pune read-only pe .htm. Protejeaza contra rescrierii de catre Word,
+rem  dar impiedica Outlook sa incorporeze imaginea semnaturii in mesaj: un
+rem  fisier pe care nu-l poate rescrie ramane cu legatura file:/// catre disc,
+rem  moarta la destinatar. Formatarea conteaza mai putin decat banda lipsa.
+attrib -R "%DEST%\%N%.htm" >nul 2>&1
 echo   Instalata: "%N%"
 >>"%LOG%" echo OK   instalata: %N%  (sursa: %S%)
 exit /b 0
