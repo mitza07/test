@@ -34,8 +34,21 @@ def check_fragment(path, allow_image=False):
         for bad in NO_IMAGE:
             ck(bad not in t, f"{name}: contine referinta la imagine {bad!r}")
     ck(not re.search(r"\son\w+\s*=", t), f"{name}: contine handler on*=")
-    ck(t.count("line-height:") == t.count("mso-line-height-rule:exactly;line-height:"),
-       f"{name}: exista line-height fara mso-line-height-rule:exactly")
+    # mso-line-height-rule:exactly face motorul Word sa TAIE ce depaseste
+    # inaltimea de rand. Corect pe text, fatal pe o celula cu imagine: cu
+    # line-height:0 imaginea e taiata complet si nu se vede nimic.
+    bare = t.count("line-height:") - t.count("mso-line-height-rule:exactly;line-height:")
+    has_img = "<img" in t
+    ck(bare == (2 if has_img else 0),
+       f"{name}: {bare} line-height fara mso-line-height-rule (asteptat "
+       f"{2 if has_img else 0}: doar celula imaginii si paragraful ei)")
+    if has_img:
+        m = re.search(r"<td([^>]*)>\s*<p([^>]*)>\s*<img", t)
+        ck(bool(m), f"{name}: <img> nu e intr-un <td><p> asteptat")
+        if m:
+            ck("mso-line-height-rule" not in m.group(1) + m.group(2),
+               f"{name}: celula imaginii are mso-line-height-rule:exactly, "
+               f"care taie imaginea in Outlook")
     ck(re.search(r"font-weight:(?!400|700)", t) is None,
        f"{name}: font-weight in afara de 400/700")
     ck(re.search(r":\s*\.\d", t) is None, f"{name}: valoare CSS fara zero initial")
