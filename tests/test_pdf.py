@@ -77,8 +77,13 @@ def test_pdf_ul_foloseste_noto_sans(document):
     """
     fonts = _fonts(pdf.render(document).content)
     assert fonts, "PDF-ul nu are niciun font embedded"
-    assert all(name.startswith("Noto-Sans") for name in fonts), \
-        f"PDF-ul contine si alte familii: {sorted(fonts)}"
+    assert all(name.startswith("Noto-Sans") for name in fonts), (
+        f"PDF-ul contine si alte familii: {sorted(fonts)}. "
+        "Daca sunt DejaVu sau Liberation, masina asta nu are Noto instalat: "
+        "`apt-get install fonts-noto-core fonts-noto-extra`. "
+        "Testul NU se sare — un PDF fara Noto are s si t cu sedila, iar asta "
+        "se vede pe factura tiparita."
+    )
 
 
 def test_diacriticele_supravietuiesc_in_pdf(document):
