@@ -28,7 +28,8 @@ from sqlalchemy import text
 from app.config import get_settings
 from app.db import admin_session, tenant_session
 from app.workers import alerts
-from app.workers.queues import enqueue_spv
+from app.workers.pdf import render_document
+from app.workers.queues import enqueue_pdf, enqueue_spv
 from app.workers.spv import poll_status, send_document
 
 logger = logging.getLogger(__name__)
@@ -103,6 +104,33 @@ def queue_status_polls() -> int:
     return queued
 
 
+def queue_pending_pdfs() -> int:
+    """Randeaza PDF-urile facturilor emise care nu au unul.
+
+    Se face aici, si nu din `issue()`, din doua motive: nucleul de emitere ramane
+    testabil fara Redis, si sarcina asta e auto-reparatoare — o randare pierduta
+    (worker cazut, disc plin) se reia la urmatorul tur, fara interventie.
+    """
+    queued = 0
+    with admin_session() as session:
+        companies = [row.id for row in session.execute(
+            text("SELECT id FROM company")).all()]
+    for company_id in companies:
+        with tenant_session(company_id) as session:
+            rows = session.execute(text("""
+                SELECT id FROM document
+                WHERE doc_status = 'issued' AND rendered_pdf_sha256 IS NULL
+                ORDER BY bt2_issue_date
+                LIMIT 100
+            """)).all()
+        for row in rows:
+            enqueue_pdf(render_document, str(company_id), str(row.id))
+            queued += 1
+    if queued:
+        logger.info("Puse la coada %s facturi pentru randare PDF.", queued)
+    return queued
+
+
 def daily_alerts() -> dict[str, int]:
     counts = alerts.run_all(date.today())
     logger.info("Alerte: %s", counts)
@@ -113,6 +141,7 @@ def build_tasks() -> list[Task]:
     return [
         Task("trimitere_facturi", timedelta(minutes=5), queue_pending_uploads),
         Task("verificare_stare", timedelta(minutes=10), queue_status_polls),
+        Task("randare_pdf", timedelta(minutes=5), queue_pending_pdfs),
         Task("alerte_zilnice", timedelta(hours=24), daily_alerts),
     ]
 

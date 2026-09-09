@@ -1,5 +1,8 @@
 -r requirements.txt
 pytest==8.3.4
+# citeste fonturile embedded si textul din PDF-ul randat: singurul mod de a
+# verifica din test ca diacriticele vin din Noto Sans, nu dintr-un fallback
+pypdf==5.1.0
 pytest-asyncio==0.25.0
 ruff==0.8.4
 mypy==1.14.0

@@ -106,11 +106,19 @@ Aici e toata valoarea. Daca astea sunt corecte, restul e munca obisnuita.
 
 ## 5. PDF si arhivare
 
-- [ ] Sablon WeasyPrint, versionat. Font cu suport Romanian Extended (Noto Sans),
-      NU Liberation sau DejaVu — au probleme cu s si t cu virgula.
-- [ ] Rulare exclusiv in worker RQ, cu timeout si limita de memorie.
-- [ ] La emitere: salveaza PDF-ul cu hash si `template_version`.
-- [ ] `retain_until` = 1 iulie a anului urmator + 5 ani.
+- [x] Sablon WeasyPrint versionat, in `app/templates/invoice/v1/`. Nu se editeaza
+      dupa ce a randat o factura emisa; pentru o schimbare se copiaza in v2.
+- [x] Noto Sans, verificat pe PDF-ul randat, nu doar declarat in CSS. Testul a
+      prins doua esecuri tacute: autoescape strica stiva de fonturi, iar cutia
+      `@bottom-center` din `@page` nu mosteneste de la `body`.
+- [x] `app/workers/pdf.py` — coada `pdf`, separata, cu `job_timeout` propriu.
+      Nu ruleaza niciodata in procesul API.
+- [x] La emitere: `rendered_pdf_sha256` + `template_version` pe document, plus
+      intrare in `archive_entry` cu `is_legal_original = false` (originalul e
+      XML-ul semnat de ANAF).
+- [x] `retain_until` = 1 iulie a anului urmator + 5 ani (`pdf.retention_deadline`).
+- [ ] Limita de memorie pe worker: e in `docker-compose.prod.yml` (`deploy.resources`),
+      dar nu e verificata nicaieri si Docker Compose fara Swarm o ignora.
 
 ## 6. API si frontend
 

@@ -1,0 +1,217 @@
+{# Sablon de factura, versiunea v1.
+
+   NU se editeaza dupa ce a randat o factura emisa. Constrangerea 7 din CLAUDE.md:
+   imutabilitatea acopera si reprezentarea, deci o factura veche trebuie sa arate
+   in continuare ca la emitere. Pentru o schimbare, se copiaza directorul in v2 si
+   se incrementeaza CURRENT_TEMPLATE_VERSION.
+#}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<title>{{ doc.invoice_id }}</title>
+<style>
+  @page {
+    size: A4;
+    margin: 16mm 14mm 20mm 14mm;
+    @bottom-center {
+      /* Cutiile de margine NU mostenesc de la `body`: fara linia asta, subsolul
+         se randeaza cu fontul serif implicit, iar PDF-ul ajunge cu doua familii
+         de fonturi. Se vede la tiparire. */
+      font-family: {{ font_stack | safe }};
+      content: "Pagina " counter(page) " din " counter(pages);
+      font-size: 8pt;
+      color: #666;
+    }
+  }
+  /* Noto Sans primul: are s si t cu VIRGULA (U+0219, U+021B), nu cu sedila.
+     Liberation si DejaVu le deseneaza gresit. Vezi docs/decizii.md.
+
+     `| safe` e obligatoriu, nu o scurtatura: autoescape transforma ghilimelele
+     din stiva in entitati HTML, iar CSS-ul din <style> NU le decodifica.
+     Declaratia devine invalida, pica in tacere si se cade pe fontul serif —
+     adica exact pe glifele gresite. Valoarea vine din `app.core.pdf.FONT_STACK`,
+     o constanta a noastra, niciodata din date de utilizator.
+     Testul `test_pdf.py::test_pdf_ul_foloseste_noto_sans` pazeste linia asta. */
+  body {
+    font-family: {{ font_stack | safe }};
+    font-size: 9.5pt;
+    color: #1a1a1a;
+    line-height: 1.45;
+  }
+  h1 { font-size: 20pt; margin: 0 0 2mm 0; letter-spacing: 0.5pt; }
+  .antet { display: flex; justify-content: space-between; align-items: flex-start; }
+  .antet .titlu { text-align: right; }
+  .serie { font-size: 12pt; font-weight: 600; }
+  .parti { display: flex; gap: 8mm; margin: 7mm 0 5mm 0; }
+  .parte { flex: 1; border: 0.4pt solid #d0d0d0; padding: 3mm 3.5mm; }
+  .parte h2 {
+    font-size: 8pt; text-transform: uppercase; letter-spacing: 0.6pt;
+    color: #666; margin: 0 0 1.5mm 0; font-weight: 600;
+  }
+  .parte .nume { font-weight: 600; font-size: 10.5pt; }
+  .meta { display: flex; gap: 6mm; margin-bottom: 5mm; font-size: 9pt; }
+  .meta div { flex: 1; }
+  .meta .eticheta { color: #666; font-size: 8pt; text-transform: uppercase; }
+  table.linii { width: 100%; border-collapse: collapse; margin-bottom: 4mm; }
+  table.linii th {
+    background: #f2f2f2; font-size: 8pt; text-transform: uppercase;
+    letter-spacing: 0.4pt; padding: 2mm; text-align: left;
+    border-bottom: 0.6pt solid #bbb;
+  }
+  table.linii td { padding: 2mm; border-bottom: 0.3pt solid #e2e2e2; vertical-align: top; }
+  .num { text-align: right; white-space: nowrap; }
+  .totaluri { width: 78mm; margin-left: auto; border-collapse: collapse; }
+  .totaluri td { padding: 1.6mm 2mm; }
+  .totaluri td.num { text-align: right; }
+  .totaluri tr.plata td {
+    font-weight: 700; font-size: 11pt; border-top: 0.8pt solid #333;
+    padding-top: 2.5mm;
+  }
+  .defalcare { margin-top: 5mm; font-size: 8.5pt; }
+  .defalcare table { border-collapse: collapse; }
+  .defalcare th, .defalcare td { padding: 1.2mm 3mm 1.2mm 0; text-align: left; }
+  .scutire { color: #444; font-style: italic; }
+  footer.note { margin-top: 7mm; font-size: 8pt; color: #555; }
+  .mentiune-legala {
+    margin-top: 4mm; padding-top: 2mm; border-top: 0.3pt solid #ddd;
+    font-size: 7.5pt; color: #666;
+  }
+</style>
+</head>
+<body>
+
+<div class="antet">
+  <div>
+    <div class="nume" style="font-size: 13pt; font-weight: 600;">
+      {{ doc.seller.name }}
+    </div>
+    {% if doc.seller.vat_id %}<div>CUI {{ doc.seller.vat_id }}</div>{% endif %}
+    {% if doc.seller.legal_info %}<div>{{ doc.seller.legal_info }}</div>{% endif %}
+  </div>
+  <div class="titlu">
+    <h1>{% if doc.is_storno %}FACTURĂ STORNO{% else %}FACTURĂ{% endif %}</h1>
+    <div class="serie">{{ doc.invoice_id }}</div>
+  </div>
+</div>
+
+<div class="parti">
+  <div class="parte">
+    <h2>Furnizor</h2>
+    <div class="nume">{{ doc.seller.name }}</div>
+    {% if doc.seller.vat_id %}<div>CUI: {{ doc.seller.vat_id }}</div>
+    {% elif doc.seller.legal_reg_id %}<div>Cod: {{ doc.seller.legal_reg_id }}</div>{% endif %}
+    <div>{{ doc.seller.address1 }}</div>
+    <div>{{ doc.seller.city }}{% if doc.seller.county %} · {{ doc.seller.county }}{% endif %}</div>
+    {% if doc.payment and doc.payment.iban %}<div>IBAN: {{ doc.payment.iban }}</div>{% endif %}
+  </div>
+  <div class="parte">
+    <h2>Client</h2>
+    <div class="nume">{{ doc.buyer.name }}</div>
+    {% if doc.buyer.vat_id %}<div>CUI: {{ doc.buyer.vat_id }}</div>
+    {% elif doc.buyer.legal_reg_id %}<div>Cod: {{ doc.buyer.legal_reg_id }}</div>{% endif %}
+    <div>{{ doc.buyer.address1 }}</div>
+    <div>{{ doc.buyer.city }}{% if doc.buyer.county %} · {{ doc.buyer.county }}{% endif %}</div>
+  </div>
+</div>
+
+<div class="meta">
+  <div><span class="eticheta">Data emiterii</span><br>{{ doc.issue_date | data }}</div>
+  {% if doc.due_date %}
+  <div><span class="eticheta">Scadență</span><br>{{ doc.due_date | data }}</div>
+  {% endif %}
+  <div><span class="eticheta">Monedă</span><br>{{ doc.currency }}</div>
+  {% if doc.preceding_invoice_id %}
+  <div><span class="eticheta">Storno la</span><br>{{ doc.preceding_invoice_id }}</div>
+  {% endif %}
+</div>
+
+<table class="linii">
+  <thead>
+    <tr>
+      <th style="width: 7mm;">#</th>
+      <th>Descriere</th>
+      <th class="num" style="width: 16mm;">Cant.</th>
+      <th style="width: 14mm;">U.M.</th>
+      <th class="num" style="width: 22mm;">Preț unitar</th>
+      <th class="num" style="width: 12mm;">TVA</th>
+      <th class="num" style="width: 24mm;">Valoare</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for line in doc.lines %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>
+        {{ line.name }}
+        {% if line.description %}<br><span style="color:#666;">{{ line.description }}</span>{% endif %}
+      </td>
+      <td class="num">{{ line.quantity | cantitate }}</td>
+      <td>{{ line.unit_code }}</td>
+      <td class="num">{{ line.unit_price | bani }}</td>
+      <td class="num">
+        {% if line.vat_category == 'O' %}—{% else %}{{ line.vat_percent | cantitate }}%{% endif %}
+      </td>
+      <td class="num">{{ line.net | bani }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<table class="totaluri">
+  <tr><td>Total fără TVA</td><td class="num">{{ doc.tax_exclusive | bani }} {{ doc.currency }}</td></tr>
+  {% if doc.allowance_total and doc.allowance_total != 0 %}
+  <tr><td>Deduceri</td><td class="num">-{{ doc.allowance_total | bani }}</td></tr>
+  {% endif %}
+  {% if doc.charge_total and doc.charge_total != 0 %}
+  <tr><td>Taxe suplimentare</td><td class="num">{{ doc.charge_total | bani }}</td></tr>
+  {% endif %}
+  <tr><td>Total TVA</td><td class="num">{{ doc.tax_amount | bani }} {{ doc.currency }}</td></tr>
+  {% if doc.prepaid and doc.prepaid != 0 %}
+  <tr><td>Avans achitat</td><td class="num">-{{ doc.prepaid | bani }}</td></tr>
+  {% endif %}
+  <tr class="plata">
+    <td>Total de plată</td>
+    <td class="num">{{ doc.payable | bani }} {{ doc.currency }}</td>
+  </tr>
+</table>
+
+{% if doc.vat_breakdown %}
+<div class="defalcare">
+  <table>
+    <thead>
+      <tr>
+        <th>Cotă TVA</th><th>Bază impozabilă</th><th>Valoare TVA</th><th>Motiv</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for group in doc.vat_breakdown %}
+      <tr>
+        <td>
+          {{ group.category }}{% if group.category != 'O' %} · {{ group.percent | cantitate }}%{% endif %}
+        </td>
+        <td>{{ group.taxable | bani }}</td>
+        <td>{{ group.tax_amount | bani }}</td>
+        <td class="scutire">{{ group.exemption_reason or '' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% if doc.notes or doc.payment_terms %}
+<footer class="note">
+  {% if doc.payment_terms %}<div>Termeni de plată: {{ doc.payment_terms }}</div>{% endif %}
+  {% for note in doc.notes %}<div>{{ note }}</div>{% endfor %}
+</footer>
+{% endif %}
+
+<div class="mentiune-legala">
+  Reprezentare grafică a facturii electronice. Documentul original este fișierul
+  XML sigilat electronic de Ministerul Finanțelor, transmis prin sistemul
+  RO e-Factura. Șablon {{ version }}.
+</div>
+
+</body>
+</html>
