@@ -12,6 +12,7 @@ call :sterge "Mihai Zamfir - Clasic"
 set "MS=HKCU\Software\Microsoft\Office\16.0\Common\MailSettings"
 reg delete "%MS%" /v NewSignature   /f >nul 2>&1
 reg delete "%MS%" /v ReplySignature /f >nul 2>&1
+reg delete "%MS%" /v "Send Pictures With Document" /f >nul 2>&1
 reg delete "HKCU\Software\Microsoft\Office\16.0\Outlook\Setup" /v DisableRoamingSignaturesTemporaryToggle /f >nul 2>&1
 echo   Gata. Backup-urile raman in %DEST%\_backup_ITISTUL
 echo.

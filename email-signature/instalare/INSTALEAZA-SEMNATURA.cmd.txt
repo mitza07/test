@@ -77,6 +77,12 @@ reg add "%MS%" /v NewSignature   /t REG_EXPAND_SZ /d "%IMPLICITA%" /f >nul 2>&1
 reg add "%MS%" /v ReplySignature /t REG_EXPAND_SZ /d "%IMPLICITA%" /f >nul 2>&1
 echo   Implicita pentru mesaje noi si raspunsuri: "%IMPLICITA%"
 
+rem --- fara asta, Outlook trimite imaginile semnaturii ca legaturi
+rem     file:///C:/Users/... catre discul local, in loc sa le atasseze inline
+rem     in mesaj. Legatura e moarta la destinatar, deci imaginea nu apare.
+reg add "%MS%" /v "Send Pictures With Document" /t REG_DWORD /d 1 /f >nul 2>&1
+echo   Incorporarea imaginilor in mesaj activata (Send Pictures With Document).
+
 rem --- semnaturile roaming (Microsoft 365) suprascriu fisierele locale ---
 set "OS16=HKCU\Software\Microsoft\Office\16.0\Outlook\Setup"
 reg add "%OS16%" /v DisableRoamingSignaturesTemporaryToggle /t REG_DWORD /d 1 /f >nul 2>&1
