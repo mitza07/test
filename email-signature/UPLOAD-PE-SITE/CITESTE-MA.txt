@@ -1,21 +1,28 @@
-Acest folder este necesar DOAR daca folosesti varianta animata a semnaturii.
-Varianta implicita (recomandata) nu foloseste nicio imagine si nu are nevoie
-de nimic urcat pe site.
-
-Ce ai de facut:
+BANDA ANIMATA TREBUIE URCATA PE SITE INAINTE DE INSTALARE
 
 1. In hostingul itistul.ro creeaza folderul:
        public_html/email-signature/
 
 2. Urca in el fisierul:
-       email-signature/itistul-pulse.gif
+       email-signature/itistul-signal.gif       (11 KB)
 
 3. Verifica in browser ca se deschide:
-       https://www.itistul.ro/email-signature/itistul-pulse.gif
+       https://www.itistul.ro/email-signature/itistul-signal.gif
 
-   Trebuie sa se vada banda albastra, nu o pagina de eroare 403/404.
+   Trebuie sa se vada banda pe fundal bleumarin, nu o eroare 403/404.
 
 4. Abia dupa aceea ruleaza:
-       instalare\INSTALEAZA-SEMNATURA.cmd animat
+       instalare\INSTALEAZA-SEMNATURA.cmd
 
 Nu redenumi fisierul: semnatura il cauta exact la adresa de mai sus.
+
+DACA NU URCI FISIERUL: semnatura functioneaza in continuare, iar in locul benzii
+ramane fundalul bleumarin al blocului. Nu apare imagine rupta si nu se strica
+nimic din layout.
+
+Recomandari de server:
+- serveste-l pe HTTPS, cu certificat valid;
+- nu pune protectie de hotlink pe folderul acesta, altfel clientii de mail
+  primesc 403 in loc de imagine;
+- lasa cache-ul lung (de exemplu Cache-Control: public, max-age=2592000),
+  fisierul nu se schimba.

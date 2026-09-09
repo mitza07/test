@@ -6,21 +6,41 @@ care se vede doar pe ecranul destinatarului, niciodată pe al tău.
 
 ---
 
-## 1. Nimic de blocat
+## 1. O singură imagine, și aceea invizibilă când lipsește
 
-Semnătura nu conține `<img>`, `background-image`, `url(`, `data:` sau `srcset`.
-Nu există nicio resursă de descărcat la randare.
+Semnătura conține exact un `<img>`: banda animată de 508×28. Nimic altceva —
+niciun `background-image`, `url(`, `data:` sau `srcset`. Toată identitatea (nume,
+logo, contacte, culori, structură) este HTML și nu se poate bloca.
 
-Consecințe directe:
+Banda e construită să dispară elegant:
 
-- Trust Center-ul din Outlook nu are ce bloca → nu apare bara „Click here to download
-  pictures", iar semnătura arată **identic** cu imaginile oprite.
-- Proxy-ul de imagini Google nu intervine.
-- Nu există gazdă de imagine expusă la liste URIBL, nici dependență de hotlink,
-  certificat sau `Content-Type` de pe itistul.ro.
-- Nu există euristică de tracking pixel.
+- fundalul GIF-ului este **exact** `#0a1628`, aceeași valoare ca `bgcolor`-ul
+  celulei care îl conține — starea blocată se contopește cu blocul bleumarin;
+- `width` și `height` sunt declarate și ca atribut și în CSS, deci spațiul e
+  rezervat înainte de încărcare și layout-ul nu sare;
+- `alt=""` — element decorativ: cititoarele de ecran îl sar, iar în starea blocată
+  nu apare text alternativ peste bleumarin;
+- 11 KB și 14.224 px² față de peste 400 de caractere de text, deci raportul
+  text/imagine rămâne departe de pragurile `HTML_IMAGE_RATIO_*` din SpamAssassin.
 
-Singurele referințe externe rămase sunt **2 `href`-uri**: site-ul și adresa pe hartă.
+Referințe externe în tot fișierul: **1 imagine + 2 `href`-uri** (site și hartă).
+
+Varianta din `semnatura/varianta-fara-imagini/` este același design fără rândul
+benzii — acolo chiar nu există nicio resursă de descărcat.
+
+## 1b. Primul cadru al GIF-ului este un design în sine
+
+Motorul Word din Outlook Classic desenează **doar cadrul 1** al oricărui GIF
+animat. Nu e o limitare a acestui pachet și nu se poate ocoli.
+
+De aceea cadrul 1 nu e un cadru oarecare din animație: conține traseul complet,
+toate marcajele și patru pachete distribuite pe lățime, ca să arate ca un grafic
+terminat. Animația e un bonus pentru clienții care o pot reda; cadrul static este
+livrabilul garantat.
+
+GIF-ul se regenerează cu `genereaza-gif.py` — acolo se schimbă culorile, viteza,
+numărul de pachete și poziția marcajelor. Bucla este perfectă prin construcție:
+lățimea de wrap (560 px) este multiplu întreg al pasului pe cadru.
 
 ## 2. Un singur `<table>` la nivel superior
 
@@ -121,7 +141,7 @@ orizontal pe mobil. 520 px încap peste tot și rămân lizibile citate de mai m
 
 | Element | Motiv |
 |---|---|
-| GIF-ul remote de 132 KB | Outlook Classic randa doar cadrul 1; blocat implicit la destinatar; euristică de tracking pixel |
+| GIF-ul remote de 132 KB, 640×36, 48 cadre | Înlocuit cu unul de 11 KB, 508×28, cu fundal identic cu celula și cadrul 1 desenat separat |
 | Butonul `OPEN ITISTUL.RO →` | Un buton CTA într-o semnătură citește ca reclamă și crește scorul de spam |
 | Sloganul din subsol | Redundant cu banda de discipline |
 | Etichetele `MOBILE` / `E-MAIL` / `ONLINE` / `HQ` | Conținutul se identifică singur; etichetele dublau înălțimea |

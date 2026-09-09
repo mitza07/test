@@ -17,8 +17,13 @@ echo   ITISTUL.RO - instalare semnatura Outlook
 echo   ========================================
 echo.
 
-rem --- varianta animata, daca a fost ceruta ca argument ---
-if /I "%~1"=="animat" set "SURSA=%~dp0..\semnatura\varianta-animata"
+rem --- implicit se instaleaza varianta grafica animata;
+rem     "INSTALEAZA-SEMNATURA.cmd fara-imagini" instaleaza varianta statica
+set "VARIANTA=animata"
+if /I "%~1"=="fara-imagini" (
+  set "SURSA=%~dp0..\semnatura\varianta-fara-imagini"
+  set "VARIANTA=fara imagini"
+)
 
 if not exist "%SURSA%\%NUME%.htm" (
   echo   [EROARE] Nu gasesc "%SURSA%\%NUME%.htm".
@@ -80,8 +85,17 @@ reg add "%OS16%" /v DisableRoamingSignaturesTemporaryToggle /t REG_DWORD /d 1 /f
 echo   Semnaturi roaming dezactivate (altfel cloud-ul suprascrie fisierul local).
 
 echo.
-echo   GATA. Deschide Outlook si trimite-ti un e-mail de test.
+echo   GATA. Varianta instalata: %VARIANTA%
+echo   Deschide Outlook si trimite-ti un e-mail de test.
 echo.
+if /I not "%~1"=="fara-imagini" (
+  echo   ATENTIE: banda animata se incarca de pe site. Daca nu ai urcat inca
+  echo   fisierul, urca UPLOAD-PE-SITE\email-signature\itistul-signal.gif si
+  echo   verifica in browser ca se deschide:
+  echo     https://www.itistul.ro/email-signature/itistul-signal.gif
+  echo   Pana atunci, in locul benzii ramane doar fundalul bleumarin.
+  echo.
+)
 echo   Daca semnatura nu apare: Outlook ^> File ^> Options ^> Mail ^> Signatures
 echo   si alege "%NUME%" la "New messages" si "Replies/forwards".
 echo.

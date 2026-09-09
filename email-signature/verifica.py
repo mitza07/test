@@ -81,6 +81,26 @@ def check_fragment(path, allow_image=False):
     ck(t.count("<td") == t.count("</td>") and t.count("<tr") == t.count("</tr>")
        and t.count("<table") == t.count("</table>"), f"{name}: taguri dezechilibrate")
     ck("border-top:1px solid" in t, f"{name}: linia despartitoare nu e border-top")
+    if allow_image:
+        imgs = re.findall(r"<img [^>]*>", t)
+        ck(len(imgs) == 1, f"{name}: se asteapta exact o imagine, gasite {len(imgs)}")
+        for im in imgs:
+            ck('src="https://' in im, f"{name}: <img> fara sursa HTTPS")
+            ck('alt="' in im, f"{name}: <img> fara atribut alt")
+            ck('border="0"' in im and "display:block" in im,
+               f"{name}: <img> fara border=0 / display:block")
+            for at, pr in (("width", "width"), ("height", "height")):
+                m = re.search(rf'{at}="(\d+)"', im)
+                ck(bool(m) and f"{pr}:{m.group(1)}px;" in im,
+                   f"{name}: <img> {at} nedeclarat si ca atribut si in CSS")
+        # celula care contine banda trebuie sa aiba acelasi fundal ca banda,
+        # ca starea blocata sa arate ca spatiu, nu ca o gaura
+        cell = re.search(r'<td([^>]*)>\s*<p[^>]*>\s*<img', t)
+        ck(bool(cell), f"{name}: <img> nu e intr-un <p> fixat")
+        if cell:
+            bg = re.search(r'bgcolor="([^"]+)"', cell.group(1))
+            ck(bool(bg) and bg.group(1).lower() == "#0a1628",
+               f"{name}: celula benzii nu are fundalul navy al GIF-ului")
     ck("+40&#160;742&#160;932&#160;686" in t, f"{name}: telefonul nu e lipit cu nbsp")
     print(f"  {name}: {len(raw)} B, {len(tds)} celule")
 
@@ -94,10 +114,10 @@ def check_htm(path):
     print(f"  {name}: {len(d)} B")
 
 print("Verificare semnatura ITISTUL.RO\n")
-check_fragment(os.path.join(SIG, "fragment.html"))
+check_fragment(os.path.join(SIG, "fragment.html"), allow_image=True)
 check_htm(os.path.join(SIG, "Mihai Zamfir.htm"))
-check_fragment(os.path.join(SIG, "varianta-animata", "fragment.html"), allow_image=True)
-check_htm(os.path.join(SIG, "varianta-animata", "Mihai Zamfir.htm"))
+check_fragment(os.path.join(SIG, "varianta-fara-imagini", "fragment.html"))
+check_htm(os.path.join(SIG, "varianta-fara-imagini", "Mihai Zamfir.htm"))
 
 rtf = open(os.path.join(SIG, "Mihai Zamfir.rtf"), "rb").read()
 ck(rtf.startswith(b"{\\rtf1"), "RTF: nu incepe cu {\\rtf1 (BOM?)")
@@ -118,11 +138,20 @@ for p in ["instalare/INSTALEAZA-SEMNATURA.cmd", "instalare/DEZINSTALEAZA.cmd"]:
     ck(not re.search(rb"powershell(\.exe)?\s+[-/]", d.lower()),
        f"{p}: invoca PowerShell")
 
-gif = os.path.join(SIG, "varianta-animata", "itistul-pulse.gif")
+gif = os.path.join(SIG, "itistul-signal.gif")
 if os.path.exists(gif):
     n = os.path.getsize(gif)
-    ck(n < 15000, f"GIF: {n} B, peste pragul de 15 KB")
-    print(f"  semnatura/varianta-animata/itistul-pulse.gif: {n} B")
+    ck(n < 20000, f"GIF: {n} B, peste pragul de 20 KB")
+    g = open(gif, "rb").read()
+    ck(g[:6] in (b"GIF89a", b"GIF87a"), "GIF: antet invalid")
+    ck(b"NETSCAPE2.0" in g, "GIF: nu are extensia de buclare (nu se repeta)")
+    import struct
+    gw, gh = struct.unpack("<HH", g[6:10])
+    ck((gw, gh) == (508, 28), f"GIF: {gw}x{gh}, se astepta 508x28")
+    frag = open(os.path.join(SIG, "fragment.html"), encoding="utf-8").read()
+    ck(f'width="{gw}"' in frag and f'height="{gh}"' in frag,
+       "GIF: dimensiunile reale nu corespund cu cele declarate in HTML")
+    print(f"  semnatura/itistul-signal.gif: {n} B")
 
 print(f"\n{checks} verificari, {len(fails)} esecuri")
 for f in fails: print("  ESEC:", f)
