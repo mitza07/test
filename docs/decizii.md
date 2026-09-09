@@ -106,9 +106,17 @@ Esecul e tacut. Nimic nu se rupe pana cand un endpoint returneaza datele altui
 client. → `app/core/rls.py:assert_enforced()`, de chemat la pornire, plus
 `tests/test_rls.py` care demonstreaza si gaura, si remedierea.
 
-Ramane de decis cum se leaga in deployment: doua roluri (unul privilegiat pentru
-migratii, unul obisnuit pentru aplicatie) inseamna doua URL-uri de conexiune si
-o parola in plus de administrat. Vezi TODO.md punctul 3.
+**Decis: doua roluri, doua URL-uri.** `DATABASE_URL` e conexiunea aplicatiei,
+cu un rol `NOSUPERUSER NOBYPASSRLS` care are drepturi pe DATE si niciunul pe
+schema. `ADMIN_DATABASE_URL` e proprietarul schemei si e folosit exclusiv de
+alembic. Cand al doilea lipseste, migratiile cad pe primul — comod in dev, iar
+in productie esueaza explicit, pentru ca rolul aplicatiei nu poate face DDL.
+
+`scripts/setup-db-roles.sh` creeaza rolul, ii da drepturile, le extinde si
+asupra tabelelor viitoare prin `ALTER DEFAULT PRIVILEGES` — fara asta prima
+migratie care adauga un tabel l-ar lasa invizibil pentru aplicatie — si verifica
+la final ca rolul chiar nu ocoleste RLS. Costul e o parola in plus de
+administrat; alternativa era izolarea intre firme inactiva in tacere.
 
 **Politicile din 0002 acopereau doar tabelele cu `company_id`.** A doua gaura,
 mai grava decat prima pentru ca persista si cu totul configurat corect: cele 12

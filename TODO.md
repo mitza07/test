@@ -44,13 +44,12 @@ Aici e toata valoarea. Daca astea sunt corecte, restul e munca obisnuita.
 
 ## 3. Numerotare si emitere
 
-- [ ] **DE DECIS INAINTE DE ORICE DATE REALE: rolul cu care se conecteaza
-      aplicatia.** Cu `.env.example` asa cum e, aplicatia ruleaza ca SUPERUSER
-      si RLS-ul nu se aplica deloc — izolarea intre firme e inexistenta, tacut.
-      Vezi `docs/decizii.md`, sectiunea „Descoperit la verificare".
-      Ce trebuie: un rol `NOSUPERUSER NOBYPASSRLS` pentru aplicatie, rolul
-      privilegiat doar pentru migratii, si `rls.assert_enforced()` la pornire.
-      Costa un al doilea URL de conexiune si o parola in plus.
+- [x] **Rolul cu care se conecteaza aplicatia.** Doua roluri, doua URL-uri:
+      `DATABASE_URL` pentru api/worker/scheduler, `ADMIN_DATABASE_URL` doar
+      pentru alembic. Rolul aplicatiei e `NOSUPERUSER NOBYPASSRLS` si nu are
+      drepturi de schema. `scripts/setup-db-roles.sh` il creeaza si verifica la
+      final ca nu ocoleste RLS. In dev, `ADMIN_DATABASE_URL` poate lipsi.
+      Ramane de rulat pe server, o data, inainte de primul `APP_ENV=prod`.
 - [x] `app/core/numbering.py` — `SELECT ... FOR UPDATE` pe `doc_series`, alocarea
       numarului DUPA ce validatorul trece.
 - [x] Emitere: `app/core/issue.py:issue()`. Ciorna -> validare -> alocare numar ->

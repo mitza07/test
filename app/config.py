@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
 
     database_url: str
+    # Doar pentru alembic: proprietarul schemei. Aplicatia se conecteaza cu
+    # `database_url`, un rol care NU are drepturi de schema si NU ocoleste RLS.
+    # Gol in dev, unde un singur rol face ambele treburi.
+    admin_database_url: str = ""
     redis_url: str = "redis://redis:6379/0"
 
     token_encryption_key: str
@@ -26,6 +30,16 @@ class Settings(BaseSettings):
 
     storage_path: str = "/data/storage"
     schematron_path: str = "/data/schematron/ro16931-ubl-1.0.9"
+
+    @property
+    def migration_database_url(self) -> str:
+        """URL-ul cu care ruleaza migratiile.
+
+        Cade pe `database_url` cand nu e configurat separat. In productie,
+        rolul aplicatiei nu are drepturi de schema, deci o migratie rulata
+        din greseala cu el esueaza explicit — nu pe jumatate.
+        """
+        return self.admin_database_url or self.database_url
 
     @property
     def anaf_api_base(self) -> str:

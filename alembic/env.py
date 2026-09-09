@@ -9,7 +9,9 @@ config = context.config
 if config.config_file_name:
     fileConfig(config.config_file_name)
 
-config.set_main_option("sqlalchemy.url", get_settings().database_url)
+# Migratiile ruleaza cu proprietarul schemei, nu cu rolul aplicatiei.
+config.set_main_option("sqlalchemy.url",
+                       get_settings().migration_database_url)
 target_metadata = None
 
 
