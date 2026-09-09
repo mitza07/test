@@ -6,27 +6,47 @@ care se vede doar pe ecranul destinatarului, niciodată pe al tău.
 
 ---
 
-## 1. O singură imagine, și aceea invizibilă când lipsește
+## 1. Imaginea nu vine de nicăieri din exterior
 
-Semnătura conține exact un `<img>`: banda animată de 508×28. Nimic altceva —
-niciun `background-image`, `url(`, `data:` sau `srcset`. Toată identitatea (nume,
-logo, contacte, culori, structură) este HTML și nu se poate bloca.
+Semnătura conține exact un `<img>`: banda animată de 508×28. `src`-ul ei trimite
+la folderul companion al semnăturii, nu la un site:
 
-Banda e construită să dispară elegant:
+```html
+<img src="Mihai%20Zamfir_files/itistul-signal.gif" width="508" height="28" ...>
+```
+
+La inserarea semnăturii, Outlook rezolvă calea relativă, atașează fișierul inline
+în mesaj cu un `Content-ID` și rescrie `src`-ul în `cid:...`. Este mecanismul
+nativ folosit de editorul de semnături din Outlook pentru orice poză inserată.
+
+Consecința importantă: **blocarea automată a imaginilor se aplică doar imaginilor
+remote.** O imagine atașată inline face parte din mesaj, deci se afișează
+întotdeauna, fără bara „Click here to download pictures". Nu există URL de blocat,
+de urmărit sau de pus pe liste, nici dependență de hotlink, certificat sau
+`Content-Type` de pe vreun server.
+
+Fișierul `filelist.xml` din folderul companion și `<link rel="File-List">` din
+`<head>` reproduc formatul pe care Outlook îl generează singur. `<head>` e oricum
+eliminat la inserare, dar păstrarea lui menține fișierul identic cu ce ar fi
+produs Outlook.
+
+Banda e construită să dispară elegant dacă totuși nu ajunge:
 
 - fundalul GIF-ului este **exact** `#0a1628`, aceeași valoare ca `bgcolor`-ul
-  celulei care îl conține — starea blocată se contopește cu blocul bleumarin;
+  celulei care îl conține — în locul benzii rămâne bleumarin, nu o gaură;
 - `width` și `height` sunt declarate și ca atribut și în CSS, deci spațiul e
   rezervat înainte de încărcare și layout-ul nu sare;
-- `alt=""` — element decorativ: cititoarele de ecran îl sar, iar în starea blocată
-  nu apare text alternativ peste bleumarin;
+- `alt=""` — element decorativ: cititoarele de ecran îl sar, iar în starea
+  lipsă nu apare text alternativ peste bleumarin;
 - 11 KB și 14.224 px² față de peste 400 de caractere de text, deci raportul
   text/imagine rămâne departe de pragurile `HTML_IMAGE_RATIO_*` din SpamAssassin.
 
-Referințe externe în tot fișierul: **1 imagine + 2 `href`-uri** (site și hartă).
+Costul onest al metodei: mesajul crește cu 11 KB, iar gateway-urile foarte stricte
+scanează atașamentele inline. În practică semnăturile cu imagine inline sunt
+printre cele mai comune mesaje de pe internet.
 
 Varianta din `semnatura/varianta-fara-imagini/` este același design fără rândul
-benzii — acolo chiar nu există nicio resursă de descărcat.
+benzii și fără folder companion — acolo nu există absolut nicio imagine.
 
 ## 1b. Primul cadru al GIF-ului este un design în sine
 
@@ -141,7 +161,8 @@ orizontal pe mobil. 520 px încap peste tot și rămân lizibile citate de mai m
 
 | Element | Motiv |
 |---|---|
-| GIF-ul remote de 132 KB, 640×36, 48 cadre | Înlocuit cu unul de 11 KB, 508×28, cu fundal identic cu celula și cadrul 1 desenat separat |
+| GIF-ul remote de 132 KB, 640×36, 48 cadre | Înlocuit cu unul local de 11 KB, 508×28, atașat inline de Outlook, cu fundal identic cu celula și cadrul 1 desenat separat |
+| Dependența de hosting pe itistul.ro | Eliminată complet — nu mai există nimic de urcat sau de întreținut |
 | Butonul `OPEN ITISTUL.RO →` | Un buton CTA într-o semnătură citește ca reclamă și crește scorul de spam |
 | Sloganul din subsol | Redundant cu banda de discipline |
 | Etichetele `MOBILE` / `E-MAIL` / `ONLINE` / `HQ` | Conținutul se identifică singur; etichetele dublau înălțimea |

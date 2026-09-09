@@ -22,8 +22,13 @@ de SmartScreen sau dacă pur și simplu preferi să faci totul de mână.
 
 1. Închide Outlook complet.
 2. Apasă **Win+R**, scrie `%APPDATA%\Microsoft\Signatures` și Enter.
-3. Copiază acolo cele trei fișiere din `semnatura/`:
-   `Mihai Zamfir.htm`, `Mihai Zamfir.rtf`, `Mihai Zamfir.txt`.
+3. Copiază acolo cele trei fișiere din `semnatura/` **și folderul companion**:
+   `Mihai Zamfir.htm`, `Mihai Zamfir.rtf`, `Mihai Zamfir.txt` și folderul
+   `Mihai Zamfir_files\` cu tot ce e în el.
+
+   Folderul companion este obligatoriu: de acolo ia Outlook banda animată și o
+   atașează inline în fiecare mesaj. Fără el semnătura funcționează, dar în locul
+   benzii rămâne fundalul bleumarin.
 4. Clic-dreapta pe `Mihai Zamfir.htm` → **Properties** → bifează **Read-only** → OK.
    *(împiedică Outlook să rescrie fișierul prin serializatorul Word)*
 5. Deschide Outlook → **File → Options → Mail → Signatures…** și alege
@@ -33,7 +38,8 @@ de SmartScreen sau dacă pur și simplu preferi să faci totul de mână.
 
 ## New Outlook (Windows) și Outlook pe web (OWA)
 
-Aceste versiuni **nu citesc** `%APPDATA%\Microsoft\Signatures`. Semnătura se lipește:
+Aceste versiuni **nu citesc** `%APPDATA%\Microsoft\Signatures`. Semnătura se lipește
+din browser, iar imaginea este preluată și încărcată automat de client la lipire:
 
 1. Deschide `documentatie/previzualizare.html` în browser.
 2. Selectează semnătura din caseta „NOU" și **Ctrl+C**.

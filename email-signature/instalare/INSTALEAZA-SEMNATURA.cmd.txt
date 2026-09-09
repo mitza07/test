@@ -57,6 +57,7 @@ if exist "%DEST%\%NUME%.htm" (
   mkdir "%DEST%\_backup_ITISTUL" 2>nul
   mkdir "%DEST%\_backup_ITISTUL\%STAMP%" 2>nul
   copy /Y "%DEST%\%NUME%.*" "%DEST%\_backup_ITISTUL\%STAMP%\" >nul 2>&1
+  if exist "%DEST%\%NUME%_files" xcopy "%DEST%\%NUME%_files" "%DEST%\_backup_ITISTUL\%STAMP%\%NUME%_files\" /E /I /Y /Q >nul 2>&1
   echo   Semnatura veche salvata in: %DEST%\_backup_ITISTUL\%STAMP%
 )
 
@@ -66,6 +67,15 @@ attrib -R "%DEST%\%NUME%.htm" >nul 2>&1
 copy /Y "%SURSA%\%NUME%.htm" "%DEST%\" >nul || goto :fail
 copy /Y "%SURSA%\%NUME%.rtf" "%DEST%\" >nul || goto :fail
 copy /Y "%SURSA%\%NUME%.txt" "%DEST%\" >nul || goto :fail
+
+rem --- folderul companion "<nume>_files": Outlook citeste de aici imaginile
+rem     semnaturii si le ataseaza inline (CID) in fiecare mesaj trimis.
+rem     Fara el, in locul benzii ramane fundalul bleumarin.
+if exist "%SURSA%\%NUME%_files" (
+  if exist "%DEST%\%NUME%_files" rmdir /S /Q "%DEST%\%NUME%_files" 2>nul
+  xcopy "%SURSA%\%NUME%_files" "%DEST%\%NUME%_files\" /E /I /Y /Q >nul || goto :fail
+  echo   Banda animata copiata in: %DEST%\%NUME%_files
+)
 echo   Fisiere copiate in: %DEST%
 
 rem --- Outlook rescrie .htm prin serializatorul Word la fiecare Save din
@@ -89,11 +99,8 @@ echo   GATA. Varianta instalata: %VARIANTA%
 echo   Deschide Outlook si trimite-ti un e-mail de test.
 echo.
 if /I not "%~1"=="fara-imagini" (
-  echo   ATENTIE: banda animata se incarca de pe site. Daca nu ai urcat inca
-  echo   fisierul, urca UPLOAD-PE-SITE\email-signature\itistul-signal.gif si
-  echo   verifica in browser ca se deschide:
-  echo     https://www.itistul.ro/email-signature/itistul-signal.gif
-  echo   Pana atunci, in locul benzii ramane doar fundalul bleumarin.
+  echo   Banda animata este atasata inline in fiecare mesaj, direct de Outlook.
+  echo   Nu trebuie urcata nicaieri si nu se poate bloca de client.
   echo.
 )
 echo   Daca semnatura nu apare: Outlook ^> File ^> Options ^> Mail ^> Signatures

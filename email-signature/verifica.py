@@ -85,7 +85,9 @@ def check_fragment(path, allow_image=False):
         imgs = re.findall(r"<img [^>]*>", t)
         ck(len(imgs) == 1, f"{name}: se asteapta exact o imagine, gasite {len(imgs)}")
         for im in imgs:
-            ck('src="https://' in im, f"{name}: <img> fara sursa HTTPS")
+            ck('src="Mihai%20Zamfir_files/' in im,
+               f"{name}: <img> nu trimite la folderul companion al semnaturii")
+            ck("http" not in im, f"{name}: <img> are inca o sursa remote")
             ck('alt="' in im, f"{name}: <img> fara atribut alt")
             ck('border="0"' in im and "display:block" in im,
                f"{name}: <img> fara border=0 / display:block")
@@ -138,7 +140,17 @@ for p in ["instalare/INSTALEAZA-SEMNATURA.cmd", "instalare/DEZINSTALEAZA.cmd"]:
     ck(not re.search(rb"powershell(\.exe)?\s+[-/]", d.lower()),
        f"{p}: invoca PowerShell")
 
-gif = os.path.join(SIG, "itistul-signal.gif")
+FILES = os.path.join(SIG, "Mihai Zamfir_files")
+ck(os.path.isdir(FILES), "lipseste folderul companion 'Mihai Zamfir_files'")
+ck(os.path.isfile(os.path.join(FILES, "filelist.xml")),
+   "lipseste filelist.xml din folderul companion")
+htm_main = open(os.path.join(SIG, "Mihai Zamfir.htm"), "rb").read()
+ck(b'rel="File-List"' in htm_main, "Mihai Zamfir.htm: lipseste <link rel=File-List>")
+htm_static = open(os.path.join(SIG, "varianta-fara-imagini", "Mihai Zamfir.htm"), "rb").read()
+ck(b"File-List" not in htm_static,
+   "varianta-fara-imagini: are <link rel=File-List> fara folder companion")
+ck(b"_files" not in htm_static, "varianta-fara-imagini: refera folderul companion")
+gif = os.path.join(FILES, "itistul-signal.gif")
 if os.path.exists(gif):
     n = os.path.getsize(gif)
     ck(n < 20000, f"GIF: {n} B, peste pragul de 20 KB")
@@ -151,7 +163,7 @@ if os.path.exists(gif):
     frag = open(os.path.join(SIG, "fragment.html"), encoding="utf-8").read()
     ck(f'width="{gw}"' in frag and f'height="{gh}"' in frag,
        "GIF: dimensiunile reale nu corespund cu cele declarate in HTML")
-    print(f"  semnatura/itistul-signal.gif: {n} B")
+    print(f"  semnatura/Mihai Zamfir_files/itistul-signal.gif: {n} B")
 
 print(f"\n{checks} verificari, {len(fails)} esecuri")
 for f in fails: print("  ESEC:", f)
