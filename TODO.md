@@ -84,13 +84,22 @@ Aici e toata valoarea. Daca astea sunt corecte, restul e munca obisnuita.
 
 ## 4. Integrarea ANAF
 
-- [ ] `app/core/anaf/oauth.py` — flux authorization code, stocare criptata a tokenului,
-      refresh automat, alerta la `refresh_expires_at - 14 zile`.
-- [ ] `app/core/anaf/efactura.py` — upload, stareMesaj, descarcare, listaMesajeFactura.
-- [ ] Rate limiting propriu: max 100 `stareMesaj`/zi/index, max 10 `descarcare`/zi/id.
-- [ ] Stare `unknown` la timeout. Fara retrimitere automata.
-- [ ] `download_deadline = sent_at + 60 zile`, cu alerta la 45.
-- [ ] Testeaza pe `/test/` inainte de orice apel pe `/prod/`.
+- [x] `app/core/anaf/oauth.py` — flux authorization code, stocare criptata a tokenului
+      (`app/core/crypto.py`, Fernet), refresh automat cu rotatia refresh tokenului,
+      `expiring_soon()` pentru alerta la `refresh_expires_at - 14 zile`.
+- [x] `app/core/anaf/efactura.py` — upload, stareMesaj, descarcare, listaMesajeFactura.
+- [x] Rate limiting propriu: max 100 `stareMesaj`/zi/index, max 10 `descarcare`/zi/id.
+      Contoarele stau in `efactura_job`, nu in memoria procesului: workerii sunt
+      mai multi si repornesc.
+- [x] Stare `unknown` la timeout. Fara retrimitere automata. `needs_resend_decision()`
+      scoate lista care cere decizie de om; se lamureste cu `list_messages`.
+- [x] `download_deadline = sent_at + 60 zile`, cu alerta la 45
+      (`download_window_alerts`). Plus `transmission_overdue()` pentru termenul legal.
+- [ ] **Workerii care cheama toate astea.** Modulele sunt scrise si testate, dar
+      nimic nu le programeaza inca: `app/workers/` e gol. Coada RQ, jobul de poll,
+      jobul de descarcare, cele trei alerte zilnice.
+- [ ] **Testeaza pe `/test/` inainte de orice apel pe `/prod/`.** Cere certificatul
+      pe token USB si o autorizare in browser — nu se poate automatiza.
 
 ## 5. PDF si arhivare
 
