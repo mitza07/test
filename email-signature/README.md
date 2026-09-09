@@ -1,8 +1,58 @@
-# Semnătură e-mail — Mihai Zamfir / ITISTUL.RO
+# Semnături e-mail — Mihai Zamfir / ITISTUL.RO
 
-Semnătură Outlook grafică și animată, **fără nimic de urcat pe site**.
+**Două** semnături Outlook grafice și animate, ambele **fără nimic de urcat pe site**.
+Instalatorul le pune pe amândouă; le comuți din Outlook la compunerea unui mesaj
+(`Message > Signature`).
 
 ![previzualizare](documentatie/previzualizare.png)
+
+| | „Mihai Zamfir" | „Mihai Zamfir - Clasic" |
+|---|---|---|
+| Design | compact, reproiectat | **designul tău original** |
+| Lățime | 560 px | 680 px |
+| Sursă HTML | 8,1 KB | 14,8 KB |
+| Bandă animată | 508×28, 11 KB | 638×26, 10 KB |
+| Implicită | da | `INSTALEAZA-SEMNATURA.cmd clasic` |
+
+Ambele au aceleași protecții, aceleași diacritice ca entități numerice, același
+mecanism de atașare inline a benzii. Diferă doar compoziția.
+
+## Designul clasic — ce s-a păstrat și ce s-a reparat
+
+Compoziția, paleta, mărimile și textele sunt **exact** cele din pachetul original:
+blocul bleumarin cu bara albastră de 8 px, plăcuța logo cu cele două dale, coloanele
+`MOBILE`/`E-MAIL` și `ONLINE`/`HQ`, banda animată, sloganul din subsol și butonul
+`OPEN ITISTUL.RO →`.
+
+S-au schimbat doar lucrurile care îl stricau la destinatar:
+
+| Ce era | De ce strica | Ce s-a făcut |
+|---|---|---|
+| 4 tabele suprapuse la nivel superior | Word inserează un paragraf gol `MsoNormal` între două tabele adiacente — de aici spațiile inegale între benzi | un singur tabel cu rânduri |
+| 13 `<div>` de layout | Word nu aplică fiabil `padding`/`margin` pe `<div>` | `<td>` și `<p style="margin:0;padding:0">` |
+| `width="50%"` + padding pe aceeași celulă | modelul de casetă se rezolvă diferit între clienți | coloane în pixeli, care însumează exact 678 |
+| GIF remote de 132 KB, 640×36 | blocat implicit; cadru gol la blocare | 638×26, 10 KB, atașat inline, fundal `#f8fbfd` identic cu celula |
+| `font-weight:800` | nesuportat de motorul Word | 700 |
+| `font-size:10.5px` | dimensiunile fracționare se rotunjesc imprevizibil | 11 px |
+| diacritice brute UTF-8 | Outlook rescrie fișierul și le poate strica | entități numerice |
+| linkuri fără `<span>` | stilul de caracter Hyperlink din Word rescrie fontul și culoarea | `<a><span>` cu formatare repetată |
+
+### Ce trebuie să știi înainte să alegi clasica
+
+- **E de 1,8× mai grea** (14,8 KB față de 8,1 KB). Într-un fir citat de 4–5 ori se
+  apropie de pragul de 102 KB la care Gmail taie mesajul cu „[Message clipped]".
+- **680 px** depășește panoul de citire la o fereastră Outlook obișnuită și se
+  micșorează pe telefoanele înguste.
+- Etichetele `MOBILE`/`E-MAIL`/`ONLINE`/`HQ` folosesc `#98a2b3` la 9 px, adică un
+  contrast de **2,58:1** — sub pragul WCAG AA de 4,5:1. Am păstrat culoarea exact
+  cum era în pachetul tău. Dacă vrei să o repari, înlocuiește `#98a2b3` cu `#7d8899`
+  în `semnatura-clasic/` și rulează `python3 verifica.py`.
+- Butonul `OPEN ITISTUL.RO →` este un element de tip reclamă într-o semnătură și
+  adaugă puțin la scorul de spam. E linkul curat către site, fără parametri de
+  urmărire, deci efectul e mic — dar există.
+
+Dacă niciuna dintre observațiile astea nu te deranjează, folosește clasica liniștit.
+Dacă trimiți des în fire lungi, pune compacta implicită și clasica pe mesajele noi.
 
 ---
 
@@ -14,7 +64,11 @@ Banda animată stă local, în folderul companion al semnăturii:
 %APPDATA%\Microsoft\Signatures\
     Mihai Zamfir.htm
     Mihai Zamfir_files\
-        itistul-signal.gif      ← 11 KB
+        itistul-signal.gif              ← 11 KB
+        filelist.xml
+    Mihai Zamfir - Clasic.htm
+    Mihai Zamfir - Clasic_files\
+        itistul-pulse-clasic.gif        ← 10 KB
         filelist.xml
 ```
 
@@ -93,8 +147,16 @@ fără drepturi de administrator. Scrie doar în profilul tău (`HKCU` și `%APP
 - dezactivează **semnăturile roaming** Microsoft 365, care altfel suprascriu din
   cloud fișierul local.
 
-Variantă fără nicio imagine: `INSTALEAZA-SEMNATURA.cmd fara-imagini`
-Anulare completă: `instalare/DEZINSTALEAZA.cmd`
+Argumente:
+
+| Comandă | Efect |
+|---|---|
+| `INSTALEAZA-SEMNATURA.cmd` | ambele semnături, implicită cea compactă |
+| `INSTALEAZA-SEMNATURA.cmd clasic` | ambele, implicită cea clasică |
+| `INSTALEAZA-SEMNATURA.cmd fara-imagini` | ambele, variantele fără bandă |
+| `INSTALEAZA-SEMNATURA.cmd clasic fara-imagini` | se pot combina |
+
+Anulare completă: `instalare/DEZINSTALEAZA.cmd` (elimină ambele).
 
 > Ca să poți edita din nou semnătura din Outlook:
 > `attrib -R "%APPDATA%\Microsoft\Signatures\Mihai Zamfir.htm"`
@@ -147,8 +209,10 @@ email-signature/
 │  ├─ INSTALARE-MANUALA.md
 │  ├─ DE-CE-ASA.md              ← deciziile tehnice, cu motivul fiecăreia
 │  └─ previzualizare.html       ← deschide în browser
-├─ genereaza-gif.py             ← regenerează banda (culori, viteză, densitate)
-└─ verifica.py                  ← 318 verificări pe pachet
+├─ semnatura-clasic/            ← designul original, aceeași structură
+├─ genereaza-gif.py             ← regenerează banda compactă
+├─ genereaza-gif-clasic.py      ← regenerează banda clasică
+└─ verifica.py                  ← 768 verificări, pe ambele semnături
 ```
 
 ## După orice modificare

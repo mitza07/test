@@ -1,5 +1,13 @@
 # Instalare manuală — fără niciun script
 
+Pachetul conține **două** semnături. Repetă pașii de mai jos pentru fiecare:
+
+- `Mihai Zamfir` — din folderul `semnatura/`
+- `Mihai Zamfir - Clasic` — din folderul `semnatura-clasic/`
+
+Fiecare are folderul ei companion (`<nume>_files`), care trebuie copiat odată cu
+fișierele.
+
 Folosește această cale dacă `.cmd`-ul este blocat de politica firmei, de Defender,
 de SmartScreen sau dacă pur și simplu preferi să faci totul de mână.
 

@@ -58,8 +58,24 @@ def check_fragment(path, allow_image=False):
             m2 = re.search(rf'{attr}="(\d+)"', c)
             if m2: ck(f"{prop}:{m2.group(1)}px;" in c,
                       f"{name}: {attr}={m2.group(1)} nedeclarat si in CSS")
-    ck(len(re.findall(r"<td[^>]*>\s*<p ", t)) == len(tds) - 1,
-       f"{name}: nu toate celulele cu continut au <p> de fixare")
+    def _inner_cells(html):
+        """Perechi (atribute, continut) pentru fiecare <td>, gestionand imbricarea."""
+        out, i = [], 0
+        while True:
+            m = re.compile(r"<td([^>]*)>").search(html, i)
+            if not m: return out
+            depth, j = 1, m.end()
+            for tag in re.finditer(r"</?td\b[^>]*>", html[m.end():]):
+                depth += 1 if not tag.group(0).startswith("</") else -1
+                if depth == 0:
+                    j = m.end() + tag.start(); break
+            out.append((m.group(1), html[m.end():j]))
+            i = j + 1
+    for attrs, inner in _inner_cells(t):
+        bare = re.sub(r"<table.*?</table>", "", inner, flags=re.S)   # ignora tabelele imbricate
+        bare = re.sub(r"<p\b.*?</p>", "", bare, flags=re.S)         # ignora ce e deja fixat
+        ck(not re.search(r"[A-Za-z0-9]", re.sub(r"<[^>]+>", "", bare)),
+           f"{name}: text nefixat intr-un <td> (lipseste <p style=margin:0;padding:0>)")
     ck(all(s.startswith('<p style="margin:0;padding:0;') for s in re.findall(r"<p [^>]*>", t)),
        f"{name}: exista <p> fara margin:0;padding:0")
 
@@ -68,13 +84,15 @@ def check_fragment(path, allow_image=False):
         ck(a.count("font-family:") >= 2, f"{name}: <a> nu repeta font-family pe <span>")
 
     ents = set(int(x) for x in re.findall(r"&#(\d+);", t))
-    ck(ents <= {160, 183, 194, 226, 206, 238, 258, 259, 536, 537, 538, 539},
-       f"{name}: entitati neasteptate {sorted(ents - {160,183,194,226,206,238,258,259,536,537,538,539})}")
+    ck(ents <= {160, 183, 194, 226, 206, 238, 258, 259, 536, 537, 538, 539, 8226, 8594},
+       f"{name}: entitati neasteptate "
+       f"{sorted(ents - {160,183,194,226,206,238,258,259,536,537,538,539,8226,8594})}")
     dec = re.sub(r"&#(\d+);", lambda m: chr(int(m.group(1))), t)
     for want in ["Mihai Zamfir", "Consultant IT", "ITISTUL.RO",
                  "MENTENANȚĂ ECHIPAMENTE IT", "INFRASTRUCTURĂ", "SECURITY",
                  "+40 742 932 686", "mihai@itistul.ro", "www.itistul.ro",
-                 "Strada Samuil Vulcan, nr. 12D, et. 1, biroul 15, București, România"]:
+                 "Strada Samuil Vulcan, nr. 12D, et. 1, biroul 15",
+                 "București, România"]:
         ck(want in dec, f"{name}: lipseste continutul {want!r}")
     for h in ["tel:+40742932686", "mailto:mihai@itistul.ro", "https://www.itistul.ro/"]:
         ck(h in t, f"{name}: lipseste href {h}")
@@ -85,7 +103,7 @@ def check_fragment(path, allow_image=False):
         imgs = re.findall(r"<img [^>]*>", t)
         ck(len(imgs) == 1, f"{name}: se asteapta exact o imagine, gasite {len(imgs)}")
         for im in imgs:
-            ck('src="Mihai%20Zamfir_files/' in im,
+            ck('_files/' in im and "%20" in im,
                f"{name}: <img> nu trimite la folderul companion al semnaturii")
             ck("http" not in im, f"{name}: <img> are inca o sursa remote")
             ck('alt="' in im, f"{name}: <img> fara atribut alt")
@@ -101,8 +119,23 @@ def check_fragment(path, allow_image=False):
         ck(bool(cell), f"{name}: <img> nu e intr-un <p> fixat")
         if cell:
             bg = re.search(r'bgcolor="([^"]+)"', cell.group(1))
-            ck(bool(bg) and bg.group(1).lower() == "#0a1628",
-               f"{name}: celula benzii nu are fundalul navy al GIF-ului")
+            ck(bool(bg), f"{name}: celula benzii nu declara bgcolor")
+            if bg:
+                import struct as _s
+                gp = os.path.join(os.path.dirname(path),
+                                  re.search(r'src="([^"]+)"', im).group(1)
+                                  .replace("%20", " "))
+                ck(os.path.isfile(gp), f"{name}: GIF-ul referit nu exista: {gp}")
+                if os.path.isfile(gp):
+                    g = open(gp, "rb").read()
+                    # prima intrare din tabela globala de culori = fundalul GIF-ului
+                    r, gg, b = g[13], g[14], g[15]
+                    want = "#%02x%02x%02x" % (r, gg, b)
+                    ck(want == bg.group(1).lower(),
+                       f"{name}: fundalul GIF-ului {want} != bgcolor-ul celulei {bg.group(1)}")
+                    gw, gh = _s.unpack("<HH", g[6:10])
+                    ck(f'width="{gw}"' in im and f'height="{gh}"' in im,
+                       f"{name}: GIF-ul e {gw}x{gh}, HTML-ul declara altceva")
     ck("+40&#160;742&#160;932&#160;686" in t, f"{name}: telefonul nu e lipit cu nbsp")
     print(f"  {name}: {len(raw)} B, {len(tds)} celule")
 
@@ -116,10 +149,25 @@ def check_htm(path):
     print(f"  {name}: {len(d)} B")
 
 print("Verificare semnatura ITISTUL.RO\n")
-check_fragment(os.path.join(SIG, "fragment.html"), allow_image=True)
-check_htm(os.path.join(SIG, "Mihai Zamfir.htm"))
-check_fragment(os.path.join(SIG, "varianta-fara-imagini", "fragment.html"))
-check_htm(os.path.join(SIG, "varianta-fara-imagini", "Mihai Zamfir.htm"))
+CLASIC = os.path.join(BASE, "semnatura-clasic")
+for root, nume in ((SIG, "Mihai Zamfir"), (CLASIC, "Mihai Zamfir - Clasic")):
+    check_fragment(os.path.join(root, "fragment.html"), allow_image=True)
+    check_htm(os.path.join(root, f"{nume}.htm"))
+    check_fragment(os.path.join(root, "varianta-fara-imagini", "fragment.html"))
+    check_htm(os.path.join(root, "varianta-fara-imagini", f"{nume}.htm"))
+    files = os.path.join(root, f"{nume}_files")
+    ck(os.path.isdir(files), f"{nume}: lipseste folderul companion")
+    ck(os.path.isfile(os.path.join(files, "filelist.xml")),
+       f"{nume}: lipseste filelist.xml")
+    hm = open(os.path.join(root, f"{nume}.htm"), "rb").read()
+    ck(b'rel="File-List"' in hm, f"{nume}.htm: lipseste <link rel=File-List>")
+    hs = open(os.path.join(root, "varianta-fara-imagini", f"{nume}.htm"), "rb").read()
+    ck(b"File-List" not in hs and b"_files" not in hs,
+       f"{nume} fara-imagini: refera folderul companion inexistent")
+    for ext in ("rtf", "txt"):
+        for sub in ("", "varianta-fara-imagini"):
+            ck(os.path.isfile(os.path.join(root, sub, f"{nume}.{ext}")),
+               f"{nume}: lipseste {sub or '.'}/{nume}.{ext}")
 
 rtf = open(os.path.join(SIG, "Mihai Zamfir.rtf"), "rb").read()
 ck(rtf.startswith(b"{\\rtf1"), "RTF: nu incepe cu {\\rtf1 (BOM?)")
@@ -140,17 +188,7 @@ for p in ["instalare/INSTALEAZA-SEMNATURA.cmd", "instalare/DEZINSTALEAZA.cmd"]:
     ck(not re.search(rb"powershell(\.exe)?\s+[-/]", d.lower()),
        f"{p}: invoca PowerShell")
 
-FILES = os.path.join(SIG, "Mihai Zamfir_files")
-ck(os.path.isdir(FILES), "lipseste folderul companion 'Mihai Zamfir_files'")
-ck(os.path.isfile(os.path.join(FILES, "filelist.xml")),
-   "lipseste filelist.xml din folderul companion")
-htm_main = open(os.path.join(SIG, "Mihai Zamfir.htm"), "rb").read()
-ck(b'rel="File-List"' in htm_main, "Mihai Zamfir.htm: lipseste <link rel=File-List>")
-htm_static = open(os.path.join(SIG, "varianta-fara-imagini", "Mihai Zamfir.htm"), "rb").read()
-ck(b"File-List" not in htm_static,
-   "varianta-fara-imagini: are <link rel=File-List> fara folder companion")
-ck(b"_files" not in htm_static, "varianta-fara-imagini: refera folderul companion")
-gif = os.path.join(FILES, "itistul-signal.gif")
+gif = os.path.join(SIG, "Mihai Zamfir_files", "itistul-signal.gif")
 if os.path.exists(gif):
     n = os.path.getsize(gif)
     ck(n < 20000, f"GIF: {n} B, peste pragul de 20 KB")
@@ -160,10 +198,15 @@ if os.path.exists(gif):
     import struct
     gw, gh = struct.unpack("<HH", g[6:10])
     ck((gw, gh) == (508, 28), f"GIF: {gw}x{gh}, se astepta 508x28")
-    frag = open(os.path.join(SIG, "fragment.html"), encoding="utf-8").read()
-    ck(f'width="{gw}"' in frag and f'height="{gh}"' in frag,
-       "GIF: dimensiunile reale nu corespund cu cele declarate in HTML")
     print(f"  semnatura/Mihai Zamfir_files/itistul-signal.gif: {n} B")
+g2 = os.path.join(CLASIC, "Mihai Zamfir - Clasic_files", "itistul-pulse-clasic.gif")
+if os.path.exists(g2):
+    n2 = os.path.getsize(g2)
+    ck(n2 < 20000, f"GIF clasic: {n2} B, peste pragul de 20 KB")
+    d2 = open(g2, "rb").read()
+    ck(d2[:6] in (b"GIF89a", b"GIF87a"), "GIF clasic: antet invalid")
+    ck(b"NETSCAPE2.0" in d2, "GIF clasic: nu are extensia de buclare")
+    print(f"  semnatura-clasic/Mihai Zamfir - Clasic_files/itistul-pulse-clasic.gif: {n2} B")
 
 print(f"\n{checks} verificari, {len(fails)} esecuri")
 for f in fails: print("  ESEC:", f)

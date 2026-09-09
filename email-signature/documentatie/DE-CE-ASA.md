@@ -1,5 +1,10 @@
 # De ce arată codul așa
 
+> Regulile de mai jos se aplică **ambelor** semnături: `semnatura/` (compactă) și
+> `semnatura-clasic/` (designul original). Diferă compoziția, nu tehnica.
+> Ce s-a schimbat concret în designul clasic față de pachetul original, și de ce,
+> este în tabelul din `README.md`.
+
 Fiecare decizie de mai jos are un motiv concret. Nu modifica fișierul fără să citești
 secțiunea corespunzătoare — majoritatea „simplificărilor" evidente reintroduc un bug
 care se vede doar pe ecranul destinatarului, niciodată pe al tău.

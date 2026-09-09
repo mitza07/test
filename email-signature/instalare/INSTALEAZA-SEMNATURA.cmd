@@ -1,32 +1,40 @@
 @echo off
 setlocal EnableExtensions
-title Instalare semnatura ITISTUL.RO
+title Instalare semnaturi ITISTUL.RO
 
 rem ---------------------------------------------------------------
-rem  Instalator semnatura Outlook - ITISTUL.RO / Mihai Zamfir
+rem  Instalator semnaturi Outlook - ITISTUL.RO / Mihai Zamfir
+rem
+rem  Instaleaza AMBELE semnaturi:
+rem    "Mihai Zamfir"           - designul compact
+rem    "Mihai Zamfir - Clasic"  - designul original, protejat
+rem
+rem  Implicita ramane cea compacta. Pentru ca implicita sa fie cea
+rem  clasica, ruleaza:  INSTALEAZA-SEMNATURA.cmd clasic
+rem  Pentru variantele fara nicio imagine, adauga:  fara-imagini
+rem    ex.  INSTALEAZA-SEMNATURA.cmd clasic fara-imagini
+rem
 rem  Batch pur: fara PowerShell, fara ExecutionPolicy, fara drepturi
 rem  de administrator. Scrie doar in profilul utilizatorului (HKCU).
 rem ---------------------------------------------------------------
 
-set "NUME=Mihai Zamfir"
-set "SURSA=%~dp0..\semnatura"
+set "ROOT=%~dp0.."
 set "DEST=%APPDATA%\Microsoft\Signatures"
+set "SUB="
+set "IMPLICITA=Mihai Zamfir"
+
+for %%A in (%*) do (
+  if /I "%%~A"=="fara-imagini" set "SUB=\varianta-fara-imagini"
+  if /I "%%~A"=="clasic"       set "IMPLICITA=Mihai Zamfir - Clasic"
+)
 
 echo.
-echo   ITISTUL.RO - instalare semnatura Outlook
+echo   ITISTUL.RO - instalare semnaturi Outlook
 echo   ========================================
 echo.
 
-rem --- implicit se instaleaza varianta grafica animata;
-rem     "INSTALEAZA-SEMNATURA.cmd fara-imagini" instaleaza varianta statica
-set "VARIANTA=animata"
-if /I "%~1"=="fara-imagini" (
-  set "SURSA=%~dp0..\semnatura\varianta-fara-imagini"
-  set "VARIANTA=fara imagini"
-)
-
-if not exist "%SURSA%\%NUME%.htm" (
-  echo   [EROARE] Nu gasesc "%SURSA%\%NUME%.htm".
+if not exist "%ROOT%\semnatura%SUB%\Mihai Zamfir.htm" (
+  echo   [EROARE] Nu gasesc fisierele semnaturii.
   echo            Ruleaza acest fisier din folderul dezarhivat, nu din interiorul ZIP-ului.
   echo.
   pause
@@ -50,44 +58,18 @@ if not errorlevel 1 (
 
 if not exist "%DEST%" mkdir "%DEST%" 2>nul
 
-rem --- backup, daca exista deja o semnatura cu acest nume ---
 rem  %DATE%/%TIME% depind de locale si pot contine caractere invalide in cai
 set "STAMP=backup-%RANDOM%"
-if exist "%DEST%\%NUME%.htm" (
-  mkdir "%DEST%\_backup_ITISTUL" 2>nul
-  mkdir "%DEST%\_backup_ITISTUL\%STAMP%" 2>nul
-  copy /Y "%DEST%\%NUME%.*" "%DEST%\_backup_ITISTUL\%STAMP%\" >nul 2>&1
-  if exist "%DEST%\%NUME%_files" xcopy "%DEST%\%NUME%_files" "%DEST%\_backup_ITISTUL\%STAMP%\%NUME%_files\" /E /I /Y /Q >nul 2>&1
-  echo   Semnatura veche salvata in: %DEST%\_backup_ITISTUL\%STAMP%
-)
+set "BK=%DEST%\_backup_ITISTUL\%STAMP%"
 
-rem --- fisierele trebuie sa fie scriibile inainte de copiere ---
-attrib -R "%DEST%\%NUME%.htm" >nul 2>&1
-
-copy /Y "%SURSA%\%NUME%.htm" "%DEST%\" >nul || goto :fail
-copy /Y "%SURSA%\%NUME%.rtf" "%DEST%\" >nul || goto :fail
-copy /Y "%SURSA%\%NUME%.txt" "%DEST%\" >nul || goto :fail
-
-rem --- folderul companion "<nume>_files": Outlook citeste de aici imaginile
-rem     semnaturii si le ataseaza inline (CID) in fiecare mesaj trimis.
-rem     Fara el, in locul benzii ramane fundalul bleumarin.
-if exist "%SURSA%\%NUME%_files" (
-  if exist "%DEST%\%NUME%_files" rmdir /S /Q "%DEST%\%NUME%_files" 2>nul
-  xcopy "%SURSA%\%NUME%_files" "%DEST%\%NUME%_files\" /E /I /Y /Q >nul || goto :fail
-  echo   Banda animata copiata in: %DEST%\%NUME%_files
-)
-echo   Fisiere copiate in: %DEST%
-
-rem --- Outlook rescrie .htm prin serializatorul Word la fiecare Save din
-rem     dialogul Signatures, ceea ce strica formatarea. Read-only opreste asta.
-rem     Se anuleaza cu:  attrib -R "%%APPDATA%%\Microsoft\Signatures\%NUME%.htm"
-attrib +R "%DEST%\%NUME%.htm" >nul 2>&1
+call :instaleaza "Mihai Zamfir"          "%ROOT%\semnatura%SUB%"        || goto :fail
+call :instaleaza "Mihai Zamfir - Clasic" "%ROOT%\semnatura-clasic%SUB%" || goto :fail
 
 rem --- semnatura implicita pentru mesaje noi si pentru raspunsuri ---
 set "MS=HKCU\Software\Microsoft\Office\16.0\Common\MailSettings"
-reg add "%MS%" /v NewSignature   /t REG_EXPAND_SZ /d "%NUME%" /f >nul 2>&1
-reg add "%MS%" /v ReplySignature /t REG_EXPAND_SZ /d "%NUME%" /f >nul 2>&1
-echo   Setata ca semnatura implicita (mesaje noi + raspunsuri).
+reg add "%MS%" /v NewSignature   /t REG_EXPAND_SZ /d "%IMPLICITA%" /f >nul 2>&1
+reg add "%MS%" /v ReplySignature /t REG_EXPAND_SZ /d "%IMPLICITA%" /f >nul 2>&1
+echo   Implicita pentru mesaje noi si raspunsuri: "%IMPLICITA%"
 
 rem --- semnaturile roaming (Microsoft 365) suprascriu fisierele locale ---
 set "OS16=HKCU\Software\Microsoft\Office\16.0\Outlook\Setup"
@@ -95,23 +77,55 @@ reg add "%OS16%" /v DisableRoamingSignaturesTemporaryToggle /t REG_DWORD /d 1 /f
 echo   Semnaturi roaming dezactivate (altfel cloud-ul suprascrie fisierul local).
 
 echo.
-echo   GATA. Varianta instalata: %VARIANTA%
-echo   Deschide Outlook si trimite-ti un e-mail de test.
+echo   GATA. Ambele semnaturi sunt instalate.
+echo   Le poti comuta oricand din Outlook, la compunerea unui mesaj:
+echo     Message ^> Signature ^> alegi semnatura.
 echo.
-if /I not "%~1"=="fara-imagini" (
+if not defined SUB (
   echo   Banda animata este atasata inline in fiecare mesaj, direct de Outlook.
   echo   Nu trebuie urcata nicaieri si nu se poate bloca de client.
   echo.
 )
-echo   Daca semnatura nu apare: Outlook ^> File ^> Options ^> Mail ^> Signatures
-echo   si alege "%NUME%" la "New messages" si "Replies/forwards".
-echo.
 pause
+exit /b 0
+
+rem ---------------------------------------------------------------
+:instaleaza
+rem  %~1 = numele semnaturii, %~2 = folderul sursa
+set "N=%~1"
+set "S=%~2"
+if not exist "%S%\%N%.htm" ( echo   [EROARE] Lipseste "%S%\%N%.htm" & exit /b 1 )
+
+if exist "%DEST%\%N%.htm" (
+  mkdir "%BK%" 2>nul
+  copy /Y "%DEST%\%N%.*" "%BK%\" >nul 2>&1
+  if exist "%DEST%\%N%_files" xcopy "%DEST%\%N%_files" "%BK%\%N%_files\" /E /I /Y /Q >nul 2>&1
+)
+
+rem  fisierele trebuie sa fie scriibile inainte de copiere
+attrib -R "%DEST%\%N%.htm" >nul 2>&1
+
+copy /Y "%S%\%N%.htm" "%DEST%\" >nul || exit /b 1
+copy /Y "%S%\%N%.rtf" "%DEST%\" >nul || exit /b 1
+copy /Y "%S%\%N%.txt" "%DEST%\" >nul || exit /b 1
+
+rem  folderul companion "<nume>_files": Outlook citeste de aici imaginile
+rem  semnaturii si le ataseaza inline (CID) in fiecare mesaj trimis.
+if exist "%DEST%\%N%_files" rmdir /S /Q "%DEST%\%N%_files" 2>nul
+if exist "%S%\%N%_files" (
+  xcopy "%S%\%N%_files" "%DEST%\%N%_files\" /E /I /Y /Q >nul || exit /b 1
+)
+
+rem  Outlook rescrie .htm prin serializatorul Word la fiecare Save din dialogul
+rem  Signatures, ceea ce strica formatarea. Read-only opreste asta.
+rem  Se anuleaza cu:  attrib -R "%%APPDATA%%\Microsoft\Signatures\<nume>.htm"
+attrib +R "%DEST%\%N%.htm" >nul 2>&1
+echo   Instalata: "%N%"
 exit /b 0
 
 :fail
 echo.
-echo   [EROARE] Copierea a esuat. Verifica daca Outlook este inchis.
+echo   [EROARE] Instalarea a esuat. Verifica daca Outlook este inchis.
 echo.
 pause
 exit /b 1
