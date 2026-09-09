@@ -95,9 +95,12 @@ Aici e toata valoarea. Daca astea sunt corecte, restul e munca obisnuita.
       scoate lista care cere decizie de om; se lamureste cu `list_messages`.
 - [x] `download_deadline = sent_at + 60 zile`, cu alerta la 45
       (`download_window_alerts`). Plus `transmission_overdue()` pentru termenul legal.
-- [ ] **Workerii care cheama toate astea.** Modulele sunt scrise si testate, dar
-      nimic nu le programeaza inca: `app/workers/` e gol. Coada RQ, jobul de poll,
-      jobul de descarcare, cele trei alerte zilnice.
+- [x] **Workerii care cheama toate astea.** `app/workers/`: cozile RQ (`queues.py`),
+      joburile SPV (`spv.py`), alertele (`alerts.py`) si programatorul
+      (`scheduler.py` — exact ce porneste serviciul `scheduler` din
+      docker-compose.prod.yml, care pana acum nu exista).
+- [x] `app/db.py` — engine, `tenant_session()` care fixeaza firma pe fiecare
+      tranzactie, si verificarea RLS la pornire: refuza in prod, avertizeaza in dev.
 - [ ] **Testeaza pe `/test/` inainte de orice apel pe `/prod/`.** Cere certificatul
       pe token USB si o autorizare in browser — nu se poate automatiza.
 
