@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.api import clients, documents, payments, products, series
 from app.config import get_settings
 
 
@@ -16,6 +17,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="facturare", lifespan=lifespan)
+
+for module in (clients, products, series, documents, payments):
+    app.include_router(module.router)
 
 
 @app.get("/health")

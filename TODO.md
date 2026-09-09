@@ -122,7 +122,7 @@ Aici e toata valoarea. Daca astea sunt corecte, restul e munca obisnuita.
 
 ## 6. API si frontend
 
-- [ ] Endpointuri REST pentru documente, clienti, produse, serii, incasari.
+- [x] Endpointuri REST pentru documente, clienti, produse, serii, incasari.
 - [ ] Editor: grila operabila din tastatura. Tab, Enter linie noua, Ctrl+S ciorna,
       Ctrl+Enter verificare (NU emitere directa).
 - [ ] Lista cu trei coloane de stare separate.
