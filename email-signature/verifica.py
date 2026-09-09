@@ -208,6 +208,51 @@ if os.path.exists(g2):
     ck(b"NETSCAPE2.0" in d2, "GIF clasic: nu are extensia de buclare")
     print(f"  semnatura-clasic/Mihai Zamfir - Clasic_files/itistul-pulse-clasic.gif: {n2} B")
 
+# --- instalatorul: fiecare cale pe care o construieste trebuie sa existe ---
+# Scriptul ruleaza pe masina utilizatorului, unde nu putem interveni. O cale
+# gresita = instalare esuata acolo, fara diagnostic.
+inst = open(os.path.join(BASE, "instalare", "INSTALEAZA-SEMNATURA.cmd"),
+            encoding="ascii").read()
+SEMNATURI = [("semnatura", "Mihai Zamfir"), ("semnatura-clasic", "Mihai Zamfir - Clasic")]
+for arg_sub, sub in [("(fara argument)", ""), ("fara-imagini", "varianta-fara-imagini")]:
+    for folder, nume in SEMNATURI:
+        d = os.path.join(BASE, folder, sub)
+        for ext in ("htm", "rtf", "txt"):
+            f = os.path.join(d, f"{nume}.{ext}")
+            ck(os.path.isfile(f), f"instalator [{arg_sub}]: lipseste {folder}/{sub}/{nume}.{ext}")
+        comp = os.path.join(d, f"{nume}_files")
+        if sub:
+            ck(not os.path.exists(comp),
+               f"instalator [fara-imagini]: {folder}/{sub} nu ar trebui sa aiba folder companion")
+        else:
+            ck(os.path.isdir(comp), f"instalator: lipseste {folder}/{nume}_files")
+# numele semnaturilor din script trebuie sa fie exact cele de pe disc
+for folder, nume in SEMNATURI:
+    ck(f'"{nume}"' in inst, f"instalator: nu instaleaza semnatura {nume!r}")
+    ck(f"\\{folder}%SUB%" in inst or f"\\{folder}" in inst,
+       f"instalator: nu refera folderul {folder}")
+ck('set "SUB=\\varianta-fara-imagini"' in inst,
+   "instalator: argumentul fara-imagini nu mapeaza pe folderul corect")
+ck('set "IMPLICITA=Mihai Zamfir - Clasic"' in inst,
+   "instalator: argumentul clasic nu seteaza implicita corect")
+# fiecare subrutina apelata trebuie sa existe si sa se termine cu exit /b
+for lab in set(re.findall(r"call :(\w+)", inst)):
+    ck(f"\n:{lab}\n" in inst.replace("\r\n", "\n"),
+       f"instalator: se apeleaza :{lab}, dar eticheta nu exista")
+for lab in set(re.findall(r"goto :(\w+)", inst)):
+    if lab.lower() != "eof":
+        ck(f"\n:{lab}\n" in inst.replace("\r\n", "\n"),
+           f"instalator: goto :{lab}, dar eticheta nu exista")
+uninst = open(os.path.join(BASE, "instalare", "DEZINSTALEAZA.cmd"), encoding="ascii").read()
+for folder, nume in SEMNATURI:
+    ck(f'"{nume}"' in uninst, f"dezinstalator: nu elimina semnatura {nume!r}")
+for lab in set(re.findall(r"call :(\w+)", uninst)):
+    ck(f"\n:{lab}\n" in uninst.replace("\r\n", "\n"),
+       f"dezinstalator: se apeleaza :{lab}, dar eticheta nu exista")
+ck(open(os.path.join(BASE, "instalare", "INSTALEAZA-SEMNATURA.cmd.txt"), "rb").read()
+   == open(os.path.join(BASE, "instalare", "INSTALEAZA-SEMNATURA.cmd"), "rb").read(),
+   "copia .cmd.txt a ramas in urma fata de .cmd")
+
 print(f"\n{checks} verificari, {len(fails)} esecuri")
 for f in fails: print("  ESEC:", f)
 sys.exit(1 if fails else 0)
