@@ -131,6 +131,32 @@ def queue_pending_pdfs() -> int:
     return queued
 
 
+def generate_recurring_drafts() -> int:
+    """Jobul de noapte: ciornele lunii, trecute prin validator.
+
+    Ruleaza o data pe zi. Idempotenta e in schema (`UNIQUE (template_id, period)`
+    pe `recurring_run`), deci o repornire sau o a doua rulare manuala nu produc
+    ciorne duplicate. Dimineata se aproba doar ce a trecut validarea.
+    """
+    from app.core import recurring
+
+    today = date.today()
+    total = 0
+    rejected = 0
+    with admin_session() as session:
+        companies = [row.id for row in session.execute(
+            text("SELECT id FROM company")).all()]
+    for company_id in companies:
+        with tenant_session(company_id) as session:
+            drafts = recurring.generate_all(session, today)
+        total += len(drafts)
+        rejected += sum(1 for draft in drafts if not draft.ok)
+    if total:
+        logger.info("Recurente: %s ciorne generate, %s au picat validarea.",
+                    total, rejected)
+    return total
+
+
 def daily_alerts() -> dict[str, int]:
     counts = alerts.run_all(date.today())
     logger.info("Alerte: %s", counts)
@@ -142,6 +168,7 @@ def build_tasks() -> list[Task]:
         Task("trimitere_facturi", timedelta(minutes=5), queue_pending_uploads),
         Task("verificare_stare", timedelta(minutes=10), queue_status_polls),
         Task("randare_pdf", timedelta(minutes=5), queue_pending_pdfs),
+        Task("recurente", timedelta(hours=24), generate_recurring_drafts),
         Task("alerte_zilnice", timedelta(hours=24), daily_alerts),
     ]
 

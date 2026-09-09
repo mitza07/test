@@ -130,10 +130,19 @@ Aici e toata valoarea. Daca astea sunt corecte, restul e munca obisnuita.
 
 ## 7. Recurente
 
-- [ ] Sabloane cu client + linii + frecventa.
-- [ ] Job de noapte: genereaza ciornele lunii si le trece prin validator.
-- [ ] Dimineata: ecran de aprobare in bloc, doar documente pre-verificate.
-- [ ] Emitere in lot cu tranzactie per document.
+- [x] Sabloane cu client + linii + frecventa (migratia 0005, `app/core/recurring.py`).
+      `day_of_month` e limitat la 28: cu 31, februarie ar fi sarita tacut.
+- [x] Job de noapte: `recurring.generate_all()`, in scheduler. Genereaza ciornele
+      SI le trece prin validator. Idempotent prin `UNIQUE (template_id, period)`,
+      nu prin disciplina — o repornire sau o restaurare din backup nu produce
+      ciorne duplicate.
+- [x] Dimineata: `pending_approval()` arata doar ce a trecut validarea;
+      `rejected()` arata restul, cu raportul salvat de noaptea trecuta. O aprobare
+      in bloc care contine documente picate e un buton care produce erori in bloc.
+- [x] `approve()` emite in lot, cu tranzactie per document. Refuza rulele care nu
+      sunt `validated`.
+- [x] `recurring.check()` — validare fara alocare de numar. E si ce trebuie legat
+      pe Ctrl+Enter in editor (punctul 6): verificare, NU emitere.
 
 ## 8. Export contabil
 

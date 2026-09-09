@@ -141,6 +141,6 @@ def test_sarcina_care_crapa_isi_marcheaza_totusi_rularea():
 def test_sarcinile_sunt_configurate():
     names = {task.name for task in scheduler.build_tasks()}
     assert names == {"trimitere_facturi", "verificare_stare", "randare_pdf",
-                     "alerte_zilnice"}
+                     "recurente", "alerte_zilnice"}
     intervals = {task.name: task.interval for task in scheduler.build_tasks()}
     assert intervals["alerte_zilnice"] == timedelta(hours=24)
