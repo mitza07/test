@@ -137,10 +137,21 @@ Aici e toata valoarea. Daca astea sunt corecte, restul e munca obisnuita.
 
 ## 8. Export contabil
 
-- [ ] CSV jurnal de vanzari.
-- [ ] Sectiunile `SalesInvoices` si `Payments` pentru SAF-T D406, cu `TaxCode`
-      si referinta e-Factura (`index_incarcare`).
-- [ ] Arhiva ZIP lunara: PDF-uri + XML-uri semnate + recipise.
+- [x] CSV jurnal de vanzari (`app/core/export/journal.py`). Separator `;` si
+      zecimal virgula, ca sa se deschida corect in Excel-ul romanesc. Coloane pe
+      cota, plus coloane separate pentru scutit si taxare inversa.
+- [x] Sectiunile `SalesInvoices` si `Payments` (`app/core/export/saft.py`), cu
+      `TaxCode` pe fiecare linie si `index_incarcare` pe factura. O linie fara
+      `saft_tax_code` opreste exportul — mai bine eroare aici decat D406 respins.
+- [x] Arhiva ZIP lunara (`app/core/export/archive.py`): `zip_spv/` (originalele
+      legale), `xml/`, `pdf/`, jurnalul si cele doua sectiuni. Raporteaza ce
+      lipseste; `CITESTE.txt` spune care fisiere sunt documentul fiscal.
+- [ ] **Valideaza sectiunile pe XSD-ul D406 v2.4.5.** Numele de elemente sunt
+      transcrise din arborele documentat in `docs/efactura_spec.md` §4, nu dintr-o
+      schema. Aceeasi disciplina ca la `app/core/ubl/sequence.py`: structura sta
+      intr-un loc, marcata ca ipoteza pana o confirma XSD-ul.
+      Namespace-ul e deja tratat explicit (`variant='test'` da `d406t`), pentru ca
+      e cea mai frecventa eroare de structura.
 
 ## Puncte deschise — de clarificat inainte sa le atingi
 
