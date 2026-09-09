@@ -20,6 +20,12 @@ rem ---------------------------------------------------------------
 
 set "ROOT=%~dp0.."
 set "DEST=%APPDATA%\Microsoft\Signatures"
+set "LOG=%~dp0jurnal-instalare.txt"
+> "%LOG%" echo ITISTUL.RO - jurnal instalare
+>>"%LOG%" echo Data: %DATE% %TIME%
+>>"%LOG%" echo Argumente: %*
+>>"%LOG%" echo ROOT: %ROOT%
+>>"%LOG%" echo DEST: %DEST%
 set "SUB="
 set "IMPLICITA=Mihai Zamfir"
 
@@ -76,6 +82,7 @@ set "OS16=HKCU\Software\Microsoft\Office\16.0\Outlook\Setup"
 reg add "%OS16%" /v DisableRoamingSignaturesTemporaryToggle /t REG_DWORD /d 1 /f >nul 2>&1
 echo   Semnaturi roaming dezactivate (altfel cloud-ul suprascrie fisierul local).
 
+>>"%LOG%" echo --- SUCCES ---  implicita: %IMPLICITA%
 echo.
 echo   GATA. Ambele semnaturi sunt instalate.
 echo   Le poti comuta oricand din Outlook, la compunerea unui mesaj:
@@ -121,11 +128,27 @@ rem  Signatures, ceea ce strica formatarea. Read-only opreste asta.
 rem  Se anuleaza cu:  attrib -R "%%APPDATA%%\Microsoft\Signatures\<nume>.htm"
 attrib +R "%DEST%\%N%.htm" >nul 2>&1
 echo   Instalata: "%N%"
+>>"%LOG%" echo OK   instalata: %N%  (sursa: %S%)
 exit /b 0
 
 :fail
 echo.
-echo   [EROARE] Instalarea a esuat. Verifica daca Outlook este inchis.
+echo   [EROARE] Instalarea a esuat.
+echo.
+rem  Diagnostic scris in jurnal: fara el, o instalare esuata nu lasa nicio urma
+rem  din care sa se poata afla cauza.
+>>"%LOG%" echo --- ESEC ---
+>>"%LOG%" echo Ultimul cod de eroare: %ERRORLEVEL%
+for %%F in ("%ROOT%\semnatura%SUB%" "%ROOT%\semnatura-clasic%SUB%") do (
+  if exist "%%~F" (>>"%LOG%" echo OK   sursa exista: %%~F) else (>>"%LOG%" echo LIPSA sursa: %%~F)
+)
+if exist "%DEST%" (>>"%LOG%" echo OK   destinatia exista) else (>>"%LOG%" echo LIPSA destinatia: %DEST%)
+tasklist /FI "IMAGENAME eq OUTLOOK.EXE" 2>nul | find /I "OUTLOOK.EXE" >nul
+if not errorlevel 1 (>>"%LOG%" echo ATENTIE Outlook inca ruleaza) else (>>"%LOG%" echo OK   Outlook e inchis)
+>>"%LOG%" dir /B "%DEST%" 2>&1
+echo   Am scris un jurnal cu detalii aici:
+echo     %LOG%
+echo   Trimite-l mai departe daca ai nevoie de ajutor.
 echo.
 pause
 exit /b 1

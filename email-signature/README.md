@@ -158,6 +158,10 @@ Argumente:
 
 Anulare completă: `instalare/DEZINSTALEAZA.cmd` (elimină ambele).
 
+Instalatorul scrie un jurnal la `instalare/jurnal-instalare.txt`. Dacă ceva
+eșuează, acolo găsești ce sursă lipsea, dacă destinația exista și dacă Outlook
+mai rula — trimite fișierul mai departe dacă ai nevoie de ajutor.
+
 > Ca să poți edita din nou semnătura din Outlook:
 > `attrib -R "%APPDATA%\Microsoft\Signatures\Mihai Zamfir.htm"`
 
