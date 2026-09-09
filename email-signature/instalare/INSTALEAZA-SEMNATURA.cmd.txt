@@ -30,7 +30,7 @@ set "SUB="
 set "IMPLICITA=Mihai Zamfir"
 
 for %%A in (%*) do (
-  if /I "%%~A"=="fara-imagini" set "SUB=\varianta-fara-imagini"
+  if /I "%%~A"=="banda-html" set "SUB=\varianta-banda-html"
   if /I "%%~A"=="clasic"       set "IMPLICITA=Mihai Zamfir - Clasic"
 )
 
@@ -95,8 +95,9 @@ echo   Le poti comuta oricand din Outlook, la compunerea unui mesaj:
 echo     Message ^> Signature ^> alegi semnatura.
 echo.
 if not defined SUB (
-  echo   Banda animata este atasata inline in fiecare mesaj, direct de Outlook.
-  echo   Nu trebuie urcata nicaieri si nu se poate bloca de client.
+  echo   Banda animata se incarca de pe GitHub, dintr-un repo public.
+  echo   Nu trebuie urcata nicaieri. Daca un destinatar are imaginile oprite,
+  echo   in locul ei ramane fundal curat, nu o imagine rupta.
   echo.
 )
 pause

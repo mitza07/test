@@ -116,9 +116,11 @@ def check_fragment(path, allow_image=False):
         imgs = re.findall(r"<img [^>]*>", t)
         ck(len(imgs) == 1, f"{name}: se asteapta exact o imagine, gasite {len(imgs)}")
         for im in imgs:
-            ck('_files/' in im and "%20" in im,
-               f"{name}: <img> nu trimite la folderul companion al semnaturii")
-            ck("http" not in im, f"{name}: <img> are inca o sursa remote")
+            ck("https://raw.githubusercontent.com/mitza07/test/" in im,
+               f"{name}: <img> nu trimite la GIF-ul gazduit pe GitHub")
+            ck(re.search(r"/test/[0-9a-f]{40}/", im) is not None,
+               f"{name}: URL-ul imaginii nu e fixat pe un SHA de commit "
+               f"(o adresa pe ramura se strica daca ramura dispare)")
             ck('alt="' in im, f"{name}: <img> fara atribut alt")
             ck('border="0"' in im and "display:block" in im,
                f"{name}: <img> fara border=0 / display:block")
@@ -135,9 +137,8 @@ def check_fragment(path, allow_image=False):
             ck(bool(bg), f"{name}: celula benzii nu declara bgcolor")
             if bg:
                 import struct as _s
-                gp = os.path.join(os.path.dirname(path),
-                                  re.search(r'src="([^"]+)"', im).group(1)
-                                  .replace("%20", " "))
+                gp = os.path.join(BASE, "assets",
+                                  re.search(r'src="([^"]+)"', im).group(1).rsplit("/", 1)[1])
                 ck(os.path.isfile(gp), f"{name}: GIF-ul referit nu exista: {gp}")
                 if os.path.isfile(gp):
                     g = open(gp, "rb").read()
@@ -166,21 +167,29 @@ CLASIC = os.path.join(BASE, "semnatura-clasic")
 for root, nume in ((SIG, "Mihai Zamfir"), (CLASIC, "Mihai Zamfir - Clasic")):
     check_fragment(os.path.join(root, "fragment.html"), allow_image=True)
     check_htm(os.path.join(root, f"{nume}.htm"))
-    check_fragment(os.path.join(root, "varianta-fara-imagini", "fragment.html"))
-    check_htm(os.path.join(root, "varianta-fara-imagini", f"{nume}.htm"))
-    files = os.path.join(root, f"{nume}_files")
-    ck(os.path.isdir(files), f"{nume}: lipseste folderul companion")
-    ck(os.path.isfile(os.path.join(files, "filelist.xml")),
-       f"{nume}: lipseste filelist.xml")
-    hm = open(os.path.join(root, f"{nume}.htm"), "rb").read()
-    ck(b'rel="File-List"' in hm, f"{nume}.htm: lipseste <link rel=File-List>")
-    hs = open(os.path.join(root, "varianta-fara-imagini", f"{nume}.htm"), "rb").read()
-    ck(b"File-List" not in hs and b"_files" not in hs,
-       f"{nume} fara-imagini: refera folderul companion inexistent")
+    alt = os.path.join(root, "varianta-banda-html")
+    check_fragment(os.path.join(alt, "fragment.html"))
+    check_htm(os.path.join(alt, f"{nume}.htm"))
+    # nicio semnatura nu mai depinde de un folder companion local: mecanismul
+    # de incorporare al Outlook producea legaturi file:/// moarte
+    ck(not os.path.exists(os.path.join(root, f"{nume}_files")),
+       f"{nume}: folderul companion local nu ar mai trebui sa existe")
+    for f in (os.path.join(root, f"{nume}.htm"), os.path.join(alt, f"{nume}.htm")):
+        ck(b"File-List" not in open(f, "rb").read(),
+           f"{os.path.relpath(f, BASE)}: <link rel=File-List> fara folder companion")
+    # varianta alternativa: banda construita din celule, zero imagini
+    bara = open(os.path.join(alt, "fragment.html"), encoding="utf-8").read()
+    ck("<img" not in bara, f"{nume} banda-html: contine o imagine")
+    barre = re.findall(r'<td width="(\d+)" height="3"[^>]*bgcolor="([^"]+)"', bara)
+    ck(len(barre) >= 8, f"{nume} banda-html: doar {len(barre)} celule de banda")
+    latime = sum(int(w) for w, _ in barre)
+    astept = 508 if nume == "Mihai Zamfir" else 638
+    ck(latime == astept,
+       f"{nume} banda-html: celulele insumeaza {latime}px, se astepta {astept}px")
     for ext in ("rtf", "txt"):
-        for sub in ("", "varianta-fara-imagini"):
-            ck(os.path.isfile(os.path.join(root, sub, f"{nume}.{ext}")),
-               f"{nume}: lipseste {sub or '.'}/{nume}.{ext}")
+        for d in (root, alt):
+            ck(os.path.isfile(os.path.join(d, f"{nume}.{ext}")),
+               f"{nume}: lipseste {os.path.relpath(d, BASE)}/{nume}.{ext}")
 
 rtf = open(os.path.join(SIG, "Mihai Zamfir.rtf"), "rb").read()
 ck(rtf.startswith(b"{\\rtf1"), "RTF: nu incepe cu {\\rtf1 (BOM?)")
@@ -201,7 +210,7 @@ for p in ["instalare/INSTALEAZA-SEMNATURA.cmd", "instalare/DEZINSTALEAZA.cmd"]:
     ck(not re.search(rb"powershell(\.exe)?\s+[-/]", d.lower()),
        f"{p}: invoca PowerShell")
 
-gif = os.path.join(SIG, "Mihai Zamfir_files", "itistul-signal.gif")
+gif = os.path.join(BASE, "assets", "itistul-signal.gif")
 if os.path.exists(gif):
     n = os.path.getsize(gif)
     ck(n < 20000, f"GIF: {n} B, peste pragul de 20 KB")
@@ -211,15 +220,15 @@ if os.path.exists(gif):
     import struct
     gw, gh = struct.unpack("<HH", g[6:10])
     ck((gw, gh) == (508, 28), f"GIF: {gw}x{gh}, se astepta 508x28")
-    print(f"  semnatura/Mihai Zamfir_files/itistul-signal.gif: {n} B")
-g2 = os.path.join(CLASIC, "Mihai Zamfir - Clasic_files", "itistul-pulse-clasic.gif")
+    print(f"  assets/itistul-signal.gif: {n} B")
+g2 = os.path.join(BASE, "assets", "itistul-pulse-clasic.gif")
 if os.path.exists(g2):
     n2 = os.path.getsize(g2)
     ck(n2 < 20000, f"GIF clasic: {n2} B, peste pragul de 20 KB")
     d2 = open(g2, "rb").read()
     ck(d2[:6] in (b"GIF89a", b"GIF87a"), "GIF clasic: antet invalid")
     ck(b"NETSCAPE2.0" in d2, "GIF clasic: nu are extensia de buclare")
-    print(f"  semnatura-clasic/Mihai Zamfir - Clasic_files/itistul-pulse-clasic.gif: {n2} B")
+    print(f"  assets/itistul-pulse-clasic.gif: {n2} B")
 
 # --- instalatorul: fiecare cale pe care o construieste trebuie sa existe ---
 # Scriptul ruleaza pe masina utilizatorului, unde nu putem interveni. O cale
@@ -227,25 +236,21 @@ if os.path.exists(g2):
 inst = open(os.path.join(BASE, "instalare", "INSTALEAZA-SEMNATURA.cmd"),
             encoding="ascii").read()
 SEMNATURI = [("semnatura", "Mihai Zamfir"), ("semnatura-clasic", "Mihai Zamfir - Clasic")]
-for arg_sub, sub in [("(fara argument)", ""), ("fara-imagini", "varianta-fara-imagini")]:
+for arg_sub, sub in [("(fara argument)", ""), ("banda-html", "varianta-banda-html")]:
     for folder, nume in SEMNATURI:
         d = os.path.join(BASE, folder, sub)
         for ext in ("htm", "rtf", "txt"):
             f = os.path.join(d, f"{nume}.{ext}")
             ck(os.path.isfile(f), f"instalator [{arg_sub}]: lipseste {folder}/{sub}/{nume}.{ext}")
-        comp = os.path.join(d, f"{nume}_files")
-        if sub:
-            ck(not os.path.exists(comp),
-               f"instalator [fara-imagini]: {folder}/{sub} nu ar trebui sa aiba folder companion")
-        else:
-            ck(os.path.isdir(comp), f"instalator: lipseste {folder}/{nume}_files")
+        ck(not os.path.exists(os.path.join(d, f"{nume}_files")),
+           f"instalator [{arg_sub}]: {folder}/{sub} nu ar trebui sa aiba folder companion")
 # numele semnaturilor din script trebuie sa fie exact cele de pe disc
 for folder, nume in SEMNATURI:
     ck(f'"{nume}"' in inst, f"instalator: nu instaleaza semnatura {nume!r}")
     ck(f"\\{folder}%SUB%" in inst or f"\\{folder}" in inst,
        f"instalator: nu refera folderul {folder}")
-ck('set "SUB=\\varianta-fara-imagini"' in inst,
-   "instalator: argumentul fara-imagini nu mapeaza pe folderul corect")
+ck('set "SUB=\\varianta-banda-html"' in inst,
+   "instalator: argumentul banda-html nu mapeaza pe folderul corect")
 ck('set "IMPLICITA=Mihai Zamfir - Clasic"' in inst,
    "instalator: argumentul clasic nu seteaza implicita corect")
 # fiecare subrutina apelata trebuie sa existe si sa se termine cu exit /b
