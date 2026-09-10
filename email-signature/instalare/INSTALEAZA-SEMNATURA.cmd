@@ -16,7 +16,9 @@ rem    "Mihai Zamfir - Rose"             - card alb cu accente roz-teracota
 rem    "Mihai Zamfir - Noir 1".."Noir 3" - negru, tipografie subtire
 rem    "Mihai Zamfir - Mono 1".."Mono 3" - negru/alb, serif
 rem    "Mihai Zamfir - Aur"              - negru cu rama dubla aurie
-rem  Toate au un medalion cu monograma in locul fotografiei (pana la primirea ei).
+rem  Portretul e montat in toate (rama aurie "floare" la Lux).
+rem  Si COLECTIA-IMAGINE: aceleasi 17, redate ca imagini "asa cum sunt" in referinte:
+rem    "Mihai Zamfir - Lux 1 (img)" ... "Mihai Zamfir - Aur (img)"   (argument: lux-1-img ... aur-img)
 rem
 rem  Implicita ramane cea compacta. Pentru ca implicita sa fie cea
 rem  clasica, ruleaza:  INSTALEAZA-SEMNATURA.cmd clasic
@@ -63,6 +65,23 @@ for %%A in (%*) do (
   if /I "%%~A"=="mono-2"       set "IMPLICITA=Mihai Zamfir - Mono 2"
   if /I "%%~A"=="mono-3"       set "IMPLICITA=Mihai Zamfir - Mono 3"
   if /I "%%~A"=="aur"          set "IMPLICITA=Mihai Zamfir - Aur"
+  if /I "%%~A"=="lux-1-img"    set "IMPLICITA=Mihai Zamfir - Lux 1 (img)"
+  if /I "%%~A"=="lux-2-img"    set "IMPLICITA=Mihai Zamfir - Lux 2 (img)"
+  if /I "%%~A"=="lux-3-img"    set "IMPLICITA=Mihai Zamfir - Lux 3 (img)"
+  if /I "%%~A"=="lux-4-img"    set "IMPLICITA=Mihai Zamfir - Lux 4 (img)"
+  if /I "%%~A"=="lux-5-img"    set "IMPLICITA=Mihai Zamfir - Lux 5 (img)"
+  if /I "%%~A"=="lux-6-img"    set "IMPLICITA=Mihai Zamfir - Lux 6 (img)"
+  if /I "%%~A"=="lux-7-img"    set "IMPLICITA=Mihai Zamfir - Lux 7 (img)"
+  if /I "%%~A"=="lux-8-img"    set "IMPLICITA=Mihai Zamfir - Lux 8 (img)"
+  if /I "%%~A"=="lux-9-img"    set "IMPLICITA=Mihai Zamfir - Lux 9 (img)"
+  if /I "%%~A"=="rose-img"     set "IMPLICITA=Mihai Zamfir - Rose (img)"
+  if /I "%%~A"=="noir-1-img"   set "IMPLICITA=Mihai Zamfir - Noir 1 (img)"
+  if /I "%%~A"=="noir-2-img"   set "IMPLICITA=Mihai Zamfir - Noir 2 (img)"
+  if /I "%%~A"=="noir-3-img"   set "IMPLICITA=Mihai Zamfir - Noir 3 (img)"
+  if /I "%%~A"=="mono-1-img"   set "IMPLICITA=Mihai Zamfir - Mono 1 (img)"
+  if /I "%%~A"=="mono-2-img"   set "IMPLICITA=Mihai Zamfir - Mono 2 (img)"
+  if /I "%%~A"=="mono-3-img"   set "IMPLICITA=Mihai Zamfir - Mono 3 (img)"
+  if /I "%%~A"=="aur-img"      set "IMPLICITA=Mihai Zamfir - Aur (img)"
 )
 
 echo.
@@ -122,6 +141,24 @@ call :instaleaza "Mihai Zamfir - Mono 1"  "%ROOT%\colectie\mono-1"  || goto :fai
 call :instaleaza "Mihai Zamfir - Mono 2"  "%ROOT%\colectie\mono-2"  || goto :fail
 call :instaleaza "Mihai Zamfir - Mono 3"  "%ROOT%\colectie\mono-3"  || goto :fail
 call :instaleaza "Mihai Zamfir - Aur"     "%ROOT%\colectie\aur"     || goto :fail
+rem  Colectia-imagine: o imagine de pe GitHub + doua randuri de text sub ea
+call :instaleaza "Mihai Zamfir - Lux 1 (img)"   "%ROOT%\colectie-imagine\lux-1"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 2 (img)"   "%ROOT%\colectie-imagine\lux-2"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 3 (img)"   "%ROOT%\colectie-imagine\lux-3"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 4 (img)"   "%ROOT%\colectie-imagine\lux-4"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 5 (img)"   "%ROOT%\colectie-imagine\lux-5"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 6 (img)"   "%ROOT%\colectie-imagine\lux-6"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 7 (img)"   "%ROOT%\colectie-imagine\lux-7"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 8 (img)"   "%ROOT%\colectie-imagine\lux-8"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 9 (img)"   "%ROOT%\colectie-imagine\lux-9"   || goto :fail
+call :instaleaza "Mihai Zamfir - Rose (img)"    "%ROOT%\colectie-imagine\rose"    || goto :fail
+call :instaleaza "Mihai Zamfir - Noir 1 (img)"  "%ROOT%\colectie-imagine\noir-1"  || goto :fail
+call :instaleaza "Mihai Zamfir - Noir 2 (img)"  "%ROOT%\colectie-imagine\noir-2"  || goto :fail
+call :instaleaza "Mihai Zamfir - Noir 3 (img)"  "%ROOT%\colectie-imagine\noir-3"  || goto :fail
+call :instaleaza "Mihai Zamfir - Mono 1 (img)"  "%ROOT%\colectie-imagine\mono-1"  || goto :fail
+call :instaleaza "Mihai Zamfir - Mono 2 (img)"  "%ROOT%\colectie-imagine\mono-2"  || goto :fail
+call :instaleaza "Mihai Zamfir - Mono 3 (img)"  "%ROOT%\colectie-imagine\mono-3"  || goto :fail
+call :instaleaza "Mihai Zamfir - Aur (img)"     "%ROOT%\colectie-imagine\aur"     || goto :fail
 
 rem --- semnatura implicita pentru mesaje noi si pentru raspunsuri ---
 set "MS=HKCU\Software\Microsoft\Office\16.0\Common\MailSettings"
@@ -142,7 +179,7 @@ echo   Semnaturi roaming dezactivate (altfel cloud-ul suprascrie fisierul local)
 
 >>"%LOG%" echo --- SUCCES ---  implicita: %IMPLICITA%
 echo.
-echo   GATA. Toate cele 21 de semnaturi sunt instalate.
+echo   GATA. Toate cele 38 de semnaturi sunt instalate.
 echo   Le poti comuta oricand din Outlook, la compunerea unui mesaj:
 echo     Message ^> Signature ^> alegi semnatura.
 echo.

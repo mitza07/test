@@ -1,8 +1,8 @@
 # Semnături e-mail — Mihai Zamfir / ITISTUL.RO
 
-**Patru** semnături Outlook plus **o colecție de 17 variante** după referințele trimise —
-toate **fără nimic de urcat pe site**. Instalatorul le pune pe toate (21); le comuți din
-Outlook la compunerea unui mesaj (`Message > Signature`).
+**Patru** semnături Outlook plus **o colecție de 17 variante** după referințele trimise, în
+două versiuni (HTML și imagine) — toate **fără nimic de urcat pe site**. Instalatorul le pune
+pe toate (38); le comuți din Outlook la compunerea unui mesaj (`Message > Signature`).
 
 ![previzualizare](documentatie/previzualizare.png)
 
@@ -36,15 +36,16 @@ paletă, plus îmbunătățirile de mai jos.
 Numele în Outlook: `Mihai Zamfir - Lux 3`, `Mihai Zamfir - Rose`, `Mihai Zamfir - Noir 2` etc.
 Implicita se alege cu argumentul din tabel: `INSTALEAZA-SEMNATURA.cmd lux-3`.
 
-**Fotografia.** Toate referințele au portret. Până la primirea fotografiei, în locul ei stă
-un **medalion cu monograma „MZ"**, construit din celule (chenar dublu, deci nu poate fi
-blocat). Când există fotografia, medalionul e înlocuit în toate variantele; pe Lux se poate
-monta și în rama „floare" aurie din referință. Fotografia va fi o imagine (nu există altă
-cale), deci va avea comportamentul imaginilor remote: se vede automat în Gmail, Apple Mail,
-Outlook pe telefon și la orice destinatar care te are în Contacts; în Outlook Classic la un
-destinatar necunoscut apare după „Download pictures".
+**Fotografia** e montată în toate (sursa: `assets/foto-sursa/Eu business.png`, 1254×1254).
+`genereaza-foto.py` face din ea decupajele din `assets/foto/`: rama „floare" aurie pentru Lux
+(PNG copt pe fundalul celulei — deci colțurile sunt fundal, nu poză), pătrate pentru
+Aur/Rose/Mono 3, panouri pentru Noir/Mono 1–2, toate centrate pe față, la 2× pentru ecrane
+HiDPI, sub 34 KB. Fotografia e o imagine (nu există altă cale), deci are comportamentul
+imaginilor remote: se vede automat în Gmail, Apple Mail, Outlook pe telefon și la orice
+destinatar care te are în Contacts; în Outlook Classic la un destinatar necunoscut apare după
+„Download pictures" — restul semnăturii (celule și text) se vede oricum.
 
-Montarea ei, când există fișierul (trei comenzi, tot mecanic):
+Regenerarea, dacă se schimbă portretul (tot mecanic):
 
 ```
 python3 genereaza-foto.py portret.jpg          # decupajele, la 2x, în assets/foto/
@@ -56,7 +57,7 @@ python3 verifica.py
 `genereaza-foto.py` face din portret: rama „floare" aurie (PNG copt pe fundalul celulei,
 pentru Lux), decupaje pătrate pentru medalioanele Aur/Rose/Mono 3 și decupaje-panou pentru
 Noir/Mono 1–2 — toate centrate pe față, JPEG baseline fără EXIF, sub 60 KB fiecare.
-`verifica.py` cere ca fotografia să fie ori în toate variantele, ori în niciuna.
+`verifica.py` cere ca fotografia să fie ori în toate variantele, ori în niciuna (Lux 4 n-are loc de portret nici în referință).
 
 **Ornamentele Lux** sunt PNG-uri de 1–18 KB generate procedural (nu stock), **coapte pe
 fundalul exact al celulei** (`#111111` / `#1b1424`, fără transparență — motorul Word nu
@@ -83,6 +84,32 @@ se mișcă. În referință dispărea totul.
 Ce nu s-a putut păstra: mandala nu se poate desena din celule (de aici PNG-ul), rama
 rotundă din Theo Wilton e pătrată, numele scris vertical din Emma Johnson / Jessica Roche
 e înlocuit cu o linie verticală sau cu literele suprapuse pe rânduri (Mono 2).
+
+## Colecția-imagine — aceleași 17, „așa cum sunt"
+
+![colecția-imagine](documentatie/previzualizare-imagini.png)
+
+La cerere: referințele redate **exact ca în poze**, cu datele lui Mihai — mandalele pe toată
+suprafața, rama „floare" pentru portret, pictogramele, cadrul-stadion auriu, numele în
+script pe verticală, siglele rotunde cu text pe cerc, fonturile din referințe (Montserrat,
+Josefin Sans, Cormorant, Great Vibes; toate OFL, în `fonturi/`). Singura cale de a le face
+fidele e ca fiecare să fie **o imagine** (`genereaza-imagini.py` le desenează vectorial, la
+2× pentru ecrane HiDPI; 20–130 KB fiecare, `assets/imagini/`).
+
+Semnătura HTML din jurul imaginii (`colectie-imagine/<varianta>/`) e minimă și
+face două lucruri pe care o semnătură-doar-imagine (cum sunt referințele) nu le face:
+
+- **imaginea e link** către site și are `alt` cu numele și telefonul;
+- **sub imagine stau două rânduri de text mic** cu toate datele: e ce rămâne vizibil
+  când imaginile sunt blocate și e textul de care au nevoie filtrele anti-spam (mesajele
+  doar-imagine punctează prost).
+
+Numele în Outlook: `Mihai Zamfir - Lux 1 (img)` … `Mihai Zamfir - Aur (img)`; argumentul
+pentru implicită: `lux-1-img` … `aur-img`. Comportamentul la destinatar e cel al oricărei
+imagini remote: se vede automat în Gmail, Apple Mail, Outlook pe telefon și la cine te are în
+Contacts; în Outlook Classic la un destinatar necunoscut apare după „Download pictures" —
+până atunci se văd cele două rânduri de text. Portretul e montat în toate 17
+(`genereaza-imagini.py --foto "assets/foto-sursa/Eu business.png"`).
 
 ## Puls — semnătura grafică
 
@@ -260,10 +287,11 @@ Argumente:
 | `INSTALEAZA-SEMNATURA.cmd signet` | toate, implicită cea executivă |
 | `INSTALEAZA-SEMNATURA.cmd puls` | toate, implicită cea grafică |
 | `INSTALEAZA-SEMNATURA.cmd lux-3` | toate, implicită „Lux 3" (la fel: `lux-1`…`lux-9`, `aur`, `rose`, `noir-1`…`noir-3`, `mono-1`…`mono-3`) |
+| `INSTALEAZA-SEMNATURA.cmd lux-3-img` | toate, implicită „Lux 3 (img)" — varianta-imagine (la fel: orice slug + `-img`) |
 | `INSTALEAZA-SEMNATURA.cmd fara-imagini` | ambele, variantele fără bandă |
 | `INSTALEAZA-SEMNATURA.cmd clasic fara-imagini` | se pot combina |
 
-Anulare completă: `instalare/DEZINSTALEAZA.cmd` (elimină toate 21).
+Anulare completă: `instalare/DEZINSTALEAZA.cmd` (elimină toate 38).
 
 Instalatorul scrie un jurnal la `instalare/jurnal-instalare.txt`. Dacă ceva
 eșuează, acolo găsești ce sursă lipsea, dacă destinația exista și dacă Outlook
@@ -325,13 +353,18 @@ email-signature/
 ├─ semnatura-puls/              ← grafică, fără imagini, fără variante
 ├─ colectie/                    ← cele 17 variante după referințe (lux-1 … aur)
 │  └─ lux-1/ … aur/             ← fiecare cu .htm/.rtf/.txt + fragment.html
+├─ colectie-imagine/            ← aceleași 17, ca imagini „așa cum sunt" + text sub ele
+├─ fonturi/                     ← fonturile OFL coapte în imagini (cu licențele)
 ├─ assets/
 │  ├─ itistul-signal.gif        ← benzile, servite de pe GitHub raw
 │  ├─ itistul-pulse-clasic.gif
-│  └─ lux/                      ← ornamentele mandala (PNG), la fel
+│  ├─ lux/                      ← ornamentele mandala (PNG), la fel
+│  └─ imagini/                  ← cele 17 semnături-imagine (1200 px, 2×)
 ├─ genereaza-colectie.py        ← regenerează cele 17 variante (python3 genereaza-colectie.py <sha>)
 ├─ genereaza-mandale.py         ← regenerează ornamentele din assets/lux/
 ├─ genereaza-foto.py            ← decupajele fotografiei, în assets/foto/
+├─ genereaza-imagini.py         ← desenează cele 17 semnături-imagine (--foto portret.jpg)
+├─ genereaza-colectie-imagine.py ← HTML-ul din jurul lor (python3 … <sha>)
 ├─ genereaza-gif.py             ← regenerează banda compactă
 ├─ genereaza-gif-clasic.py      ← regenerează banda clasică
 └─ verifica.py                  ← 5.870 verificări, pe toate 21

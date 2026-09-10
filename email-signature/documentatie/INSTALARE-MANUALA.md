@@ -10,6 +10,9 @@ mai jos pentru fiecare pe care o vrei:
 - `Mihai Zamfir - Lux 1` … `Lux 9`, `Aur`, `Rose`, `Noir 1` … `Noir 3`, `Mono 1` … `Mono 3` —
   din `colectie/<varianta>/` (fără folder companion; ornamentele Lux vin de pe GitHub).
   Previzualizarea lor e în `documentatie/previzualizare-colectie.html`.
+- `Mihai Zamfir - Lux 1 (img)` … `Aur (img)` — din `colectie-imagine/<varianta>/`: aceleași
+  17, ca imagini „așa cum sunt" în referințe (previzualizare în
+  `documentatie/previzualizare-imagini.html`).
 
 Fiecare are folderul ei companion (`<nume>_files`), care trebuie copiat odată cu
 fișierele.

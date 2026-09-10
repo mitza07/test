@@ -171,10 +171,10 @@ Referințele sunt imagini întregi. O semnătură-imagine e blocată ca orice im
 linkuri, nu se poate selecta, nu se scalează pe telefon. Colecția reface compozițiile din
 text și celule; deciziile specifice:
 
-- **Medalion în loc de fotografie, până la primirea ei.** Un `<img>` blocat în Outlook
-  lasă o casetă cu X roșu; un medalion din celule (chenar dublu + monogramă) se vede
-  oricum. Când există fotografia, ea intră exact în celula medalionului, cu aceleași
-  dimensiuni, deci layout-ul nu se schimbă.
+- **Fotografia intră în celula medalionului, cu aceleași dimensiuni.** Chenarul dublu
+  rămâne desenat din celule, deci se vede și când imaginea e blocată (Outlook lasă acolo
+  caseta lui de imagine neîncărcată, în rama aurie). Fără fotografie, aceeași celulă
+  arată monograma — generatorul comută între ele cu argumentul `foto`.
 - **Ornamentele mandala sunt PNG-uri coapte pe fundalul celulei**, nu cu transparență:
   PNG-ul cu alfa are istoric prost în motorul Word (halo, fundal alb). Culoarea de fundal a
   imaginii e verificată pixel cu pixel față de `bgcolor`-ul celulei (`verifica.py`).
@@ -191,6 +191,24 @@ text și celule; deciziile specifice:
   `#c8958a` (2,6:1) pentru text; bara gri `#5e5e5e` (5,9:1) în loc de `#7a7a7a`.
 - **Fiecare subsol e un tabel imbricat**, nu un `<td>` pus direct în alt `<td>`: browserul
   scoate afară din card o celulă orfană. `verifica.py` prinde acum și cazul acesta.
+
+## 13. Colecția-imagine: de ce o imagine și ce stă în jurul ei
+
+Cererea a fost „așa cum sunt, doar cu datele mele". Mandalele pe toată suprafața, textul
+peste ornament, rama „floare", numele în script pe verticală, cadrul rotunjit — niciunul
+nu există în motorul Word, deci fidelitatea se obține doar ca imagine, exact cum sunt și
+referințele. Diferențele față de o semnătură-imagine obișnuită:
+
+- **2× rezoluție** (1200 px afișați la 600): clar pe ecrane HiDPI, unde un PNG la 1× e
+  vizibil moale. `width`/`height` declarate la 600, ca Outlook să o scaleze corect.
+- **JPEG baseline pentru cele cu gradient și mandale pline, PNG-8 pentru cele plate**:
+  formatul e ales per design după mărime; toate sub 160 KB, verificat.
+- **Imaginea e link** către site, cu `alt` care conține numele și telefonul.
+- **Două rânduri de text sub imagine.** Când imaginile sunt blocate, semnătura nu dispare;
+  filtrele anti-spam, care penalizează mesajele doar-imagine, au text de citit.
+- **Fonturile sunt coapte în imagine** — destinatarul nu are nevoie de ele. Sunt OFL
+  (Montserrat, Josefin Sans, Cormorant Garamond, Great Vibes, Allura, Lato), în `fonturi/`
+  cu licențele, ca imaginile să poată fi regenerate identic.
 
 ## Ce s-a eliminat deliberat
 

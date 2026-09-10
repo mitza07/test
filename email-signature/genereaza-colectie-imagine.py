@@ -44,11 +44,13 @@ def fragment(slug, fname, w, h):
             % (FF, FF, img))
     cell_img = ('<td width="600" height="%d" bgcolor="#ffffff" style="width:600px;height:%dpx;background-color:#ffffff;%s'
                 'font-size:0px;line-height:0px;"><p style="margin:0;padding:0;font-size:0px;line-height:0px;">%s</p></td>' % (h, h, FF, link))
-    def txt(row, top):
-        return ('<td bgcolor="#ffffff" style="background-color:#ffffff;padding:%s;%sfont-size:9px;'
+    def txt(row, top, rule=False):
+        # o linie fina deasupra textului: desparte imaginea de randurile de rezerva
+        return ('<td bgcolor="#ffffff" style="background-color:#ffffff;padding:%s;%s%sfont-size:9px;'
                 'mso-line-height-rule:exactly;line-height:13px;color:#5b6b7c;"><p style="margin:0;padding:0;font-size:9px;'
-                'mso-line-height-rule:exactly;line-height:13px;">%s</p></td>' % (top, FF, row))
-    return (tbl + "\n<tr>" + cell_img + "</tr>\n<tr>" + txt(R1, "8px 0 0 0") + "</tr>\n<tr>"
+                'mso-line-height-rule:exactly;line-height:13px;">%s</p></td>'
+                % (top, "border-top:1px solid #e3e8ee;" if rule else "", FF, row))
+    return (tbl + "\n<tr>" + cell_img + "</tr>\n<tr>" + txt(R1, "7px 0 0 0", rule=True) + "</tr>\n<tr>"
             + txt(R2, "0") + "</tr>\n</table>")
 
 HEAD = ('﻿<!doctype html>\r\n<html>\r\n<head>\r\n'

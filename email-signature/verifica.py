@@ -57,7 +57,8 @@ def check_fragment(path, allow_image=False, caps=False):
             ck("font-size:0" in st,
                f"{name}: line-height fara mso-line-height-rule pe un stil cu text vizibil: {st[:90]}")
     if has_img:
-        m = re.search(r"<td([^>]*)>\s*<p([^>]*)>\s*<img", t)
+        # imaginea poate fi link: <p><a><span><img>
+        m = re.search(r"<td([^>]*)>\s*<p([^>]*)>\s*(?:<a [^>]*>\s*<span [^>]*>\s*)?<img", t)
         ck(bool(m), f"{name}: <img> nu e intr-un <td><p> asteptat")
         if m:
             ck("mso-line-height-rule" not in m.group(1) + m.group(2),
@@ -131,7 +132,7 @@ def check_fragment(path, allow_image=False, caps=False):
     ck(t.count("<td") == t.count("</td>") and t.count("<tr") == t.count("</tr>")
        and t.count("<table") == t.count("</table>"), f"{name}: taguri dezechilibrate")
     ck("border-top:1px solid" in t, f"{name}: linia despartitoare nu e border-top")
-    if allow_image:
+    if allow_image and allow_image != "img":
         imgs = re.findall(r"<img [^>]*>", t)
         if allow_image == "png":
             ck(1 <= len(imgs) <= 3, f"{name}: se asteapta 1-3 imagini (ornamente + fotografie), gasite {len(imgs)}")
@@ -322,6 +323,50 @@ cu = [slug for slug, _ in COLECTIE if slug != "lux-4" and os.path.isfile(os.path
       and "/assets/foto/" in open(os.path.join(COL, slug, "fragment.html"), encoding="utf-8").read()]
 ck(len(cu) in (0, len(COLECTIE) - 1), f"colectie: fotografia e montata doar in {len(cu)} din {len(COLECTIE) - 1} variante")
 
+
+# --- colectia-imagine: aceleasi 17 referinte, redate ca imagini ------------------
+COLI = os.path.join(BASE, "colectie-imagine")
+img_folosite = set()
+for slug, short in COLECTIE:
+    d = os.path.join(COLI, slug); nume = f"Mihai Zamfir - {short} (img)"
+    frag = os.path.join(d, "fragment.html")
+    ck(os.path.isfile(frag), f"colectie-imagine/{slug}: lipseste fragment.html")
+    if not os.path.isfile(frag): continue
+    fg = open(frag, encoding="utf-8").read()
+    # regulile generale (tabel, celule, paragrafe, linkuri, continut, entitati) - imaginea e verificata aici
+    check_fragment(frag, allow_image="img", caps=True)
+    check_htm(os.path.join(d, f"{nume}.htm"))
+    for ext in ("rtf", "txt"):
+        ck(os.path.isfile(os.path.join(d, f"{nume}.{ext}")), f"colectie-imagine/{slug}: lipseste {nume}.{ext}")
+    imgs = re.findall(r"<img [^>]*>", fg)
+    ck(len(imgs) == 1, f"colectie-imagine/{slug}: se asteapta exact o imagine, gasite {len(imgs)}")
+    if imgs:
+        im = imgs[0]
+        ck(re.search(r'alt="[^"]*Mihai Zamfir[^"]*\+40 742 932 686[^"]*"', im) is not None,
+           f"colectie-imagine/{slug}: alt-ul imaginii nu contine numele si telefonul")
+        src = re.search(r'src="([^"]+)"', im).group(1)
+        ck(re.search(r"/test/[0-9a-f]{40}/email-signature/assets/imagini/", src) is not None,
+           f"colectie-imagine/{slug}: imaginea nu e fixata pe SHA in assets/imagini")
+        gp = os.path.join(BASE, "assets", "imagini", src.rsplit("/", 1)[1])
+        ck(os.path.isfile(gp), f"colectie-imagine/{slug}: imaginea nu exista: {gp}")
+        if os.path.isfile(gp):
+            from PIL import Image as _I
+            pic = _I.open(gp); dw = int(re.search(r'width="(\d+)"', im).group(1)); dh = int(re.search(r'height="(\d+)"', im).group(1))
+            ck((dw, dh) == (600, pic.height // 2) and pic.size == (2 * dw, 2 * dh),
+               f"colectie-imagine/{slug}: imaginea e {pic.size}, HTML-ul declara {(dw, dh)} (trebuie 2x, 600 px lat)")
+            ck(os.path.getsize(gp) < 160000, f"colectie-imagine/{slug}: imagine peste 160 KB ({os.path.getsize(gp)} B)")
+            raw_ = open(gp, "rb").read()
+            if gp.endswith(".jpg"): ck(raw_[:2] == b"\xff\xd8" and b"\xff\xc2" not in raw_, f"colectie-imagine/{slug}: JPEG progresiv")
+            img_folosite.add(os.path.basename(gp))
+        # imaginea e link catre site, iar sub ea ramane text vizibil (starea blocata + text pentru filtre)
+        ck(re.search(r'<a href="https://www\.itistul\.ro/"[^>]*>\s*<span[^>]*>\s*<img', fg) is not None,
+           f"colectie-imagine/{slug}: imaginea nu e link catre site")
+    ck(fg.count("<table") == 1, f"colectie-imagine/{slug}: se astepta o singura tabela")
+    ck(len(fg.encode()) < 6000, f"colectie-imagine/{slug}: {len(fg.encode())} B, peste bugetul de 6 KB")
+img_dir = os.path.join(BASE, "assets", "imagini")
+img_disc = set(os.listdir(img_dir)) if os.path.isdir(img_dir) else set()
+ck(img_disc == img_folosite, f"colectie-imagine: assets/imagini != imaginile referite: {sorted(img_disc ^ img_folosite)}")
+
 rtf = open(os.path.join(SIG, "Mihai Zamfir.rtf"), "rb").read()
 ck(rtf.startswith(b"{\\rtf1"), "RTF: nu incepe cu {\\rtf1 (BOM?)")
 ck(rtf.count(b"{") == rtf.count(b"}"), "RTF: acolade dezechilibrate")
@@ -388,6 +433,16 @@ ck('set "IMPLICITA=Mihai Zamfir - Puls"' in inst, "instalator: argumentul puls n
 ck('\\semnatura-puls"' in inst and '\\semnatura-puls%SUB%' not in inst, "instalator: calea Puls nu trebuie sa primeasca %SUB%")
 ck('"Mihai Zamfir - Puls"' in open(os.path.join(BASE, "instalare", "DEZINSTALEAZA.cmd"), encoding="ascii").read(),
    "dezinstalator: nu elimina semnatura Puls")
+for slug, short in COLECTIE:
+    nume = f"Mihai Zamfir - {short} (img)"
+    ck(f'"{nume}"' in inst, f"instalator: nu instaleaza semnatura {nume!r}")
+    ck(f'\\colectie-imagine\\{slug}"' in inst, f"instalator: calea colectie-imagine/{slug} lipseste")
+    ck(f'set "IMPLICITA={nume}"' in inst, f"instalator: argumentul {slug}-img nu seteaza implicita")
+    ck(f'"{nume}"' in open(os.path.join(BASE, "instalare", "DEZINSTALEAZA.cmd"), encoding="ascii").read(),
+       f"dezinstalator: nu elimina semnatura {nume!r}")
+    for ext in ("htm", "rtf", "txt"):
+        ck(os.path.isfile(os.path.join(BASE, "colectie-imagine", slug, f"{nume}.{ext}")),
+           f"instalator: lipseste colectie-imagine/{slug}/{nume}.{ext}")
 for slug, short in COLECTIE:
     nume = f"Mihai Zamfir - {short}"
     ck(f'"{nume}"' in inst, f"instalator: nu instaleaza semnatura {nume!r}")

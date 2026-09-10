@@ -3,7 +3,7 @@ setlocal EnableExtensions
 title Dezinstalare semnaturi ITISTUL.RO
 set "DEST=%APPDATA%\Microsoft\Signatures"
 echo.
-echo   Se elimina toate cele 21 de semnaturi ITISTUL.RO si setarile facute de instalator.
+echo   Se elimina toate cele 38 de semnaturi ITISTUL.RO si setarile facute de instalator.
 echo.
 tasklist /FI "IMAGENAME eq OUTLOOK.EXE" 2>nul | find /I "OUTLOOK.EXE" >nul
 if not errorlevel 1 ( echo   Inchide Outlook mai intai. & echo. & pause & exit /b 1 )
@@ -28,6 +28,23 @@ call :sterge "Mihai Zamfir - Mono 1"
 call :sterge "Mihai Zamfir - Mono 2"
 call :sterge "Mihai Zamfir - Mono 3"
 call :sterge "Mihai Zamfir - Aur"
+call :sterge "Mihai Zamfir - Lux 1 (img)"
+call :sterge "Mihai Zamfir - Lux 2 (img)"
+call :sterge "Mihai Zamfir - Lux 3 (img)"
+call :sterge "Mihai Zamfir - Lux 4 (img)"
+call :sterge "Mihai Zamfir - Lux 5 (img)"
+call :sterge "Mihai Zamfir - Lux 6 (img)"
+call :sterge "Mihai Zamfir - Lux 7 (img)"
+call :sterge "Mihai Zamfir - Lux 8 (img)"
+call :sterge "Mihai Zamfir - Lux 9 (img)"
+call :sterge "Mihai Zamfir - Rose (img)"
+call :sterge "Mihai Zamfir - Noir 1 (img)"
+call :sterge "Mihai Zamfir - Noir 2 (img)"
+call :sterge "Mihai Zamfir - Noir 3 (img)"
+call :sterge "Mihai Zamfir - Mono 1 (img)"
+call :sterge "Mihai Zamfir - Mono 2 (img)"
+call :sterge "Mihai Zamfir - Mono 3 (img)"
+call :sterge "Mihai Zamfir - Aur (img)"
 set "MS=HKCU\Software\Microsoft\Office\16.0\Common\MailSettings"
 reg delete "%MS%" /v NewSignature   /f >nul 2>&1
 reg delete "%MS%" /v ReplySignature /f >nul 2>&1
