@@ -214,8 +214,8 @@ anul1940: {
     locuri: [ { p: L.bucuresti, tip: 'capitala', anc: 'end' }, { p: L.cluj, anc: 'end' },
       { p: L.chisinau }, { p: L.cernauti, anc: 'end' }, { p: L.brasov }, { p: L.sibiu, anc: 'end' } ],
     note: [ etm([24.0, 47.3], 'CĂTRE UNGARIA\n30 august · 43.492 km²'),
-      etm([28.9, 46.9], 'CĂTRE URSS\n28 iunie · 50.762 km²'),
-      etm([27.6, 43.85], 'CĂTRE BULGARIA\n7 sept. · 7.412 km²'),
+      etm([29.05, 46.45], 'CĂTRE URSS\n28 iunie · 50.762 km²'),
+      etm([27.45, 43.72], 'CĂTRE BULGARIA\n7 sept. · 7.412 km²'),
       et([25.3, 44.7], 'ROMÂNIA') ] }) },
 
 /* ----------------------------------------------------------------- 11 --- */
@@ -244,8 +244,8 @@ azi: {
     conturZone: [FRONTIERE.romaniaAzi],
     locuri: [
       { p: L.bucuresti, tip: 'capitala', anc: 'end' }, { p: L.cluj }, { p: L.timisoara, anc: 'end' },
-      { p: L.iasi }, { p: L.constanta }, { p: L.craiova, anc: 'end' }, { p: L.brasov },
-      { p: L.galatiO }, { p: L.ploiesti }, { p: L.oradea, anc: 'end' }, { p: L.braila, anc: 'end', sus: 1 },
+      { p: L.iasi, anc: 'end' }, { p: L.constanta }, { p: L.craiova, anc: 'end' }, { p: L.brasov },
+      { p: L.galatiO, sus: 1 }, { p: L.ploiesti }, { p: L.oradea, anc: 'end' }, { p: L.braila, anc: 'end' },
     ],
     note: [ etm([23.9, 46.6], 'TRANSILVANIA'), etm([27.0, 46.7], 'MOLDOVA'),
       etm([25.6, 44.6], 'MUNTENIA'), etm([23.5, 44.55], 'OLTENIA'), etm([21.3, 45.5], 'BANAT'),

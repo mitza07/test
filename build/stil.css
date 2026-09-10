@@ -142,6 +142,7 @@ html { scroll-behavior: smooth; }
 .rail-ep.activ { color: var(--voronet); }
 .rail-ep.activ::before { background: var(--voronet); }
 .rail-ep.mic b, .rail-ep.mic i { display: none; }
+.rail-ep.fara-titlu b { display: none; }
 .rail-ep.mic { border-top-color: var(--rule); }
 .rail-legenda { margin-top: .9rem; padding-top: .7rem; border-top: 1px solid var(--rule); min-height: 3.4rem; }
 .rail-legenda i { display: block; font-style: normal; font-family: var(--sans); font-size: 11px;

@@ -144,7 +144,7 @@ export function construieste(continut) {
     const top = ((p.de - A0) / (A1 - A0)) * 100
     const h = ((Math.min(p.la, A1) - p.de) / (A1 - A0)) * 100
     const c = capById[p.id]
-    return `<a class="rail-ep${h < 2.1 ? ' mic' : ''}" href="#${p.id}" data-id="${p.id}" data-per="${esc(p.per)}" data-titlu="${esc((c || {}).titlu || '')}" style="top:${top.toFixed(3)}%;height:${h.toFixed(3)}%" title="${esc(p.per)} — ${esc((c || {}).titlu || '')}">
+    return `<a class="rail-ep${h < 1.6 ? ' mic' : h < 5 ? ' fara-titlu' : ''}" href="#${p.id}" data-id="${p.id}" data-per="${esc(p.per)}" data-titlu="${esc((c || {}).titlu || '')}" style="top:${top.toFixed(3)}%;height:${h.toFixed(3)}%" title="${esc(p.per)} — ${esc((c || {}).titlu || '')}">
 <span><i>${esc(p.per)}</i><b>${esc((c || {}).titlu || '')}</b></span></a>`
   }).join('')
 
