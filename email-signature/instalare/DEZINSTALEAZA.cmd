@@ -3,13 +3,14 @@ setlocal EnableExtensions
 title Dezinstalare semnaturi ITISTUL.RO
 set "DEST=%APPDATA%\Microsoft\Signatures"
 echo.
-echo   Se elimina toate cele trei semnaturi ITISTUL.RO si setarile facute de instalator.
+echo   Se elimina toate cele patru semnaturi ITISTUL.RO si setarile facute de instalator.
 echo.
 tasklist /FI "IMAGENAME eq OUTLOOK.EXE" 2>nul | find /I "OUTLOOK.EXE" >nul
 if not errorlevel 1 ( echo   Inchide Outlook mai intai. & echo. & pause & exit /b 1 )
 call :sterge "Mihai Zamfir"
 call :sterge "Mihai Zamfir - Clasic"
 call :sterge "Mihai Zamfir - Signet"
+call :sterge "Mihai Zamfir - Puls"
 set "MS=HKCU\Software\Microsoft\Office\16.0\Common\MailSettings"
 reg delete "%MS%" /v NewSignature   /f >nul 2>&1
 reg delete "%MS%" /v ReplySignature /f >nul 2>&1

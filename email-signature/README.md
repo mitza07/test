@@ -1,17 +1,30 @@
 # Semnături e-mail — Mihai Zamfir / ITISTUL.RO
 
-**Trei** semnături Outlook, toate **fără nimic de urcat pe site**. Instalatorul le pune pe
+**Patru** semnături Outlook, toate **fără nimic de urcat pe site**. Instalatorul le pune pe
 toate; le comuți din Outlook la compunerea unui mesaj (`Message > Signature`).
 
 ![previzualizare](documentatie/previzualizare.png)
 
-| | „Mihai Zamfir - Signet" | „Mihai Zamfir" | „Mihai Zamfir - Clasic" |
-|---|---|---|---|
-| Design | **executivă**, nou | compactă | designul original |
-| Imagini | **niciuna, prin construcție** | bandă GIF (sau celule) | bandă GIF (sau celule) |
-| Lățime | 580 px | 560 px | 680 px |
-| Sursă HTML | 8,4 KB | 8,1 KB | 14,8 KB |
-| Implicită | `INSTALEAZA-SEMNATURA.cmd signet` | da | `INSTALEAZA-SEMNATURA.cmd clasic` |
+| | „Mihai Zamfir - Signet" | „Mihai Zamfir - Puls" | „Mihai Zamfir" | „Mihai Zamfir - Clasic" |
+|---|---|---|---|---|
+| Design | **executivă**, nou | **grafică**, nou | compactă | designul original |
+| Imagini | **niciuna** | **niciuna** | bandă GIF (sau celule) | bandă GIF (sau celule) |
+| Lățime | 580 px | 560 px | 560 px | 680 px |
+| Sursă HTML | 8,4 KB | 14,3 KB | 8,1 KB | 14,8 KB |
+| Implicită | `... signet` | `... puls` | da | `... clasic` |
+
+## Puls — semnătura grafică
+
+Registrul întunecat pe care l-ai cerut de la început, cu banda rezolvată definitiv: un
+bloc bleumarin cu ramă „chrome", iar eroul e o **undă pătrată construită din celule**
+care urcă din albastru spre un vârf albastru-deschis. Deasupra, wordmark-ul și
+tagline-ul într-o bandă de titlu; dedesubt, numele, rolul, contactele, adresa, și o
+bandă de status cu disciplinele.
+
+**Nicio imagine.** Unda e făcută din 32 de celule colorate, un singur tabel, adâncime 1.
+Nu poate fi blocată, descărcată sau încorporată greșit de Outlook — problema care a
+mâncat jumătate din acest proiect nu mai există prin construcție. Nu se animează;
+în schimb apare la toată lumea, mereu.
 
 ## Signet — semnătura executivă
 
@@ -171,13 +184,14 @@ Argumente:
 
 | Comandă | Efect |
 |---|---|
-| `INSTALEAZA-SEMNATURA.cmd` | toate trei, implicită cea compactă |
+| `INSTALEAZA-SEMNATURA.cmd` | toate patru, implicită cea compactă |
 | `INSTALEAZA-SEMNATURA.cmd clasic` | toate, implicită cea clasică |
 | `INSTALEAZA-SEMNATURA.cmd signet` | toate, implicită cea executivă |
+| `INSTALEAZA-SEMNATURA.cmd puls` | toate, implicită cea grafică |
 | `INSTALEAZA-SEMNATURA.cmd fara-imagini` | ambele, variantele fără bandă |
 | `INSTALEAZA-SEMNATURA.cmd clasic fara-imagini` | se pot combina |
 
-Anulare completă: `instalare/DEZINSTALEAZA.cmd` (elimină toate trei).
+Anulare completă: `instalare/DEZINSTALEAZA.cmd` (elimină toate patru).
 
 Instalatorul scrie un jurnal la `instalare/jurnal-instalare.txt`. Dacă ceva
 eșuează, acolo găsești ce sursă lipsea, dacă destinația exista și dacă Outlook
@@ -236,6 +250,7 @@ email-signature/
 │  └─ previzualizare.html       ← deschide în browser
 ├─ semnatura-clasic/            ← designul original, aceeași structură
 ├─ semnatura-signet/            ← executivă, fără imagini, fără variante
+├─ semnatura-puls/              ← grafică, fără imagini, fără variante
 ├─ genereaza-gif.py             ← regenerează banda compactă
 ├─ genereaza-gif-clasic.py      ← regenerează banda clasică
 └─ verifica.py                  ← 768 verificări, pe ambele semnături

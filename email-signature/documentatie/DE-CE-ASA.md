@@ -1,8 +1,9 @@
 # De ce arată codul așa
 
 > Regulile de mai jos se aplică **tuturor** semnăturilor: `semnatura/` (compactă),
-> `semnatura-clasic/` (designul original) și `semnatura-signet/` (executivă). Diferă
-> compoziția, nu tehnica. Signet le aplică cel mai strict: nu are nicio imagine, deci
+> `semnatura-clasic/` (designul original), `semnatura-signet/` (executivă) și
+> `semnatura-puls/` (grafică). Diferă
+> compoziția, nu tehnica. Signet și Puls le aplică cel mai strict: nu au nicio imagine, deci
 > secțiunea 1 nu o privește deloc — n-are ce să lipsească.
 > Ce s-a schimbat concret în designul clasic față de pachetul original, și de ce,
 > este în tabelul din `README.md`.

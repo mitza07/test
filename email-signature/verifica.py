@@ -208,6 +208,19 @@ rs = open(os.path.join(SIGNET, f"{NS}.rtf"), "rb").read()
 ck(rs.startswith(b"{\\rtf1") and rs.count(b"{") == rs.count(b"}") and b"Georgia" in rs,
    f"{NS}.rtf: invalid sau fara Georgia")
 
+PULS = os.path.join(BASE, "semnatura-puls")
+NP = "Mihai Zamfir - Puls"
+check_fragment(os.path.join(PULS, "fragment.html"))              # nicio imagine permisa
+check_htm(os.path.join(PULS, f"{NP}.htm"))
+ck(not os.path.exists(os.path.join(PULS, f"{NP}_files")), f"{NP}: nu ar trebui sa aiba folder companion")
+ck(b"File-List" not in open(os.path.join(PULS, f"{NP}.htm"), "rb").read(), f"{NP}.htm: File-List fara folder companion")
+for ext in ("rtf", "txt"):
+    ck(os.path.isfile(os.path.join(PULS, f"{NP}.{ext}")), f"{NP}: lipseste {NP}.{ext}")
+pg = open(os.path.join(PULS, "fragment.html"), encoding="utf-8").read()
+ck(pg.count("<table") == 1, f"{NP}: se astepta un singur tabel (adancime 1), gasite {pg.count('<table')}")
+ck(len(pg.encode()) < 16000, f"{NP}: {len(pg.encode())} B, peste bugetul de 16 KB")
+ck(len(re.findall(r'<td[^>]*height="\d+"', pg)) <= 60, f"{NP}: prea multe celule grafice")
+
 rtf = open(os.path.join(SIG, "Mihai Zamfir.rtf"), "rb").read()
 ck(rtf.startswith(b"{\\rtf1"), "RTF: nu incepe cu {\\rtf1 (BOM?)")
 ck(rtf.count(b"{") == rtf.count(b"}"), "RTF: acolade dezechilibrate")
@@ -266,6 +279,14 @@ for ext in ("htm", "rtf", "txt"):
     ck(os.path.isfile(os.path.join(BASE, "semnatura-signet", f"Mihai Zamfir - Signet.{ext}")),
        f"instalator: lipseste semnatura-signet/Mihai Zamfir - Signet.{ext}")
 ck('"Mihai Zamfir - Signet"' in inst, "instalator: nu instaleaza semnatura Signet")
+for ext in ("htm", "rtf", "txt"):
+    ck(os.path.isfile(os.path.join(BASE, "semnatura-puls", f"Mihai Zamfir - Puls.{ext}")),
+       f"instalator: lipseste semnatura-puls/Mihai Zamfir - Puls.{ext}")
+ck('"Mihai Zamfir - Puls"' in inst, "instalator: nu instaleaza semnatura Puls")
+ck('set "IMPLICITA=Mihai Zamfir - Puls"' in inst, "instalator: argumentul puls nu seteaza implicita")
+ck('\\semnatura-puls"' in inst and '\\semnatura-puls%SUB%' not in inst, "instalator: calea Puls nu trebuie sa primeasca %SUB%")
+ck('"Mihai Zamfir - Puls"' in open(os.path.join(BASE, "instalare", "DEZINSTALEAZA.cmd"), encoding="ascii").read(),
+   "dezinstalator: nu elimina semnatura Puls")
 ck('set "IMPLICITA=Mihai Zamfir - Signet"' in inst, "instalator: argumentul signet nu seteaza implicita")
 ck('\\semnatura-signet"' in inst and '\\semnatura-signet%SUB%' not in inst,
    "instalator: calea Signet nu trebuie sa primeasca %SUB%")
