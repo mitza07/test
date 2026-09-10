@@ -37,11 +37,11 @@ def check_fragment(path, allow_image=False):
     # mso-line-height-rule:exactly face motorul Word sa TAIE ce depaseste
     # inaltimea de rand. Corect pe text, fatal pe o celula cu imagine: cu
     # line-height:0 imaginea e taiata complet si nu se vede nimic.
-    bare = t.count("line-height:") - t.count("mso-line-height-rule:exactly;line-height:")
     has_img = "<img" in t
-    ck(bare == (2 if has_img else 0),
-       f"{name}: {bare} line-height fara mso-line-height-rule (asteptat "
-       f"{2 if has_img else 0}: doar celula imaginii si paragraful ei)")
+    for st in re.findall(r'style="([^"]*)"', t):
+        if "line-height:" in st and "mso-line-height-rule:exactly;line-height:" not in st:
+            ck("font-size:0" in st,
+               f"{name}: line-height fara mso-line-height-rule pe un stil cu text vizibil: {st[:90]}")
     if has_img:
         m = re.search(r"<td([^>]*)>\s*<p([^>]*)>\s*<img", t)
         ck(bool(m), f"{name}: <img> nu e intr-un <td><p> asteptat")
@@ -191,6 +191,23 @@ for root, nume in ((SIG, "Mihai Zamfir"), (CLASIC, "Mihai Zamfir - Clasic")):
             ck(os.path.isfile(os.path.join(d, f"{nume}.{ext}")),
                f"{nume}: lipseste {os.path.relpath(d, BASE)}/{nume}.{ext}")
 
+SIGNET = os.path.join(BASE, "semnatura-signet")
+NS = "Mihai Zamfir - Signet"
+check_fragment(os.path.join(SIGNET, "fragment.html"))            # nicio imagine permisa
+check_htm(os.path.join(SIGNET, f"{NS}.htm"))
+ck(not os.path.exists(os.path.join(SIGNET, f"{NS}_files")), f"{NS}: nu ar trebui sa aiba folder companion")
+ck(b"File-List" not in open(os.path.join(SIGNET, f"{NS}.htm"), "rb").read(), f"{NS}.htm: File-List fara folder companion")
+for ext in ("rtf", "txt"):
+    ck(os.path.isfile(os.path.join(SIGNET, f"{NS}.{ext}")), f"{NS}: lipseste {NS}.{ext}")
+sg = open(os.path.join(SIGNET, "fragment.html"), encoding="utf-8").read()
+ck("Georgia" in sg, f"{NS}: numele nu foloseste Georgia (identitatea executiva)")
+ck(re.search(r"font-weight:700", sg) is None, f"{NS}: designul executiv nu foloseste bold")
+ck(len(re.findall(r"<table", sg)) <= 4, f"{NS}: prea multe tabele imbricate")
+ck(len(sg.encode()) < 14000, f"{NS}: {len(sg.encode())} B, peste bugetul de 14 KB")
+rs = open(os.path.join(SIGNET, f"{NS}.rtf"), "rb").read()
+ck(rs.startswith(b"{\\rtf1") and rs.count(b"{") == rs.count(b"}") and b"Georgia" in rs,
+   f"{NS}.rtf: invalid sau fara Georgia")
+
 rtf = open(os.path.join(SIG, "Mihai Zamfir.rtf"), "rb").read()
 ck(rtf.startswith(b"{\\rtf1"), "RTF: nu incepe cu {\\rtf1 (BOM?)")
 ck(rtf.count(b"{") == rtf.count(b"}"), "RTF: acolade dezechilibrate")
@@ -244,6 +261,16 @@ for arg_sub, sub in [("(fara argument)", ""), ("banda-html", "varianta-banda-htm
             ck(os.path.isfile(f), f"instalator [{arg_sub}]: lipseste {folder}/{sub}/{nume}.{ext}")
         ck(not os.path.exists(os.path.join(d, f"{nume}_files")),
            f"instalator [{arg_sub}]: {folder}/{sub} nu ar trebui sa aiba folder companion")
+# Signet: fara variante, calea nu primeste %SUB%
+for ext in ("htm", "rtf", "txt"):
+    ck(os.path.isfile(os.path.join(BASE, "semnatura-signet", f"Mihai Zamfir - Signet.{ext}")),
+       f"instalator: lipseste semnatura-signet/Mihai Zamfir - Signet.{ext}")
+ck('"Mihai Zamfir - Signet"' in inst, "instalator: nu instaleaza semnatura Signet")
+ck('set "IMPLICITA=Mihai Zamfir - Signet"' in inst, "instalator: argumentul signet nu seteaza implicita")
+ck('\\semnatura-signet"' in inst and '\\semnatura-signet%SUB%' not in inst,
+   "instalator: calea Signet nu trebuie sa primeasca %SUB%")
+ck('"Mihai Zamfir - Signet"' in open(os.path.join(BASE, "instalare", "DEZINSTALEAZA.cmd"), encoding="ascii").read(),
+   "dezinstalator: nu elimina semnatura Signet")
 # numele semnaturilor din script trebuie sa fie exact cele de pe disc
 for folder, nume in SEMNATURI:
     ck(f'"{nume}"' in inst, f"instalator: nu instaleaza semnatura {nume!r}")

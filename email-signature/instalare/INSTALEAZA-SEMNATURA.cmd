@@ -8,9 +8,11 @@ rem
 rem  Instaleaza AMBELE semnaturi:
 rem    "Mihai Zamfir"           - designul compact
 rem    "Mihai Zamfir - Clasic"  - designul original, protejat
+rem    "Mihai Zamfir - Signet"  - designul executiv, fara nicio imagine
 rem
 rem  Implicita ramane cea compacta. Pentru ca implicita sa fie cea
 rem  clasica, ruleaza:  INSTALEAZA-SEMNATURA.cmd clasic
+rem  Pentru cea executiva:   INSTALEAZA-SEMNATURA.cmd signet
 rem  Pentru variantele fara nicio imagine, adauga:  fara-imagini
 rem    ex.  INSTALEAZA-SEMNATURA.cmd clasic fara-imagini
 rem
@@ -32,6 +34,7 @@ set "IMPLICITA=Mihai Zamfir"
 for %%A in (%*) do (
   if /I "%%~A"=="banda-html" set "SUB=\varianta-banda-html"
   if /I "%%~A"=="clasic"       set "IMPLICITA=Mihai Zamfir - Clasic"
+  if /I "%%~A"=="signet"       set "IMPLICITA=Mihai Zamfir - Signet"
 )
 
 echo.
@@ -70,6 +73,8 @@ set "BK=%DEST%\_backup_ITISTUL\%STAMP%"
 
 call :instaleaza "Mihai Zamfir"          "%ROOT%\semnatura%SUB%"        || goto :fail
 call :instaleaza "Mihai Zamfir - Clasic" "%ROOT%\semnatura-clasic%SUB%" || goto :fail
+rem  Signet nu are variante: e fara imagini prin constructie, deci nu primeste %SUB%
+call :instaleaza "Mihai Zamfir - Signet" "%ROOT%\semnatura-signet"        || goto :fail
 
 rem --- semnatura implicita pentru mesaje noi si pentru raspunsuri ---
 set "MS=HKCU\Software\Microsoft\Office\16.0\Common\MailSettings"
@@ -90,7 +95,7 @@ echo   Semnaturi roaming dezactivate (altfel cloud-ul suprascrie fisierul local)
 
 >>"%LOG%" echo --- SUCCES ---  implicita: %IMPLICITA%
 echo.
-echo   GATA. Ambele semnaturi sunt instalate.
+echo   GATA. Toate cele trei semnaturi sunt instalate.
 echo   Le poti comuta oricand din Outlook, la compunerea unui mesaj:
 echo     Message ^> Signature ^> alegi semnatura.
 echo.

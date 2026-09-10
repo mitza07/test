@@ -1,18 +1,38 @@
 # Semnături e-mail — Mihai Zamfir / ITISTUL.RO
 
-**Două** semnături Outlook grafice și animate, ambele **fără nimic de urcat pe site**.
-Instalatorul le pune pe amândouă; le comuți din Outlook la compunerea unui mesaj
-(`Message > Signature`).
+**Trei** semnături Outlook, toate **fără nimic de urcat pe site**. Instalatorul le pune pe
+toate; le comuți din Outlook la compunerea unui mesaj (`Message > Signature`).
 
 ![previzualizare](documentatie/previzualizare.png)
 
-| | „Mihai Zamfir" | „Mihai Zamfir - Clasic" |
-|---|---|---|
-| Design | compact, reproiectat | **designul tău original** |
-| Lățime | 560 px | 680 px |
-| Sursă HTML | 8,1 KB | 14,8 KB |
-| Bandă animată | 508×28, 11 KB | 638×26, 10 KB |
-| Implicită | da | `INSTALEAZA-SEMNATURA.cmd clasic` |
+| | „Mihai Zamfir - Signet" | „Mihai Zamfir" | „Mihai Zamfir - Clasic" |
+|---|---|---|---|
+| Design | **executivă**, nou | compactă | designul original |
+| Imagini | **niciuna, prin construcție** | bandă GIF (sau celule) | bandă GIF (sau celule) |
+| Lățime | 580 px | 560 px | 680 px |
+| Sursă HTML | 8,4 KB | 8,1 KB | 14,8 KB |
+| Implicită | `INSTALEAZA-SEMNATURA.cmd signet` | da | `INSTALEAZA-SEMNATURA.cmd clasic` |
+
+## Signet — semnătura executivă
+
+Brief-ul: „ca pentru un CEO de top". Răspunsul: reținere. Un **semn** precis de 52×52 —
+câmp bleumarin, „IT" în Georgia alb, un soclu de 4 px în albastrul de brand — lângă
+numele în Georgia și titlul în italic. Sub ele, o linie de letterhead de 1 px, o
+singură linie de contacte în cerneală monocromă, adresa, apoi wordmark-ul
+`ITISTUL.RO` spațiat și disciplinele în majuscule mute. **Nimic bold, nimic decorativ,
+albastrul apare o singură dată.**
+
+Georgia e instalată pe orice Windows și Mac și e randată corect de motorul Word —
+serifa dă exact gravitatea pe care n-o au celelalte două.
+
+De ce e cea mai robustă din pachet: **nu conține nicio imagine**. Semnul e făcut din
+celule, linia e un `border-top`. Nu există nimic de blocat de client, de descărcat de
+pe undeva, de încorporat de Outlook sau de filtrat de server. E lecția întregului
+proces, aplicată de la zero.
+
+Ce mai trebuie să știi: 4 tabele, adâncime 2, 16 celule, 6 celule grafice, 8.433 B;
+toate perechile text/fundal peste 5:1; culoarea e declarată pe același element ca
+fundalul, deci dark mode-ul inversează totul împreună.
 
 Ambele au aceleași protecții, aceleași diacritice ca entități numerice, același
 mecanism de atașare inline a benzii. Diferă doar compoziția.
@@ -151,12 +171,13 @@ Argumente:
 
 | Comandă | Efect |
 |---|---|
-| `INSTALEAZA-SEMNATURA.cmd` | ambele semnături, implicită cea compactă |
-| `INSTALEAZA-SEMNATURA.cmd clasic` | ambele, implicită cea clasică |
+| `INSTALEAZA-SEMNATURA.cmd` | toate trei, implicită cea compactă |
+| `INSTALEAZA-SEMNATURA.cmd clasic` | toate, implicită cea clasică |
+| `INSTALEAZA-SEMNATURA.cmd signet` | toate, implicită cea executivă |
 | `INSTALEAZA-SEMNATURA.cmd fara-imagini` | ambele, variantele fără bandă |
 | `INSTALEAZA-SEMNATURA.cmd clasic fara-imagini` | se pot combina |
 
-Anulare completă: `instalare/DEZINSTALEAZA.cmd` (elimină ambele).
+Anulare completă: `instalare/DEZINSTALEAZA.cmd` (elimină toate trei).
 
 Instalatorul scrie un jurnal la `instalare/jurnal-instalare.txt`. Dacă ceva
 eșuează, acolo găsești ce sursă lipsea, dacă destinația exista și dacă Outlook
@@ -214,6 +235,7 @@ email-signature/
 │  ├─ DE-CE-ASA.md              ← deciziile tehnice, cu motivul fiecăreia
 │  └─ previzualizare.html       ← deschide în browser
 ├─ semnatura-clasic/            ← designul original, aceeași structură
+├─ semnatura-signet/            ← executivă, fără imagini, fără variante
 ├─ genereaza-gif.py             ← regenerează banda compactă
 ├─ genereaza-gif-clasic.py      ← regenerează banda clasică
 └─ verifica.py                  ← 768 verificări, pe ambele semnături

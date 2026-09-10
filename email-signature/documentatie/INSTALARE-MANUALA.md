@@ -1,9 +1,10 @@
 # Instalare manuală — fără niciun script
 
-Pachetul conține **două** semnături. Repetă pașii de mai jos pentru fiecare:
+Pachetul conține **trei** semnături. Repetă pașii de mai jos pentru fiecare:
 
 - `Mihai Zamfir` — din folderul `semnatura/`
 - `Mihai Zamfir - Clasic` — din folderul `semnatura-clasic/`
+- `Mihai Zamfir - Signet` — din folderul `semnatura-signet/` (fără folder companion: n-are imagini)
 
 Fiecare are folderul ei companion (`<nume>_files`), care trebuie copiat odată cu
 fișierele.
