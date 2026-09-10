@@ -108,6 +108,25 @@ $script:CkaGuid = @{
     HibernateIdle = '9d7815a6-7ee4-497e-8888-515a05f02364'  # "Hibernate after"
     SubWireless   = '19cbb8fa-5279-450e-9fac-8a3d5fedd0c1'
     WifiPowerMode = '12bbebe6-58d6-4636-95bb-3217ef867c1a'  # 0 = Maximum Performance
+    SubUsb        = '2a737441-1930-4402-8d77-b2bebba308a3'
+    UsbSuspend    = '48e6b7a6-50f5-4782-a5d4-53bb8f07e226'  # 0 = Disabled
+}
+
+function Get-CkaUsbNetworkAdapter {
+    <#
+        Network adapters attached over USB. They matter because USB selective
+        suspend can power the dongle down on its own, independently of the
+        adapter's own power management - which looks exactly like the machine
+        going offline while it is plainly awake.
+    #>
+    try {
+        @(Get-NetAdapter -Physical -ErrorAction Stop | Where-Object {
+            ($_.PSObject.Properties.Name -contains 'PnPDeviceID' -and $_.PnPDeviceID -like 'USB\*') -or
+            $_.InterfaceDescription -match '(?i)\bUSB\b'
+        })
+    } catch {
+        @()
+    }
 }
 
 function Get-CkaActiveSchemeGuid {
@@ -186,19 +205,50 @@ function Test-CkaNicMayPowerDown {
 
         Returns $null when the adapter cannot be matched to a driver key.
     #>
-    param([Parameter(Mandatory)][string]$InterfaceGuid)
+    param(
+        [Parameter(Mandatory)][AllowEmptyString()][string]$InterfaceGuid,
+        [string]$InterfaceDescription
+    )
+
+    # The registry stores NetCfgInstanceId braced and upper case; Get-NetAdapter
+    # may hand back either form. Compare canonical shapes, not raw strings.
+    $wanted = ($InterfaceGuid -replace '[{}]', '').Trim()
 
     $classRoot = 'HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}'
     try {
-        foreach ($sub in (Get-ChildItem -LiteralPath $classRoot -ErrorAction Stop)) {
-            $props = Get-ItemProperty -LiteralPath $sub.PSPath -ErrorAction SilentlyContinue
-            if (-not $props -or $props.NetCfgInstanceId -ne $InterfaceGuid) { continue }
-            $caps = if ($null -ne $props.PnPCapabilities) { [int]$props.PnPCapabilities } else { 0 }
-            return (-not ($caps -band 0x08))
-        }
+        $subKeys = @(Get-ChildItem -LiteralPath $classRoot -ErrorAction Stop)
     } catch {
         # Unreadable driver key - report "unknown" rather than guessing.
+        return $null
     }
+
+    $readCaps = {
+        param($Props)
+        $caps = if ($null -ne $Props.PnPCapabilities) { [int]$Props.PnPCapabilities } else { 0 }
+        (-not ($caps -band 0x08))
+    }
+
+    $all = @()
+    foreach ($sub in $subKeys) {
+        $props = Get-ItemProperty -LiteralPath $sub.PSPath -ErrorAction SilentlyContinue
+        if ($props) { $all += $props }
+    }
+
+    if ($wanted) {
+        foreach ($props in $all) {
+            $have = ([string]$props.NetCfgInstanceId -replace '[{}]', '').Trim()
+            if ($have -and $have -eq $wanted) { return (& $readCaps $props) }
+        }
+    }
+
+    # USB and other hot-plugged adapters do not always expose a matching
+    # NetCfgInstanceId, so fall back to the driver description - but only when
+    # exactly one key matches, otherwise we would be guessing.
+    if ($InterfaceDescription) {
+        $byDesc = @($all | Where-Object { $_.DriverDesc -and $_.DriverDesc -eq $InterfaceDescription })
+        if ($byDesc.Count -eq 1) { return (& $readCaps $byDesc[0]) }
+    }
+
     $null
 }
 

@@ -56,6 +56,7 @@ Instalarea face patru lucruri:
 | Agentul | Copiat în `%LOCALAPPDATA%\ClaudeKeepAlive\bin` |
 | Somn pe alimentare | `Sleep after` și `Hibernate after` pe *Never* — **doar** pe priză, comportamentul pe baterie rămâne neatins |
 | Wi-Fi | *Maximum Performance* pe priză, ca radioul să nu se culce sub sesiune |
+| USB | *Selective suspend* oprit pe priză — **doar** dacă rețeaua merge printr-un adaptor USB, altfel nu se atinge |
 | Pornire automată | Task programat la logon **și după fiecare revenire din somn** |
 
 Fără drepturi de administrator agentul tot se instalează; pașii de power plan

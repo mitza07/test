@@ -114,6 +114,25 @@ if ($null -ne $standbyAc -and $standbyAc -gt 0) {
         -Title ("The PC sleeps after {0} on mains power. That alone explains 'Can't reach your computer'." -f (Format-Timeout $standbyAc)) `
         -Fix 'powercfg /change standby-timeout-ac 0   (or run .\Install-ClaudeKeepAlive.ps1 elevated)'
 }
+$usbNics = @(Get-CkaUsbNetworkAdapter)
+if ($usbNics.Count -gt 0) {
+    $usbSuspend = Get-CkaPowerIndex -SubGuid $script:CkaGuid.SubUsb -SettingGuid $script:CkaGuid.UsbSuspend -Line AC
+    $usbLabel = switch ($usbSuspend) {
+        0       { 'Disabled' }
+        1       { 'Enabled' }
+        $null   { 'unknown' }
+        default { "value $usbSuspend" }
+    }
+    Write-Item 'USB selective suspend (plugged)' $usbLabel `
+        $(if ($usbSuspend -eq 0) { 'Green' } elseif ($null -eq $usbSuspend) { 'DarkGray' } else { 'Yellow' })
+
+    if ($null -ne $usbSuspend -and $usbSuspend -ne 0) {
+        Add-Finding -Severity Warning `
+            -Title ("This machine reaches the network over USB ({0}), and USB selective suspend is on - Windows can power the adapter down by itself, which looks exactly like the PC going offline while it is plainly awake." -f $usbNics[0].InterfaceDescription) `
+            -Fix 'Run .\Install-ClaudeKeepAlive.ps1 elevated - it turns selective suspend off on AC when the network runs over USB.'
+    }
+}
+
 if ($null -ne $wifiAc -and $wifiAc -gt 0) {
     Add-Finding -Severity Warning `
         -Title 'The Wi-Fi radio is allowed to enter power saving on mains power, which can drop a long-lived connection.' `
@@ -137,7 +156,8 @@ if ($adapters.Count -eq 0) {
             Write-Item '    Wake on magic packet' 'not reported by this driver' 'DarkGray'
         }
 
-        $mayPowerDown = Test-CkaNicMayPowerDown -InterfaceGuid ([string]$a.InterfaceGuid)
+        $mayPowerDown = Test-CkaNicMayPowerDown -InterfaceGuid ([string]$a.InterfaceGuid) `
+            -InterfaceDescription ([string]$a.InterfaceDescription)
         if ($null -eq $mayPowerDown) {
             Write-Item '    Windows may power it down' 'unknown' 'DarkGray'
         } else {

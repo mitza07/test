@@ -15,6 +15,7 @@ Ordonat după cât de des e vinovatul real.
 | **Modern Standby (S0)** | PC-ul „nu doarme" — LED aprins, ventilator oprit — dar sesiunea tot moare | Agentul; în ultimă instanță secțiunea 3 de mai jos |
 | **Economie de energie pe placa de rețea** | Cade doar după inactivitate lungă, deși PC-ul e treaz | Debifează *Allow the computer to turn off this device* |
 | **Wi-Fi pe Power Saving** | Cade aleatoriu pe wireless, niciodată pe cablu | Wireless Adapter Settings → *Maximum Performance* |
+| **USB selective suspend** | Doar pe mașini cu adaptor de rețea pe USB: pică deși PC-ul e clar treaz | Instalatorul îl oprește pe priză când detectează placă USB |
 | **Claude Desktop închis / delogat** | Cade instant, la orice oră, indiferent de energie | Ține aplicația pornită și logată |
 | **Windows Update a repornit** | Cade întotdeauna noaptea, la aceeași oră | Active hours; diagnosticul arată `User32 1074` |
 | **Pană de curent / crash** | Cade brusc, `Kernel-Power 41` în jurnal | `perfmon /rel` în jurul acelui moment |

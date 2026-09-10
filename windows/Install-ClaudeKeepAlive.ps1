@@ -10,7 +10,9 @@
       2. stops the machine from sleeping while plugged in
       3. sets the wireless adapter to Maximum Performance on AC, so Wi-Fi does
          not power down the radio under the running session
-      4. starts the agent at logon and again after every resume from sleep
+      4. turns off USB selective suspend on AC, but only when the machine
+         reaches the network through a USB adapter
+      5. starts the agent at logon and again after every resume from sleep
 
     Optional, off unless asked for:
       -EnableWakeOnLan     arm the network card so a magic packet wakes the PC
@@ -61,9 +63,9 @@ $skipped = New-Object System.Collections.Generic.List[string]
 # would happily save "Never" as the original sleep timeout and make the
 # uninstall a no-op. The first recorded value always wins.
 $restore = @{}
-$previous = Get-CkaRestorePoint
-if ($previous) {
-    foreach ($p in $previous.PSObject.Properties) { $restore[$p.Name] = $p.Value }
+$previousRestore = Get-CkaRestorePoint
+if ($previousRestore) {
+    foreach ($p in $previousRestore.PSObject.Properties) { $restore[$p.Name] = $p.Value }
 }
 
 function Get-OriginalValue {
@@ -112,6 +114,19 @@ if ($SkipPowerPlan) {
     & powercfg.exe /setacvalueindex SCHEME_CURRENT $script:CkaGuid.SubWireless $script:CkaGuid.WifiPowerMode 0 2>$null | Out-Null
     & powercfg.exe /setactive SCHEME_CURRENT 2>$null | Out-Null
     Write-CkaLog 'Wireless adapter power saving on AC set to Maximum Performance.' -Level OK
+
+    # Only when the machine actually talks to the network over a USB adapter:
+    # selective suspend would otherwise power the dongle down on its own, and
+    # turning it off for every USB device costs power for no benefit.
+    $usbNics = @(Get-CkaUsbNetworkAdapter)
+    if ($usbNics.Count -gt 0) {
+        $restore['usbSelectiveSuspendAc'] = Get-OriginalValue 'usbSelectiveSuspendAc' `
+            (Get-CkaPowerIndex -SubGuid $script:CkaGuid.SubUsb -SettingGuid $script:CkaGuid.UsbSuspend -Line AC)
+
+        & powercfg.exe /setacvalueindex SCHEME_CURRENT $script:CkaGuid.SubUsb $script:CkaGuid.UsbSuspend 0 2>$null | Out-Null
+        & powercfg.exe /setactive SCHEME_CURRENT 2>$null | Out-Null
+        Write-CkaLog ("USB selective suspend disabled on AC - network runs over USB ({0})." -f ($usbNics[0].InterfaceDescription)) -Level OK
+    }
 }
 
 # ---------------------------------------------------------------------------

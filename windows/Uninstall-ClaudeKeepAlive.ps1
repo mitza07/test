@@ -108,6 +108,12 @@ if (-not $restore) {
         Write-CkaLog "Wireless power saving (AC) restored to index $($restore.wifiPowerModeAc)." -Level OK
     }
 
+    if ($null -ne $restore.usbSelectiveSuspendAc -and $PSCmdlet.ShouldProcess('USB selective suspend (AC)', 'Restore')) {
+        & powercfg.exe /setacvalueindex SCHEME_CURRENT $script:CkaGuid.SubUsb $script:CkaGuid.UsbSuspend ([int]$restore.usbSelectiveSuspendAc) 2>$null | Out-Null
+        & powercfg.exe /setactive SCHEME_CURRENT 2>$null | Out-Null
+        Write-CkaLog "USB selective suspend (AC) restored to index $($restore.usbSelectiveSuspendAc)." -Level OK
+    }
+
     if ($null -ne $restore.hiberbootEnabled -and $PSCmdlet.ShouldProcess('Fast startup', 'Restore')) {
         Set-ItemProperty -LiteralPath 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power' `
             -Name 'HiberbootEnabled' -Value ([int]$restore.hiberbootEnabled) -Type DWord
