@@ -11,7 +11,7 @@ celulei pentru rama "floare" aurie din Lux (are colturi de fundal, nu de poza).
 Centrul fetei: implicit (0.50, 0.42) din inaltime - un portret bust, fata sus.
 """
 import math, os, sys
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter, ImageEnhance
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(BASE, "assets", "foto")
@@ -31,6 +31,21 @@ def crop(src, w, h, zoom=1.0):
     cx, cy = FACE[0] * W, FACE[1] * H
     x0 = min(max(cx - cw / 2, 0), W - cw); y0 = min(max(cy - ch / 2, 0), H - ch)
     return src.crop((int(x0), int(y0), int(x0 + cw), int(y0 + ch))).resize((w, h), Image.LANCZOS)
+
+def contain(src, w, h, dark=0.6):
+    """Poza intreaga (bust) in w x h; golurile se umplu din marginea ei oglindita si blurata."""
+    Wp, Hp = src.size; sc = min(w / Wp, h / Hp); pw, ph = max(1, int(Wp * sc)), max(1, int(Hp * sc))
+    fg = src.resize((pw, ph), Image.LANCZOS); out = Image.new("RGB", (w, h), (20, 20, 20))
+    gx, gy = (w - pw) // 2, (h - ph) // 2; blur = ImageFilter.GaussianBlur(radius=max(6, min(w, h) // 30))
+    if gx > 0:
+        left = fg.crop((0, 0, min(gx, pw), ph)).transpose(Image.FLIP_LEFT_RIGHT).resize((gx, ph), Image.LANCZOS)
+        right = fg.crop((max(0, pw - gx), 0, pw, ph)).transpose(Image.FLIP_LEFT_RIGHT).resize((w - pw - gx, ph), Image.LANCZOS)
+        for im_, x in ((left, 0), (right, gx + pw)): out.paste(ImageEnhance.Brightness(im_.filter(blur)).enhance(dark), (x, gy))
+    if gy > 0:
+        top = fg.crop((0, 0, pw, min(gy, ph))).transpose(Image.FLIP_TOP_BOTTOM).resize((pw, gy), Image.LANCZOS)
+        bot = fg.crop((0, max(0, ph - gy), pw, ph)).transpose(Image.FLIP_TOP_BOTTOM).resize((pw, h - ph - gy), Image.LANCZOS)
+        for im_, y in ((top, 0), (bot, gy + ph)): out.paste(ImageEnhance.Brightness(im_.filter(blur)).enhance(dark), (gx, y))
+    out.paste(fg, (gx, gy)); return out
 
 def jpeg(im, name, q=84):
     p = os.path.join(OUT, name); im.convert("RGB").save(p, "JPEG", quality=q, optimize=True, progressive=False)
@@ -77,10 +92,10 @@ if __name__ == "__main__":
     sizes["foto-lux-pruna.png"] = floare(src, 160, PRUNA, "foto-lux-pruna.png")   # Lux 5, 9
     sizes["foto-aur.jpg"]    = jpeg(crop(src, 144, 144, 1.1), "foto-aur.jpg")     # Aur: nucleu 72
     sizes["foto-rose.jpg"]   = jpeg(crop(src, 280, 280), "foto-rose.jpg")         # Rose: nucleu 140
-    sizes["foto-noir-1.jpg"] = jpeg(crop(src, 600, 360), "foto-noir-1.jpg")       # Noir 1: panou 300x180
+    sizes["foto-noir-1.jpg"] = jpeg(contain(src, 600, 360), "foto-noir-1.jpg")    # Noir 1: panou 300x180, bust
     sizes["foto-noir-2.jpg"] = jpeg(crop(src, 240, 300), "foto-noir-2.jpg")       # Noir 2-3: panou 120x150
-    sizes["foto-mono-1.jpg"] = jpeg(crop(src, 440, 352), "foto-mono-1.jpg")       # Mono 1: panou 220x176
-    sizes["foto-mono-2.jpg"] = jpeg(crop(src, 400, 352), "foto-mono-2.jpg")       # Mono 2: panou 200x176
+    sizes["foto-mono-1.jpg"] = jpeg(contain(src, 440, 352), "foto-mono-1.jpg")    # Mono 1: panou 220x176, bust
+    sizes["foto-mono-2.jpg"] = jpeg(contain(src, 400, 352), "foto-mono-2.jpg")    # Mono 2: panou 200x176, bust
     sizes["foto-mono-3.jpg"] = jpeg(crop(src, 116, 116, 1.1), "foto-mono-3.jpg")  # Mono 3: nucleu 58
     for k in sorted(sizes): print(f"{k:22s} {sizes[k]:6d} B")
     print("total", sum(sizes.values()), "B")

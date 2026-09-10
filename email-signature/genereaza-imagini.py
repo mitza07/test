@@ -10,7 +10,7 @@ Fonturile sunt OFL (Google Fonts), coapte in imagine; destinatarul nu are
 nevoie de ele.
 """
 import argparse, importlib.util, math, os
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(BASE, "assets", "imagini")
@@ -36,6 +36,28 @@ mand = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(mand)
 assert mand.SS == S
 
 def lerp(a, b, t): return tuple(int(round(a[i] + (b[i] - a[i]) * t)) for i in range(3))
+
+def contain_fill(portrait, w, h, dark=0.6):
+    """Poza intreaga scalata sa incapa in w x h; golurile laterale/verticale se umplu cu
+    fasia de margine a pozei, oglindita, blurata si intunecata (fundalul continua)."""
+    Wp, Hp = portrait.size; sc = min(w / Wp, h / Hp)
+    pw, ph = max(1, int(Wp * sc)), max(1, int(Hp * sc))
+    fg = portrait.resize((pw, ph), Image.LANCZOS)
+    out = Image.new("RGB", (w, h), (20, 20, 20))
+    gx, gy = (w - pw) // 2, (h - ph) // 2
+    blur = ImageFilter.GaussianBlur(radius=max(6, min(w, h) // 30))
+    if gx > 0:
+        left = fg.crop((0, 0, min(gx, pw), ph)).transpose(Image.FLIP_LEFT_RIGHT).resize((gx, ph), Image.LANCZOS)
+        right = fg.crop((max(0, pw - gx), 0, pw, ph)).transpose(Image.FLIP_LEFT_RIGHT).resize((w - pw - gx, ph), Image.LANCZOS)
+        for im_, x in ((left, 0), (right, gx + pw)):
+            out.paste(ImageEnhance.Brightness(im_.filter(blur)).enhance(dark), (x, gy))
+    if gy > 0:
+        top = fg.crop((0, 0, pw, min(gy, ph))).transpose(Image.FLIP_TOP_BOTTOM).resize((pw, gy), Image.LANCZOS)
+        bot = fg.crop((0, max(0, ph - gy), pw, ph)).transpose(Image.FLIP_TOP_BOTTOM).resize((pw, h - ph - gy), Image.LANCZOS)
+        for im_, y in ((top, 0), (bot, gy + ph)):
+            out.paste(ImageEnhance.Brightness(im_.filter(blur)).enhance(dark), (gx, y))
+    out.paste(fg, (gx, gy))
+    return out
 
 # ---- fonturi -----------------------------------------------------------------
 _fc = {}
@@ -125,11 +147,15 @@ class Canvas:
             px, py = cx * S + r * S * math.cos(a), cy * S + r * S * math.sin(a)
             self.im.paste(tmp, (int(px - tmp.width / 2), int(py - tmp.height / 2)), tmp)
             ang += wch / (r * S)
-    def paste_photo(self, portrait, box, shape="rect", r=0, zoom=1.0, face=(0.5, 0.42)):
-        """Portretul (sau un substitut) decupat in dreptunghi / cerc / colturi rotunjite."""
+    def paste_photo(self, portrait, box, shape="rect", r=0, zoom=1.0, face=(0.5, 0.42), contain=False):
+        """Portretul (sau un substitut) decupat in dreptunghi / cerc / colturi rotunjite.
+        contain=True: poza intreaga (bust) incape in caseta; marginile ramase se completeaza
+        din propriul ei fundal, oglindit si blurat - nu se inventeaza nimic."""
         x0, y0, x1, y1 = [v * S for v in box]
         w, h = int(x1 - x0), int(y1 - y0)
-        if portrait is None:
+        if portrait is not None and contain:
+            ph = contain_fill(portrait, w, h)
+        elif portrait is None:
             ph = Image.new("RGB", (w, h), (36, 36, 36)); dd = ImageDraw.Draw(ph)
             for yy in range(h): dd.line([(0, yy), (w, yy)], fill=lerp((52, 52, 52), (24, 24, 24), yy / h))
             f = font("Cormorant.ttf", min(w, h) / S * 0.42, "SemiBold")
@@ -370,7 +396,7 @@ def noir_logo(c, cx, cy, r=40, fill=None):
 
 def noir1(P):
     c = Canvas(170, NB)
-    c.paste_photo(P, (300, 0, 600, 170), face=(0.5, 0.45))
+    c.paste_photo(P, (300, 0, 600, 170), contain=True)      # bust, ca in referinta, nu prim-plan
     noir_left(c, 40, 46)
     return c
 
@@ -418,14 +444,14 @@ def mono_logo(c, cx, cy, r=38, ink=MB, paper=MW, filled=True):
 
 def mono1(P):
     c = Canvas(160, MB)
-    c.paste_photo(P, (400, 0, 600, 160), face=(0.5, 0.42))
+    c.paste_photo(P, (400, 0, 600, 160), contain=True)
     mono_logo(c, 330, 80)
     mono_left(c, 40, 32)
     return c
 
 def mono2(P):
     c = Canvas(175, MB)
-    c.paste_photo(P, (330, 0, 500, 175), face=(0.5, 0.42))
+    c.paste_photo(P, (330, 0, 500, 175), contain=True)
     c.rotated_text(528, 87, NUME, SCRIPT(24), MW)
     mono_left(c, 40, 34, brokerage=True)
     return c
