@@ -1,0 +1,42 @@
+# Recunoastere pe serverul de productie, inainte de bootstrap.
+#
+# DE CE EXISTA: `docs/deployment.md` a fost scris din capturi de ecran trimise pe
+# chat. Bootstrap-ul nu se scrie pe presupuneri — mai ales partea de certificat,
+# unde nu stim inca daca nginx-ul existent foloseste Let's Encrypt, certificate
+# Origin de la Cloudflare, sau altceva.
+#
+# Ruleaza NUMAI la cerere: fie din Actions (Run workflow), fie punand `[recon]`
+# in mesajul unui commit pe branch-ul de lucru. Un push obisnuit nu il porneste.
+#
+# NU tipareste nimic secret: fara variabile de mediu din containere, fara chei,
+# fara continutul altor `.env`. Doar nume, cai si stare.
+
+name: recunoastere server
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/new-session-dtmuyc]
+
+jobs:
+  recon:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[recon]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: cheia si gazda
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.HETZNER_SSH_KEY }}" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          # Trust-on-first-use. Amprenta se vede in log si se poate compara cu
+          # ce arata `ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub` pe server.
+          ssh-keyscan -H "${{ secrets.HETZNER_HOST }}" > ~/.ssh/known_hosts 2>/dev/null
+          ssh-keygen -lf ~/.ssh/known_hosts
+
+      - name: ce e pe server
+        run: |
+          ssh -i ~/.ssh/id_deploy -o BatchMode=yes \
+            "${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }}" \
+            'bash -s' < scripts/recon-prod.sh
