@@ -51,6 +51,31 @@ function Write-Item {
     Write-Host $Value -ForegroundColor $Color
 }
 
+function Get-SleepVerdict {
+    <#
+        Classifies the sleep events found in the log:
+
+          None          - the machine did not sleep in the window
+          Unprotected   - it slept and no agent was installed to stop it
+          Historical    - it slept, but only before the agent was installed;
+                          the entries simply have not aged out of the window yet
+          StillSleeping - it slept AFTER the agent was installed, which means
+                          the agent is not doing its job
+
+        Without this, a re-run right after a successful install keeps shouting
+        CRITICAL about sleeps the install already fixed.
+    #>
+    param($SleepEvents, [datetime]$AgentInstalledUtc)
+
+    $sleepList = @($SleepEvents)
+    if ($sleepList.Count -eq 0) { return 'None' }
+    if ($null -eq $AgentInstalledUtc -or $AgentInstalledUtc -eq [datetime]::MinValue) { return 'Unprotected' }
+
+    $after = @($sleepList | Where-Object { $_.TimeCreated.ToUniversalTime() -gt $AgentInstalledUtc })
+    if ($after.Count -eq 0) { return 'Historical' }
+    'StillSleeping'
+}
+
 Write-Host ''
 Write-Host '  Claude reachability check' -ForegroundColor White
 Write-Host "  $env:COMPUTERNAME  -  $(Get-Date -Format 'yyyy-MM-dd HH:mm')" -ForegroundColor DarkGray
@@ -177,6 +202,14 @@ Write-Section 'What happened recently'
 # ---------------------------------------------------------------------------
 
 $since = (Get-Date).AddHours(-$Hours)
+
+# When the current configuration was applied, so sleeps from before it can be
+# reported as history rather than as a live failure.
+$agentInstalledUtc = [datetime]::MinValue
+$installRecord = Get-CkaRestorePoint
+if ($installRecord -and $installRecord.savedUtc) {
+    try { $agentInstalledUtc = [datetime]::Parse($installRecord.savedUtc).ToUniversalTime() } catch { }
+}
 $labels = @{
     42   = 'sleep     - system entered sleep'
     107  = 'resume    - system resumed from sleep'
@@ -216,10 +249,23 @@ if ($events.Count -eq 0) {
     }
 
     $sleeps = @($events | Where-Object { $_.Id -eq 42 })
-    if ($sleeps.Count -gt 0) {
-        Add-Finding -Severity Critical `
-            -Title ("The machine went to sleep {0} time(s) in the last {1}h - most recently {2:yyyy-MM-dd HH:mm}. Any attached session died there." -f $sleeps.Count, $Hours, $sleeps[0].TimeCreated) `
-            -Fix 'Install the keep-alive agent so a live session blocks sleep: .\Install-ClaudeKeepAlive.ps1'
+    switch (Get-SleepVerdict -SleepEvents $sleeps -AgentInstalledUtc $agentInstalledUtc) {
+        'Unprotected' {
+            Add-Finding -Severity Critical `
+                -Title ("The machine went to sleep {0} time(s) in the last {1}h - most recently {2:yyyy-MM-dd HH:mm}. Any attached session died there." -f $sleeps.Count, $Hours, $sleeps[0].TimeCreated) `
+                -Fix 'Install the keep-alive agent so a live session blocks sleep: .\Install-ClaudeKeepAlive.ps1'
+        }
+        'Historical' {
+            Add-Finding -Severity Info `
+                -Title ("The machine slept {0} time(s) in the last {1}h, but all of it was before the agent was installed on {2:yyyy-MM-dd HH:mm}. History, not a live problem." -f $sleeps.Count, $Hours, $agentInstalledUtc.ToLocalTime()) `
+                -Fix 'Nothing to do. These entries age out of the window on their own.'
+        }
+        'StillSleeping' {
+            $after = @($sleeps | Where-Object { $_.TimeCreated.ToUniversalTime() -gt $agentInstalledUtc })
+            Add-Finding -Severity Critical `
+                -Title ("The machine slept {0} time(s) AFTER the agent was installed - most recently {1:yyyy-MM-dd HH:mm}. The agent is not doing its job." -f $after.Count, $after[0].TimeCreated) `
+                -Fix 'Check the agent is running (heartbeat below) and read its log; on a Modern Standby machine see docs/DIAGNOSTIC.md section 3.'
+        }
     }
     if (@($events | Where-Object { $_.Id -eq 41 }).Count -gt 0) {
         Add-Finding -Severity Critical `
