@@ -172,7 +172,7 @@ html { scroll-behavior: smooth; }
   padding-bottom: .4rem; border-bottom: 1px solid var(--rule-2); max-width: var(--masura);
 }
 .proza { display: flex; flex-direction: column; gap: .95rem; max-width: var(--masura); }
-.proza p { hyphens: auto; }
+.proza p { hyphens: auto; overflow-wrap: break-word; }
 .proza p:first-of-type::first-letter { }
 
 /* prima litera a primului paragraf din capitol */
@@ -245,6 +245,14 @@ figcaption b { color: var(--ink); font-weight: 600; }
 }
 .cron-lista dd { margin: 0; padding: .5rem 0; border-top: 1px solid var(--rule-2); font-size: .96em; }
 .cron-lista dt:first-of-type, .cron-lista dd:first-of-type { border-top: 1px solid var(--rule); }
+/* pe ecrane inguste anul trece deasupra evenimentului: coloana max-content
+   cu date lungi ("9/21 mai 1877 - 3/15 martie 1878") depasea altfel latimea */
+@media (max-width: 600px) {
+  .cron-lista { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .cron-lista dt { white-space: normal; padding: .5rem 0 0; }
+  .cron-lista dd { padding: .1rem 0 .55rem; border-top: 0; }
+  .cron-lista dd:first-of-type { border-top: 0; }
+}
 
 /* ------------------------------- figuri-om ------------------------------ */
 .figuri { display: grid; gap: 1px; margin-top: 2.6rem; background: var(--rule-2);
@@ -261,7 +269,7 @@ figcaption b { color: var(--ink); font-weight: 600; }
 .cifre { display: grid; gap: 1.4rem 2rem; margin-top: 2.4rem; max-width: var(--masura); }
 @media (min-width: 640px) { .cifre { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); } }
 .cifra { border-top: 2px solid var(--aur); padding-top: .55rem; }
-.cifra b { display: block; font-family: var(--sans); font-size: 1.65rem; font-weight: 600;
+.cifra b { display: block; font-family: var(--sans); font-size: 1.65rem; font-weight: 600; overflow-wrap: break-word;
   line-height: 1.1; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
 .cifra span { display: block; font-family: var(--sans); font-size: 12px; letter-spacing: .05em;
   text-transform: uppercase; color: var(--ink-2); margin-top: .18rem; }
