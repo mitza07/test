@@ -3,7 +3,7 @@ setlocal EnableExtensions
 title Dezinstalare semnaturi ITISTUL.RO
 set "DEST=%APPDATA%\Microsoft\Signatures"
 echo.
-echo   Se elimina toate cele 38 de semnaturi ITISTUL.RO si setarile facute de instalator.
+echo   Se elimina toate cele 39 de semnaturi ITISTUL.RO si setarile facute de instalator.
 echo.
 tasklist /FI "IMAGENAME eq OUTLOOK.EXE" 2>nul | find /I "OUTLOOK.EXE" >nul
 if not errorlevel 1 ( echo   Inchide Outlook mai intai. & echo. & pause & exit /b 1 )
@@ -28,6 +28,7 @@ call :sterge "Mihai Zamfir - Mono 1"
 call :sterge "Mihai Zamfir - Mono 2"
 call :sterge "Mihai Zamfir - Mono 3"
 call :sterge "Mihai Zamfir - Aur"
+call :sterge "Mihai Zamfir - Aur mini"
 call :sterge "Mihai Zamfir - Lux 1 (img)"
 call :sterge "Mihai Zamfir - Lux 2 (img)"
 call :sterge "Mihai Zamfir - Lux 3 (img)"

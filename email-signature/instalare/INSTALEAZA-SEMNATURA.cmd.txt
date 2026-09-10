@@ -25,6 +25,8 @@ rem  clasica, ruleaza:  INSTALEAZA-SEMNATURA.cmd clasic
 rem  Pentru cea executiva:   INSTALEAZA-SEMNATURA.cmd signet
 rem  Pentru Puls:            INSTALEAZA-SEMNATURA.cmd puls
 rem  Pentru una din colectie: INSTALEAZA-SEMNATURA.cmd lux-3   (sau rose, noir-2, mono-1, aur ...)
+rem  Semnatura de raspuns separata:  INSTALEAZA-SEMNATURA.cmd aur raspuns=aur-mini
+rem  Doar cele doua alese, nu toate: INSTALEAZA-SEMNATURA.cmd aur raspuns=aur-mini minimal
 rem  Pentru variantele fara nicio imagine, adauga:  fara-imagini
 rem    ex.  INSTALEAZA-SEMNATURA.cmd clasic fara-imagini
 rem
@@ -42,47 +44,15 @@ set "LOG=%~dp0jurnal-instalare.txt"
 >>"%LOG%" echo DEST: %DEST%
 set "SUB="
 set "IMPLICITA=Mihai Zamfir"
+set "RASPUNS="
+set "MINIMAL="
 
 for %%A in (%*) do (
   if /I "%%~A"=="banda-html" set "SUB=\varianta-banda-html"
-  if /I "%%~A"=="clasic"       set "IMPLICITA=Mihai Zamfir - Clasic"
-  if /I "%%~A"=="signet"       set "IMPLICITA=Mihai Zamfir - Signet"
-  if /I "%%~A"=="puls"         set "IMPLICITA=Mihai Zamfir - Puls"
-  if /I "%%~A"=="lux-1"        set "IMPLICITA=Mihai Zamfir - Lux 1"
-  if /I "%%~A"=="lux-2"        set "IMPLICITA=Mihai Zamfir - Lux 2"
-  if /I "%%~A"=="lux-3"        set "IMPLICITA=Mihai Zamfir - Lux 3"
-  if /I "%%~A"=="lux-4"        set "IMPLICITA=Mihai Zamfir - Lux 4"
-  if /I "%%~A"=="lux-5"        set "IMPLICITA=Mihai Zamfir - Lux 5"
-  if /I "%%~A"=="lux-6"        set "IMPLICITA=Mihai Zamfir - Lux 6"
-  if /I "%%~A"=="lux-7"        set "IMPLICITA=Mihai Zamfir - Lux 7"
-  if /I "%%~A"=="lux-8"        set "IMPLICITA=Mihai Zamfir - Lux 8"
-  if /I "%%~A"=="lux-9"        set "IMPLICITA=Mihai Zamfir - Lux 9"
-  if /I "%%~A"=="rose"         set "IMPLICITA=Mihai Zamfir - Rose"
-  if /I "%%~A"=="noir-1"       set "IMPLICITA=Mihai Zamfir - Noir 1"
-  if /I "%%~A"=="noir-2"       set "IMPLICITA=Mihai Zamfir - Noir 2"
-  if /I "%%~A"=="noir-3"       set "IMPLICITA=Mihai Zamfir - Noir 3"
-  if /I "%%~A"=="mono-1"       set "IMPLICITA=Mihai Zamfir - Mono 1"
-  if /I "%%~A"=="mono-2"       set "IMPLICITA=Mihai Zamfir - Mono 2"
-  if /I "%%~A"=="mono-3"       set "IMPLICITA=Mihai Zamfir - Mono 3"
-  if /I "%%~A"=="aur"          set "IMPLICITA=Mihai Zamfir - Aur"
-  if /I "%%~A"=="lux-1-img"    set "IMPLICITA=Mihai Zamfir - Lux 1 (img)"
-  if /I "%%~A"=="lux-2-img"    set "IMPLICITA=Mihai Zamfir - Lux 2 (img)"
-  if /I "%%~A"=="lux-3-img"    set "IMPLICITA=Mihai Zamfir - Lux 3 (img)"
-  if /I "%%~A"=="lux-4-img"    set "IMPLICITA=Mihai Zamfir - Lux 4 (img)"
-  if /I "%%~A"=="lux-5-img"    set "IMPLICITA=Mihai Zamfir - Lux 5 (img)"
-  if /I "%%~A"=="lux-6-img"    set "IMPLICITA=Mihai Zamfir - Lux 6 (img)"
-  if /I "%%~A"=="lux-7-img"    set "IMPLICITA=Mihai Zamfir - Lux 7 (img)"
-  if /I "%%~A"=="lux-8-img"    set "IMPLICITA=Mihai Zamfir - Lux 8 (img)"
-  if /I "%%~A"=="lux-9-img"    set "IMPLICITA=Mihai Zamfir - Lux 9 (img)"
-  if /I "%%~A"=="rose-img"     set "IMPLICITA=Mihai Zamfir - Rose (img)"
-  if /I "%%~A"=="noir-1-img"   set "IMPLICITA=Mihai Zamfir - Noir 1 (img)"
-  if /I "%%~A"=="noir-2-img"   set "IMPLICITA=Mihai Zamfir - Noir 2 (img)"
-  if /I "%%~A"=="noir-3-img"   set "IMPLICITA=Mihai Zamfir - Noir 3 (img)"
-  if /I "%%~A"=="mono-1-img"   set "IMPLICITA=Mihai Zamfir - Mono 1 (img)"
-  if /I "%%~A"=="mono-2-img"   set "IMPLICITA=Mihai Zamfir - Mono 2 (img)"
-  if /I "%%~A"=="mono-3-img"   set "IMPLICITA=Mihai Zamfir - Mono 3 (img)"
-  if /I "%%~A"=="aur-img"      set "IMPLICITA=Mihai Zamfir - Aur (img)"
+  if /I "%%~A"=="minimal" set "MINIMAL=1"
+  call :arg "%%~A"
 )
+if not defined RASPUNS set "RASPUNS=%IMPLICITA%"
 
 echo.
 echo   ITISTUL.RO - instalare semnaturi Outlook
@@ -141,6 +111,7 @@ call :instaleaza "Mihai Zamfir - Mono 1"  "%ROOT%\colectie\mono-1"  || goto :fai
 call :instaleaza "Mihai Zamfir - Mono 2"  "%ROOT%\colectie\mono-2"  || goto :fail
 call :instaleaza "Mihai Zamfir - Mono 3"  "%ROOT%\colectie\mono-3"  || goto :fail
 call :instaleaza "Mihai Zamfir - Aur"     "%ROOT%\colectie\aur"     || goto :fail
+call :instaleaza "Mihai Zamfir - Aur mini" "%ROOT%\colectie\aur-mini" || goto :fail
 rem  Colectia-imagine: o imagine de pe GitHub + doua randuri de text sub ea
 call :instaleaza "Mihai Zamfir - Lux 1 (img)"   "%ROOT%\colectie-imagine\lux-1"   || goto :fail
 call :instaleaza "Mihai Zamfir - Lux 2 (img)"   "%ROOT%\colectie-imagine\lux-2"   || goto :fail
@@ -163,8 +134,9 @@ call :instaleaza "Mihai Zamfir - Aur (img)"     "%ROOT%\colectie-imagine\aur"   
 rem --- semnatura implicita pentru mesaje noi si pentru raspunsuri ---
 set "MS=HKCU\Software\Microsoft\Office\16.0\Common\MailSettings"
 reg add "%MS%" /v NewSignature   /t REG_EXPAND_SZ /d "%IMPLICITA%" /f >nul 2>&1
-reg add "%MS%" /v ReplySignature /t REG_EXPAND_SZ /d "%IMPLICITA%" /f >nul 2>&1
-echo   Implicita pentru mesaje noi si raspunsuri: "%IMPLICITA%"
+reg add "%MS%" /v ReplySignature /t REG_EXPAND_SZ /d "%RASPUNS%" /f >nul 2>&1
+echo   Implicita pentru mesaje noi: "%IMPLICITA%"
+echo   Implicita pentru raspunsuri: "%RASPUNS%"
 
 rem --- fara asta, Outlook trimite imaginile semnaturii ca legaturi
 rem     file:///C:/Users/... catre discul local, in loc sa le atasseze inline
@@ -179,7 +151,11 @@ echo   Semnaturi roaming dezactivate (altfel cloud-ul suprascrie fisierul local)
 
 >>"%LOG%" echo --- SUCCES ---  implicita: %IMPLICITA%
 echo.
-echo   GATA. Toate cele 38 de semnaturi sunt instalate.
+if defined MINIMAL (
+  echo   GATA. Instalate doar semnaturile alese: "%IMPLICITA%" si "%RASPUNS%".
+) else (
+  echo   GATA. Toate cele 39 de semnaturi sunt instalate.
+)
 echo   Le poti comuta oricand din Outlook, la compunerea unui mesaj:
 echo     Message ^> Signature ^> alegi semnatura.
 echo.
@@ -192,11 +168,65 @@ if not defined SUB (
 pause
 exit /b 0
 
+:arg
+rem  un argument: fie un slug (semnatura implicita), fie raspuns=<slug> (semnatura de raspuns)
+set "V=%~1"
+if /I "%V:~0,8%"=="raspuns=" (
+  call :nume "%V:~8%" RASPUNS
+) else (
+  call :nume "%V%" IMPLICITA
+)
+exit /b 0
+
+:nume
+rem  %~1 = slug, %~2 = variabila care primeste numele semnaturii
+if /I "%~1"=="clasic"       set "%~2=Mihai Zamfir - Clasic"
+if /I "%~1"=="signet"       set "%~2=Mihai Zamfir - Signet"
+if /I "%~1"=="puls"         set "%~2=Mihai Zamfir - Puls"
+if /I "%~1"=="aur-mini"     set "%~2=Mihai Zamfir - Aur mini"
+if /I "%~1"=="lux-1"        set "%~2=Mihai Zamfir - Lux 1"
+if /I "%~1"=="lux-2"        set "%~2=Mihai Zamfir - Lux 2"
+if /I "%~1"=="lux-3"        set "%~2=Mihai Zamfir - Lux 3"
+if /I "%~1"=="lux-4"        set "%~2=Mihai Zamfir - Lux 4"
+if /I "%~1"=="lux-5"        set "%~2=Mihai Zamfir - Lux 5"
+if /I "%~1"=="lux-6"        set "%~2=Mihai Zamfir - Lux 6"
+if /I "%~1"=="lux-7"        set "%~2=Mihai Zamfir - Lux 7"
+if /I "%~1"=="lux-8"        set "%~2=Mihai Zamfir - Lux 8"
+if /I "%~1"=="lux-9"        set "%~2=Mihai Zamfir - Lux 9"
+if /I "%~1"=="rose"         set "%~2=Mihai Zamfir - Rose"
+if /I "%~1"=="noir-1"       set "%~2=Mihai Zamfir - Noir 1"
+if /I "%~1"=="noir-2"       set "%~2=Mihai Zamfir - Noir 2"
+if /I "%~1"=="noir-3"       set "%~2=Mihai Zamfir - Noir 3"
+if /I "%~1"=="mono-1"       set "%~2=Mihai Zamfir - Mono 1"
+if /I "%~1"=="mono-2"       set "%~2=Mihai Zamfir - Mono 2"
+if /I "%~1"=="mono-3"       set "%~2=Mihai Zamfir - Mono 3"
+if /I "%~1"=="aur"          set "%~2=Mihai Zamfir - Aur"
+if /I "%~1"=="lux-1-img"    set "%~2=Mihai Zamfir - Lux 1 (img)"
+if /I "%~1"=="lux-2-img"    set "%~2=Mihai Zamfir - Lux 2 (img)"
+if /I "%~1"=="lux-3-img"    set "%~2=Mihai Zamfir - Lux 3 (img)"
+if /I "%~1"=="lux-4-img"    set "%~2=Mihai Zamfir - Lux 4 (img)"
+if /I "%~1"=="lux-5-img"    set "%~2=Mihai Zamfir - Lux 5 (img)"
+if /I "%~1"=="lux-6-img"    set "%~2=Mihai Zamfir - Lux 6 (img)"
+if /I "%~1"=="lux-7-img"    set "%~2=Mihai Zamfir - Lux 7 (img)"
+if /I "%~1"=="lux-8-img"    set "%~2=Mihai Zamfir - Lux 8 (img)"
+if /I "%~1"=="lux-9-img"    set "%~2=Mihai Zamfir - Lux 9 (img)"
+if /I "%~1"=="rose-img"     set "%~2=Mihai Zamfir - Rose (img)"
+if /I "%~1"=="noir-1-img"   set "%~2=Mihai Zamfir - Noir 1 (img)"
+if /I "%~1"=="noir-2-img"   set "%~2=Mihai Zamfir - Noir 2 (img)"
+if /I "%~1"=="noir-3-img"   set "%~2=Mihai Zamfir - Noir 3 (img)"
+if /I "%~1"=="mono-1-img"   set "%~2=Mihai Zamfir - Mono 1 (img)"
+if /I "%~1"=="mono-2-img"   set "%~2=Mihai Zamfir - Mono 2 (img)"
+if /I "%~1"=="mono-3-img"   set "%~2=Mihai Zamfir - Mono 3 (img)"
+if /I "%~1"=="aur-img"      set "%~2=Mihai Zamfir - Aur (img)"
+exit /b 0
+
 rem ---------------------------------------------------------------
 :instaleaza
 rem  %~1 = numele semnaturii, %~2 = folderul sursa
 set "N=%~1"
 set "S=%~2"
+rem  instalare minimala: doar semnatura implicita si cea de raspuns
+if defined MINIMAL if /I not "%N%"=="%IMPLICITA%" if /I not "%N%"=="%RASPUNS%" exit /b 0
 if not exist "%S%\%N%.htm" ( echo   [EROARE] Lipseste "%S%\%N%.htm" & exit /b 1 )
 
 if exist "%DEST%\%N%.htm" (

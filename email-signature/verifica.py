@@ -36,7 +36,7 @@ def _strip_tables(html):
             if depth == 0: j = m.start() + tag.end(); break
         i = html.find(">", j) + 1
 
-def check_fragment(path, allow_image=False, caps=False):
+def check_fragment(path, allow_image=False, caps=False, minimal=False):
     raw = open(path, "rb").read(); t = raw.decode("utf-8")
     name = os.path.relpath(path, BASE)
     ck(all(b < 128 for b in raw), f"{name}: contine octeti non-ASCII")
@@ -120,11 +120,15 @@ def check_fragment(path, allow_image=False, caps=False):
        f"{name}: entitati neasteptate "
        f"{sorted(ents - {160,183,194,226,206,238,258,259,536,537,538,539,8226,8594})}")
     dec = re.sub(r"<[^>]+>", "", re.sub(r"&#(\d+);", lambda m: chr(int(m.group(1))), t))  # doar textul
-    for want in ["Mihai Zamfir", "Consultant IT", "ITISTUL.RO",
+    dec = dec.replace("\xa0", " ")   # nbsp-urile din telefon se compara ca spatii
+    # semnatura de raspuns (minimal) nu are adresa si disciplinele: e scurta prin definitie
+    for want in (["Mihai Zamfir", "Consultant IT", "ITISTUL.RO", "MENTENANȚĂ ECHIPAMENTE IT",
+                  "+40 742 932 686", "mihai@itistul.ro", "www.itistul.ro"] if minimal else
+                 ["Mihai Zamfir", "Consultant IT", "ITISTUL.RO",
                  "MENTENANȚĂ ECHIPAMENTE IT", "INFRASTRUCTURĂ", "SECURITY",
-                 "+40 742 932 686", "mihai@itistul.ro", "www.itistul.ro",
+                 "+40 742 932 686", "mihai@itistul.ro", "www.itistul.ro",
                  "Strada Samuil Vulcan, nr. 12D, et. 1, biroul 15",
-                 "București, România"]:
+                 "București, România"]):
         ck((want.upper() in dec.upper()) if caps else (want in dec),
            f"{name}: lipseste continutul {want!r}")
     for h in ["tel:+40742932686", "mailto:mihai@itistul.ro", "https://www.itistul.ro/"]:
@@ -310,6 +314,18 @@ for slug, short in COLECTIE:
     rs = open(os.path.join(d, f"{nume}.rtf"), "rb").read()
     ck(rs.startswith(b"{\\rtf1") and rs.count(b"{") == rs.count(b"}") and all(b < 128 for b in rs),
        f"colectie/{slug}: RTF invalid")
+# Aur mini: semnatura de raspuns, un rand, zero imagini, fara adresa/discipline
+MINI = os.path.join(COL, "aur-mini"); NM = "Mihai Zamfir - Aur mini"
+ck(os.path.isfile(os.path.join(MINI, "fragment.html")), "colectie/aur-mini: lipseste fragment.html")
+if os.path.isfile(os.path.join(MINI, "fragment.html")):
+    check_fragment(os.path.join(MINI, "fragment.html"), allow_image=False, caps=True, minimal=True)
+    check_htm(os.path.join(MINI, f"{NM}.htm"))
+    for ext in ("rtf", "txt"):
+        ck(os.path.isfile(os.path.join(MINI, f"{NM}.{ext}")), f"colectie/aur-mini: lipseste {NM}.{ext}")
+    mg = open(os.path.join(MINI, "fragment.html"), encoding="utf-8").read()
+    ck("<img" not in mg, "colectie/aur-mini: semnatura de raspuns trebuie sa fie fara imagini")
+    ck(len(mg.encode()) < 6000, f"colectie/aur-mini: {len(mg.encode())} B, peste bugetul de 6 KB")
+    ck(len(re.findall(r'<td[^>]*height="\d+"', mg)) <= 4, "colectie/aur-mini: prea multe celule grafice pentru un rand")
 lux_dir = os.path.join(BASE, "assets", "lux")
 pe_disc = set(os.listdir(lux_dir)) if os.path.isdir(lux_dir) else set()
 ck(folosite <= pe_disc, f"colectie: ornamente referite dar inexistente: {sorted(folosite - pe_disc)}")
@@ -429,7 +445,7 @@ for ext in ("htm", "rtf", "txt"):
     ck(os.path.isfile(os.path.join(BASE, "semnatura-puls", f"Mihai Zamfir - Puls.{ext}")),
        f"instalator: lipseste semnatura-puls/Mihai Zamfir - Puls.{ext}")
 ck('"Mihai Zamfir - Puls"' in inst, "instalator: nu instaleaza semnatura Puls")
-ck('set "IMPLICITA=Mihai Zamfir - Puls"' in inst, "instalator: argumentul puls nu seteaza implicita")
+ck('set "%~2=Mihai Zamfir - Puls"' in inst, "instalator: argumentul puls nu seteaza implicita")
 ck('\\semnatura-puls"' in inst and '\\semnatura-puls%SUB%' not in inst, "instalator: calea Puls nu trebuie sa primeasca %SUB%")
 ck('"Mihai Zamfir - Puls"' in open(os.path.join(BASE, "instalare", "DEZINSTALEAZA.cmd"), encoding="ascii").read(),
    "dezinstalator: nu elimina semnatura Puls")
@@ -437,7 +453,7 @@ for slug, short in COLECTIE:
     nume = f"Mihai Zamfir - {short} (img)"
     ck(f'"{nume}"' in inst, f"instalator: nu instaleaza semnatura {nume!r}")
     ck(f'\\colectie-imagine\\{slug}"' in inst, f"instalator: calea colectie-imagine/{slug} lipseste")
-    ck(f'set "IMPLICITA={nume}"' in inst, f"instalator: argumentul {slug}-img nu seteaza implicita")
+    ck(f'set "%~2={nume}"' in inst, f"instalator: argumentul {slug}-img nu seteaza implicita")
     ck(f'"{nume}"' in open(os.path.join(BASE, "instalare", "DEZINSTALEAZA.cmd"), encoding="ascii").read(),
        f"dezinstalator: nu elimina semnatura {nume!r}")
     for ext in ("htm", "rtf", "txt"):
@@ -448,13 +464,24 @@ for slug, short in COLECTIE:
     ck(f'"{nume}"' in inst, f"instalator: nu instaleaza semnatura {nume!r}")
     ck(f'\\colectie\\{slug}"' in inst and f'\\colectie\\{slug}%SUB%' not in inst,
        f"instalator: calea colectie/{slug} lipseste sau primeste %SUB%")
-    ck(f'set "IMPLICITA={nume}"' in inst, f"instalator: argumentul {slug} nu seteaza implicita")
+    ck(f'set "%~2={nume}"' in inst, f"instalator: argumentul {slug} nu seteaza implicita")
     ck(f'"{nume}"' in open(os.path.join(BASE, "instalare", "DEZINSTALEAZA.cmd"), encoding="ascii").read(),
        f"dezinstalator: nu elimina semnatura {nume!r}")
     for ext in ("htm", "rtf", "txt"):
         ck(os.path.isfile(os.path.join(BASE, "colectie", slug, f"{nume}.{ext}")),
            f"instalator: lipseste colectie/{slug}/{nume}.{ext}")
-ck('set "IMPLICITA=Mihai Zamfir - Signet"' in inst, "instalator: argumentul signet nu seteaza implicita")
+ck('set "%~2=Mihai Zamfir - Signet"' in inst, "instalator: argumentul signet nu seteaza implicita")
+# semnatura de raspuns separata (raspuns=<slug>) si instalarea minimala
+for want in ('call :nume "%V:~8%" RASPUNS', 'call :nume "%V%" IMPLICITA', 'if not defined RASPUNS set "RASPUNS=%IMPLICITA%"',
+             '/v ReplySignature /t REG_EXPAND_SZ /d "%RASPUNS%"', '/v NewSignature   /t REG_EXPAND_SZ /d "%IMPLICITA%"',
+             'if /I "%%~A"=="minimal" set "MINIMAL=1"', 'if defined MINIMAL if /I not "%N%"=="%IMPLICITA%" if /I not "%N%"=="%RASPUNS%" exit /b 0',
+             'set "%~2=Mihai Zamfir - Aur mini"', '"Mihai Zamfir - Aur mini"', '\\colectie\\aur-mini"'):
+    ck(want in inst, f"instalator: lipseste {want!r}")
+ck('"Mihai Zamfir - Aur mini"' in open(os.path.join(BASE, "instalare", "DEZINSTALEAZA.cmd"), encoding="ascii").read(),
+   "dezinstalator: nu elimina semnatura Aur mini")
+for ext in ("htm", "rtf", "txt"):
+    ck(os.path.isfile(os.path.join(BASE, "colectie", "aur-mini", f"Mihai Zamfir - Aur mini.{ext}")),
+       f"instalator: lipseste colectie/aur-mini/Mihai Zamfir - Aur mini.{ext}")
 ck('\\semnatura-signet"' in inst and '\\semnatura-signet%SUB%' not in inst,
    "instalator: calea Signet nu trebuie sa primeasca %SUB%")
 ck('"Mihai Zamfir - Signet"' in open(os.path.join(BASE, "instalare", "DEZINSTALEAZA.cmd"), encoding="ascii").read(),
@@ -466,7 +493,7 @@ for folder, nume in SEMNATURI:
        f"instalator: nu refera folderul {folder}")
 ck('set "SUB=\\varianta-banda-html"' in inst,
    "instalator: argumentul banda-html nu mapeaza pe folderul corect")
-ck('set "IMPLICITA=Mihai Zamfir - Clasic"' in inst,
+ck('set "%~2=Mihai Zamfir - Clasic"' in inst,
    "instalator: argumentul clasic nu seteaza implicita corect")
 # fiecare subrutina apelata trebuie sa existe si sa se termine cu exit /b
 for lab in set(re.findall(r"call :(\w+)", inst)):

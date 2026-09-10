@@ -1,8 +1,12 @@
 # Semnături e-mail — Mihai Zamfir / ITISTUL.RO
 
+> **Ce să folosești:** vezi [`PROPUNERE.md`](PROPUNERE.md) — alegerea recomandată (Aur pentru mesaje
+> noi, Aur mini pentru răspunsuri, Lux (img) pentru ocazii), comanda de instalare și problema de
+> DNS (SPF dublu) care contează mai mult decât orice semnătură.
+
 **Patru** semnături Outlook plus **o colecție de 17 variante** după referințele trimise, în
 două versiuni (HTML și imagine) — toate **fără nimic de urcat pe site**. Instalatorul le pune
-pe toate (38); le comuți din Outlook la compunerea unui mesaj (`Message > Signature`).
+pe toate (39); le comuți din Outlook la compunerea unui mesaj (`Message > Signature`).
 
 ![previzualizare](documentatie/previzualizare.png)
 
@@ -28,7 +32,8 @@ paletă, plus îmbunătățirile de mai jos.
 | Familie | Variante | Ce e | Imagini |
 |---|---|---|---|
 | **Lux** | `lux-1` … `lux-9` | negru/auriu, ornamente mandala (cele 9 din „Chapter 01"), 2 pe fundal prună | 1–2 PNG-uri de ornament, de pe GitHub |
-| **Aur** | `aur` | ramă dublă aurie, medalion cu inel dublu, bară aurie (Theo Wilton) | **niciuna** |
+| **Aur** | `aur` | ramă dublă aurie, medalion cu inel dublu, bară aurie (Theo Wilton) | doar portretul |
+| **Aur mini** | `aur-mini` | semnătura de **răspuns**: un singur rând, același negru/auriu, fără adresă și discipline | **niciuna** |
 | **Rose** | `rose` | card alb, accente roz-teracotă, buton „Contactează-mă" (Rosalie Moses) | **niciuna** |
 | **Noir** | `noir-1` … `noir-3` | negru, tipografie subțire spațiată, bară de subsol gri (Emma Johnson) | **niciuna** |
 | **Mono** | `mono-1` … `mono-3` | negru/alb, serif, sigla „IT" în pătrat, panou alb (Jessica Roche) | **niciuna** |
@@ -288,10 +293,12 @@ Argumente:
 | `INSTALEAZA-SEMNATURA.cmd puls` | toate, implicită cea grafică |
 | `INSTALEAZA-SEMNATURA.cmd lux-3` | toate, implicită „Lux 3" (la fel: `lux-1`…`lux-9`, `aur`, `rose`, `noir-1`…`noir-3`, `mono-1`…`mono-3`) |
 | `INSTALEAZA-SEMNATURA.cmd lux-3-img` | toate, implicită „Lux 3 (img)" — varianta-imagine (la fel: orice slug + `-img`) |
+| `INSTALEAZA-SEMNATURA.cmd aur raspuns=aur-mini` | implicită „Aur" la mesaje noi, „Aur mini" la răspunsuri (orice slug după `raspuns=`) |
+| `INSTALEAZA-SEMNATURA.cmd aur raspuns=aur-mini minimal` | la fel, dar instalează **doar** cele două alese, nu toate 39 |
 | `INSTALEAZA-SEMNATURA.cmd fara-imagini` | ambele, variantele fără bandă |
 | `INSTALEAZA-SEMNATURA.cmd clasic fara-imagini` | se pot combina |
 
-Anulare completă: `instalare/DEZINSTALEAZA.cmd` (elimină toate 38).
+Anulare completă: `instalare/DEZINSTALEAZA.cmd` (elimină toate 39).
 
 Instalatorul scrie un jurnal la `instalare/jurnal-instalare.txt`. Dacă ceva
 eșuează, acolo găsești ce sursă lipsea, dacă destinația exista și dacă Outlook

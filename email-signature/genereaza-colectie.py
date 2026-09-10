@@ -421,12 +421,23 @@ def aur():
     return card([band(cadru, W, AB, "10px 11px 10px 11px", extra="border-top:1px solid %s;" % AB)], W, bg=AB)
 
 # ============================ scriere ========================================
+def aur_mini():
+    """Semnatura de raspuns: acelasi limbaj negru/auriu ca Aur, un singur rand, zero imagini."""
+    left = lines([(span("MIHAI", IVORY, 14, fw=700, ls="1px") + " " + span("ZAMFIR", GOLD_HI, 14, fw=700, ls="1px"), 14, 18, IVORY, {"fw": 700}),
+                  (TITLU + DOT + BRAND + DOT + TAGLINE, 8, 12, GOLD)], 290, AB)
+    right = lines([(a(TEL_HREF, TEL, IVORY, 10) + DOT + a(MAIL_HREF, MAIL, IVORY, 10), 10, 14, IVORY),
+                   (a(WEB_HREF, WEB, GOLD_HI, 10, fw=700), 10, 14, GOLD_HI)], 260, AB)
+    row = cols([td("&#160;", w=4, bg=GOLD, fs=0, lh=0, color=GOLD), gap(14, AB),
+                td(left, w=290, bg=AB, valign="middle", pin=False), gap(12, AB),
+                td(right, w=260, bg=AB, valign="middle", pin=False), gap(20, AB)], W)
+    return card([band(row, W, AB, "9px 0 9px 0", extra="border-top:1px solid %s;border-bottom:1px solid %s;" % (GOLD_LO, GOLD_LO))], W, bg=AB)
+
 DESIGNS = [("lux-1", "Lux 1", lux1, SERIF), ("lux-2", "Lux 2", lux2, SERIF), ("lux-3", "Lux 3", lux3, SERIF),
            ("lux-4", "Lux 4", lux4, SERIF), ("lux-5", "Lux 5", lux5, SERIF), ("lux-6", "Lux 6", lux6, SERIF),
            ("lux-7", "Lux 7", lux7, SERIF), ("lux-8", "Lux 8", lux8, SERIF), ("lux-9", "Lux 9", lux9, SERIF),
            ("rose", "Rose", rose, VERD), ("noir-1", "Noir 1", noir1, THIN), ("noir-2", "Noir 2", noir2, THIN),
            ("noir-3", "Noir 3", noir3, THIN), ("mono-1", "Mono 1", mono1, SERIF), ("mono-2", "Mono 2", mono2, SERIF),
-           ("mono-3", "Mono 3", mono3, SERIF), ("aur", "Aur", aur, SERIF)]
+           ("mono-3", "Mono 3", mono3, SERIF), ("aur", "Aur", aur, SERIF), ("aur-mini", "Aur mini", aur_mini, SANS)]
 
 HEAD = ('﻿<!doctype html>\r\n<html>\r\n<head>\r\n'
         '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">\r\n<meta charset="utf-8">\r\n'
