@@ -1,0 +1,21 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+node_modules/
+.next/
+out/
+*.log
+storage/
+# artefactele nu se comit, se descarca — dar README-ul si .gitkeep raman
+schematron/*
+!schematron/README.md
+dumps/*
+!dumps/.gitkeep
+.DS_Store

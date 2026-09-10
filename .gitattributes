@@ -1,0 +1,29 @@
+# Terminatorii de linie.
+#
+# DE CE EXISTA: pe Windows, git are implicit `core.autocrlf=true` si converteste
+# la CRLF la checkout. Un `.sh` cu CRLF, trimis pe un server Linux, esueaza pe
+# fiecare linie:
+#
+#     bash: line 2: $'\r': command not found
+#
+# Iar `scripts/recon-prod.sh` si `scripts/setup-db-roles.sh` sunt exact fisiere
+# scrise pe Windows si rulate pe Linux. Fara regula de mai jos, prima rulare de
+# pe un checkout Windows pica, si mesajul nu spune de ce.
+#
+# Acelasi lucru pentru Dockerfile si pentru scripturile copiate in imagine.
+
+* text=auto eol=lf
+
+# Fara conversie: sunt binare sau au propriile terminatoare.
+*.png binary
+*.jpg binary
+*.pdf binary
+*.zip binary
+*.woff2 binary
+*.ttf binary
+
+# Artefactele de validare vin de la ANAF si OASIS asa cum sunt. Nu le atingem:
+# schematronul se compileaza din ele, iar o conversie de terminatoare ar schimba
+# ce vede procesorul XSLT.
+schematron/** -text
+vendor/iso-schematron/*.xsl -text

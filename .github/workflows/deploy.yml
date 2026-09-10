@@ -1,0 +1,103 @@
+name: test si deploy
+
+on:
+  push:
+    # Ambele nume, ca sa nu depinda de cum se cheama branch-ul implicit.
+    # Deploy-ul e gardat mai jos pe branch-ul implicit REAL al repo-ului.
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # WeasyPrint are nevoie de Pango si Cairo, iar testele de PDF verifica pe
+      # documentul randat ca diacriticele vin din Noto Sans. Fara fonturi, se
+      # cade pe DejaVu — exact fontul pe care docs/decizii.md il exclude, pentru
+      # ca deseneaza s si t cu sedila in loc de virgula.
+      # Aceleasi pachete ca in Dockerfile: CI-ul trebuie sa vada ce vede productia.
+      - name: dependinte de sistem pentru WeasyPrint
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz0b \
+            fonts-noto-core fonts-noto-extra
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check app tests
+      - run: pytest -q
+        env:
+          DATABASE_URL: postgresql+psycopg://x:x@localhost/x
+          TOKEN_ENCRYPTION_KEY: dGVzdC1jaGVpZS1udW1haS1wZW50cnUtY2k9PQ==
+
+  build-and-deploy:
+    needs: test
+    # `github.event.repository.default_branch` e numele real, oricare ar fi el.
+    # Scris ca 'refs/heads/main' fix, jobul nu porneste niciodata pe un repo
+    # al carui branch implicit e master — si nici nu spune de ce.
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
+
+      # Deploy pe Hetzner. Migratiile NU ruleaza automat — vezi scripts/migrate-prod.sh
+      - name: deploy
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            cd /srv/facturare
+            export IMAGE=ghcr.io/${{ github.repository }}:${{ github.sha }}
+
+            # Serverul nu a fost niciodata autentificat la ghcr. Daca pachetul e
+            # privat — implicit pentru pachetele publicate din Actions — `pull`
+            # da „denied" si deploy-ul se opreste aici. Tokenul jobului e valabil
+            # pentru pachetele repo-ului si moare odata cu el.
+            echo '${{ secrets.GITHUB_TOKEN }}' \
+              | docker login ghcr.io -u '${{ github.actor }}' --password-stdin
+
+            docker compose -f docker-compose.prod.yml pull
+
+            # `db` si `redis` INAINTE, si fara `--no-deps`: pasul urmator il are,
+            # iar `--no-deps` anuleaza tot graful de dependinte. Fara linia asta
+            # `redis` nu porneste niciodata — niciun pas din runbook nu-l porneste
+            # — si workerii raman fara coada, tacut.
+            docker compose -f docker-compose.prod.yml up -d db redis
+
+            # Aici `--no-deps` e intentionat: `db` si `redis` tocmai au fost
+            # aduse la zi, si nu vrem sa fie recreate la fiecare deploy.
+            docker compose -f docker-compose.prod.yml up -d --no-deps api worker scheduler
+
+            # IMAGE traia doar in shell-ul sesiunii SSH. Dupa ce jobul se termina,
+            # `scripts/migrate-prod.sh` si orice `docker compose` rulat de mana pe
+            # server esuau la interpolare. Se scrie in .env, ca sa supravietuiasca.
+            if grep -q '^IMAGE=' .env; then
+              sed -i "s|^IMAGE=.*|IMAGE=${IMAGE}|" .env
+            else
+              printf '\nIMAGE=%s\n' "${IMAGE}" >> .env
+            fi
+
+            # Credentialele nu au ce cauta in ~/.docker/config.json dupa deploy.
+            docker logout ghcr.io
+            docker image prune -f

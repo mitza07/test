@@ -1,0 +1,76 @@
+# Recunoastere pe serverul de productie, inainte de bootstrap.
+#
+# DE CE EXISTA: `docs/deployment.md` a fost scris din capturi de ecran trimise pe
+# chat. Bootstrap-ul nu se scrie pe presupuneri — mai ales partea de certificat,
+# unde nu stim inca daca nginx-ul existent foloseste Let's Encrypt, certificate
+# Origin de la Cloudflare, sau altceva.
+#
+# CUM SE PORNESTE: din Actions (Run workflow), sau cu un commit al carui mesaj
+# INCEPE cu `recon:`. Marcajul se verifica cu `startsWith`, nu cu `contains`, si
+# asta nu e un detaliu: prima versiune cerea `[recon]` oriunde in mesaj, iar
+# commit-ul care a adus workflow-ul explica in corpul lui cum se declanseaza —
+# deci s-a declansat singur. Un marcaj cautat oriunde se potriveste si pe
+# propria documentatie.
+#
+# Fara secretele HETZNER_*, workflow-ul nu esueaza: spune ce lipseste si se
+# opreste verde. Nu e un defect de cod, si nu are ce sa raporteze.
+#
+# NU tipareste nimic secret: fara variabile de mediu din containere, fara chei,
+# fara continutul altor `.env`. Doar nume, cai si stare — vezi scripts/recon-prod.sh.
+
+name: recunoastere server
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/new-session-dtmuyc]
+
+jobs:
+  recon:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      startsWith(github.event.head_commit.message, 'recon:')
+    runs-on: ubuntu-latest
+    env:
+      # `secrets` nu se poate folosi in `if:` la nivel de job, dar poate ajunge
+      # acolo printr-un env. Se compara doar prezenta, nu valoarea.
+      SECRETE_SETATE: ${{ secrets.HETZNER_HOST != '' && secrets.HETZNER_SSH_KEY != '' }}
+    steps:
+      - name: sunt secretele puse?
+        if: env.SECRETE_SETATE != 'true'
+        run: |
+          echo "::warning title=Secrete lipsa::HETZNER_HOST si HETZNER_SSH_KEY nu sunt setate."
+          echo "Settings -> Secrets and variables -> Actions:"
+          echo "  HETZNER_HOST     adresa serverului"
+          echo "  HETZNER_USER     utilizatorul de SSH"
+          echo "  HETZNER_SSH_KEY  cheia privata, fisierul intreg, cu BEGIN/END"
+          echo
+          echo "Pana atunci nu e nimic de recunoscut. Ies verde, nu rosu:"
+          echo "lipsa configurarii nu e un defect al codului din PR."
+
+      - uses: actions/checkout@v4
+        if: env.SECRETE_SETATE == 'true'
+
+      - name: cheia si gazda
+        if: env.SECRETE_SETATE == 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.HETZNER_SSH_KEY }}" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keygen -y -f ~/.ssh/id_deploy > /dev/null \
+            || { echo "::error::Cheia privata nu se poate citi. Ai lipit fisierul intreg?"; exit 1; }
+          # Trust-on-first-use. Amprenta se tipareste ca sa poata fi comparata cu
+          # `ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub` de pe server.
+          ssh-keyscan -H "${{ secrets.HETZNER_HOST }}" > ~/.ssh/known_hosts 2>/dev/null
+          [ -s ~/.ssh/known_hosts ] \
+            || { echo "::error::Serverul nu raspunde pe 22. Verifica HETZNER_HOST si firewall-ul."; exit 1; }
+          echo "Amprenta gazdei:"
+          ssh-keygen -lf ~/.ssh/known_hosts
+
+      - name: ce e pe server
+        if: env.SECRETE_SETATE == 'true'
+        run: |
+          ssh -i ~/.ssh/id_deploy -o BatchMode=yes \
+            "${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }}" \
+            'bash -s' < scripts/recon-prod.sh

@@ -1,0 +1,119 @@
+# Productie — Hetzner. Date reale. SPV pe /prod/.
+# Nimeni nu dezvolta aici. Migratiile se ruleaza prin comanda explicita,
+# NU la pornirea containerului.
+#
+# REVERSE PROXY: serverul NU ruleaza Traefik. Porturile 80 si 443 sunt tinute de
+# un nginx care exista deja (containerul `fsi-web`) si care ruteaza toate
+# subdomeniile dupa Host. Deci `api` nu publica porturi si nu are etichete
+# Traefik: se leaga la reteaua comuna a proxy-ului, iar nginx da mai departe
+# catre `facturare-api:8000`. Blocul de nginx e in `deploy/nginx/facturare.conf`.
+#
+# LIMITE DE MEMORIE: masina are 3,7 GB si ruleaza deja ~20 de containere, cu
+# swap-ul atins. Limitele de mai jos nu sunt rezervari — sunt plafoane, ca o
+# randare WeasyPrint scapata sa nu ia jos si restul serviciilor de pe server.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      retries: 10
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --maxmemory 96mb --maxmemory-policy noeviction
+    volumes:
+      - redis_data:/data
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    restart: always
+
+  api:
+    # Nume fix: nginx-ul din afara stivei il tinteste pe nume, iar numele generat
+    # de compose depinde de directorul in care rulezi.
+    container_name: facturare-api
+    image: ${IMAGE:?IMAGE trebuie setat la imaginea publicata de CI, de ex. ghcr.io/<owner>/<repo>:<sha>}
+    env_file: .env
+    environment:
+      APP_ENV: prod
+      ANAF_ENVIRONMENT: prod
+    volumes:
+      - storage:/data/storage
+      - ./schematron:/data/schematron:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 30s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+    networks: [default, web]
+    restart: always
+
+  worker:
+    image: ${IMAGE:?IMAGE trebuie setat la imaginea publicata de CI, de ex. ghcr.io/<owner>/<repo>:<sha>}
+    env_file: .env
+    environment:
+      APP_ENV: prod
+      ANAF_ENVIRONMENT: prod
+    volumes:
+      - storage:/data/storage
+      - ./schematron:/data/schematron:ro
+    depends_on: [redis, db]
+    command: rq worker --url ${REDIS_URL} pdf spv default
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          # WeasyPrint urca la randare; sub 768M o factura cu multe linii pica.
+          memory: 768M
+    restart: always
+
+  scheduler:
+    image: ${IMAGE:?IMAGE trebuie setat la imaginea publicata de CI, de ex. ghcr.io/<owner>/<repo>:<sha>}
+    env_file: .env
+    environment:
+      APP_ENV: prod
+      ANAF_ENVIRONMENT: prod
+    depends_on: [redis]
+    # joburi periodice: poll stare SPV, alerta termen legal, alerta refresh token,
+    # alerta fereastra de descarcare de 60 de zile, generare ciorne recurente
+    command: python -m app.workers.scheduler
+    deploy:
+      resources:
+        limits:
+          memory: 192M
+    restart: always
+
+volumes:
+  db_data:
+  redis_data:
+  storage:
+  # `schematron` NU e volum: artefactele se despacheteaza si se compileaza de
+  # mana, in /srv/facturare/schematron. Un volum numit n-are cum sa fie umplut
+  # fara `docker cp`, iar continutul lui e versionat de ANAF, nu de noi.
+
+networks:
+  # Reteaua pe care sta reverse proxy-ul existent. Nu o cream noi: exista deja,
+  # cu celelalte aplicatii pe ea.
+  web:
+    external: true
+    name: ${WEB_NETWORK:-apps-net}
