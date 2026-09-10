@@ -1,0 +1,5 @@
+build/*.png
+build/previz.html
+build/test-geo.html
+build/continut.json
+node_modules/
