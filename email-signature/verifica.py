@@ -22,7 +22,21 @@ FORBIDDEN = ["<div", "<style", "<script", "<form", "<iframe", "<link", "<meta",
              "max-width", "display:flex", "display:grid", "margin-left"]
 NO_IMAGE  = ["<img", "src=", "background-image", "url(", "data:", "srcset"]
 
-def check_fragment(path, allow_image=False):
+def _strip_tables(html):
+    """Elimina blocurile <table>...</table> echilibrate (regex-ul non-greedy
+    se oprea la primul </table>, deci lasa in urma celule ale tabelului exterior)."""
+    out, i = [], 0
+    while True:
+        m = re.compile(r"<table\b").search(html, i)
+        if not m: out.append(html[i:]); return "".join(out)
+        out.append(html[i:m.start()])
+        depth, j = 0, m.start()
+        for tag in re.finditer(r"</?table\b", html[m.start():]):
+            depth += 1 if not tag.group(0).startswith("</") else -1
+            if depth == 0: j = m.start() + tag.end(); break
+        i = html.find(">", j) + 1
+
+def check_fragment(path, allow_image=False, caps=False):
     raw = open(path, "rb").read(); t = raw.decode("utf-8")
     name = os.path.relpath(path, BASE)
     ck(all(b < 128 for b in raw), f"{name}: contine octeti non-ASCII")
@@ -85,7 +99,11 @@ def check_fragment(path, allow_image=False):
             out.append((m.group(1), html[m.end():j]))
             i = j + 1
     for attrs, inner in _inner_cells(t):
-        bare = re.sub(r"<table.*?</table>", "", inner, flags=re.S)   # ignora tabelele imbricate
+        bare = _strip_tables(inner)                                   # ignora tabelele imbricate
+        # o celula direct in alta celula, fara tabel intre ele, e HTML invalid:
+        # browserul o scoate afara din card (bug intalnit la subsolurile colectiei)
+        ck("<td" not in bare and "<tr" not in bare,
+           f"{name}: <td> pus direct intr-un <td>, fara tabel intre ele")
         bare = re.sub(r"<p\b.*?</p>", "", bare, flags=re.S)         # ignora ce e deja fixat
         ck(not re.search(r"[A-Za-z0-9]", re.sub(r"<[^>]+>", "", bare)),
            f"{name}: text nefixat intr-un <td> (lipseste <p style=margin:0;padding:0>)")
@@ -100,13 +118,14 @@ def check_fragment(path, allow_image=False):
     ck(ents <= {160, 183, 194, 226, 206, 238, 258, 259, 536, 537, 538, 539, 8226, 8594},
        f"{name}: entitati neasteptate "
        f"{sorted(ents - {160,183,194,226,206,238,258,259,536,537,538,539,8226,8594})}")
-    dec = re.sub(r"&#(\d+);", lambda m: chr(int(m.group(1))), t)
+    dec = re.sub(r"<[^>]+>", "", re.sub(r"&#(\d+);", lambda m: chr(int(m.group(1))), t))  # doar textul
     for want in ["Mihai Zamfir", "Consultant IT", "ITISTUL.RO",
                  "MENTENANȚĂ ECHIPAMENTE IT", "INFRASTRUCTURĂ", "SECURITY",
                  "+40 742 932 686", "mihai@itistul.ro", "www.itistul.ro",
                  "Strada Samuil Vulcan, nr. 12D, et. 1, biroul 15",
                  "București, România"]:
-        ck(want in dec, f"{name}: lipseste continutul {want!r}")
+        ck((want.upper() in dec.upper()) if caps else (want in dec),
+           f"{name}: lipseste continutul {want!r}")
     for h in ["tel:+40742932686", "mailto:mihai@itistul.ro", "https://www.itistul.ro/"]:
         ck(h in t, f"{name}: lipseste href {h}")
     ck(t.count("<td") == t.count("</td>") and t.count("<tr") == t.count("</tr>")
@@ -114,7 +133,10 @@ def check_fragment(path, allow_image=False):
     ck("border-top:1px solid" in t, f"{name}: linia despartitoare nu e border-top")
     if allow_image:
         imgs = re.findall(r"<img [^>]*>", t)
-        ck(len(imgs) == 1, f"{name}: se asteapta exact o imagine, gasite {len(imgs)}")
+        if allow_image == "png":
+            ck(1 <= len(imgs) <= 2, f"{name}: se asteapta 1-2 ornamente, gasite {len(imgs)}")
+        else:
+            ck(len(imgs) == 1, f"{name}: se asteapta exact o imagine, gasite {len(imgs)}")
         for im in imgs:
             ck("https://raw.githubusercontent.com/mitza07/test/" in im,
                f"{name}: <img> nu trimite la GIF-ul gazduit pe GitHub")
@@ -128,10 +150,26 @@ def check_fragment(path, allow_image=False):
                 m = re.search(rf'{at}="(\d+)"', im)
                 ck(bool(m) and f"{pr}:{m.group(1)}px;" in im,
                    f"{name}: <img> {at} nedeclarat si ca atribut si in CSS")
-        # celula care contine banda trebuie sa aiba acelasi fundal ca banda,
-        # ca starea blocata sa arate ca spatiu, nu ca o gaura
-        cell = re.search(r'<td([^>]*)>\s*<p[^>]*>\s*<img', t)
-        ck(bool(cell), f"{name}: <img> nu e intr-un <p> fixat")
+        if allow_image == "png":
+            # fiecare ornament e copt pe fundalul exact al celulei: pixelul din colt
+            # trebuie sa fie egal cu bgcolor-ul, iar dimensiunile cu cele declarate
+            from PIL import Image as _I
+            for cattrs, im in re.findall(r'<td([^>]*)>\s*<p[^>]*>\s*(<img [^>]*>)', t):
+                bg = re.search(r'bgcolor="([^"]+)"', cattrs)
+                ck(bool(bg), f"{name}: celula ornamentului nu declara bgcolor")
+                gp = os.path.join(BASE, "assets", "lux", re.search(r'src="([^"]+)"', im).group(1).rsplit("/", 1)[1])
+                ck(os.path.isfile(gp), f"{name}: ornamentul referit nu exista: {gp}")
+                if bg and os.path.isfile(gp):
+                    pic = _I.open(gp).convert("RGB")
+                    px = "#%02x%02x%02x" % pic.getpixel((pic.width - 1, pic.height // 2))
+                    ck(px == bg.group(1).lower(), f"{name}: fundalul PNG {px} != bgcolor-ul celulei {bg.group(1)}")
+                    ck(f'width="{pic.width}"' in im and f'height="{pic.height}"' in im,
+                       f"{name}: PNG-ul e {pic.width}x{pic.height}, HTML-ul declara altceva")
+                    ck(os.path.getsize(gp) < 20000, f"{name}: ornament peste 20 KB: {gp}")
+            cell = None
+        else:
+            cell = re.search(r'<td([^>]*)>\s*<p[^>]*>\s*<img', t)
+        ck(allow_image == "png" or bool(cell), f"{name}: <img> nu e intr-un <p> fixat")
         if cell:
             bg = re.search(r'bgcolor="([^"]+)"', cell.group(1))
             ck(bool(bg), f"{name}: celula benzii nu declara bgcolor")
@@ -221,6 +259,41 @@ ck(pg.count("<table") == 1, f"{NP}: se astepta un singur tabel (adancime 1), gas
 ck(len(pg.encode()) < 16000, f"{NP}: {len(pg.encode())} B, peste bugetul de 16 KB")
 ck(len(re.findall(r'<td[^>]*height="\d+"', pg)) <= 60, f"{NP}: prea multe celule grafice")
 
+
+# --- colectia: 17 variante dupa referintele trimise ---------------------------
+COL = os.path.join(BASE, "colectie")
+COLECTIE = [("lux-%d" % i, "Lux %d" % i) for i in range(1, 10)] + [("rose", "Rose")] + \
+           [("noir-%d" % i, "Noir %d" % i) for i in range(1, 4)] + \
+           [("mono-%d" % i, "Mono %d" % i) for i in range(1, 4)] + [("aur", "Aur")]
+folosite = set()
+for slug, short in COLECTIE:
+    d = os.path.join(COL, slug); nume = f"Mihai Zamfir - {short}"
+    frag = os.path.join(d, "fragment.html")
+    ck(os.path.isfile(frag), f"colectie/{slug}: lipseste fragment.html")
+    if not os.path.isfile(frag): continue
+    check_fragment(frag, allow_image=("png" if slug.startswith("lux") else False), caps=True)
+    check_htm(os.path.join(d, f"{nume}.htm"))
+    for ext in ("rtf", "txt"):
+        ck(os.path.isfile(os.path.join(d, f"{nume}.{ext}")), f"colectie/{slug}: lipseste {nume}.{ext}")
+    ck(not os.path.exists(os.path.join(d, f"{nume}_files")), f"colectie/{slug}: nu ar trebui sa aiba folder companion")
+    ck(b"File-List" not in open(os.path.join(d, f"{nume}.htm"), "rb").read(), f"colectie/{slug}: File-List fara folder companion")
+    fg = open(frag, encoding="utf-8").read()
+    ck(len(fg.encode()) < 17000, f"colectie/{slug}: {len(fg.encode())} B, peste bugetul de 17 KB")
+    ck(fg.count("<table") <= 10, f"colectie/{slug}: {fg.count('<table')} tabele, prea multe")
+    if slug != "lux-4":   # referinta Lux 4 e singura fara fotografie
+        ck(">MZ<" in fg, f"colectie/{slug}: lipseste medalionul-monograma (locul fotografiei)")
+    ck('width="600"' in fg.split(">", 1)[0], f"colectie/{slug}: latimea exterioara nu e 600")
+    if not slug.startswith("lux"):
+        ck("<img" not in fg, f"colectie/{slug}: designul trebuie sa fie fara imagini")
+    folosite |= set(re.findall(r'/assets/lux/([^"]+)"', fg))
+    rs = open(os.path.join(d, f"{nume}.rtf"), "rb").read()
+    ck(rs.startswith(b"{\\rtf1") and rs.count(b"{") == rs.count(b"}") and all(b < 128 for b in rs),
+       f"colectie/{slug}: RTF invalid")
+lux_dir = os.path.join(BASE, "assets", "lux")
+pe_disc = set(os.listdir(lux_dir)) if os.path.isdir(lux_dir) else set()
+ck(folosite <= pe_disc, f"colectie: ornamente referite dar inexistente: {sorted(folosite - pe_disc)}")
+ck(pe_disc <= folosite, f"colectie: ornamente orfane in assets/lux: {sorted(pe_disc - folosite)}")
+
 rtf = open(os.path.join(SIG, "Mihai Zamfir.rtf"), "rb").read()
 ck(rtf.startswith(b"{\\rtf1"), "RTF: nu incepe cu {\\rtf1 (BOM?)")
 ck(rtf.count(b"{") == rtf.count(b"}"), "RTF: acolade dezechilibrate")
@@ -287,6 +360,17 @@ ck('set "IMPLICITA=Mihai Zamfir - Puls"' in inst, "instalator: argumentul puls n
 ck('\\semnatura-puls"' in inst and '\\semnatura-puls%SUB%' not in inst, "instalator: calea Puls nu trebuie sa primeasca %SUB%")
 ck('"Mihai Zamfir - Puls"' in open(os.path.join(BASE, "instalare", "DEZINSTALEAZA.cmd"), encoding="ascii").read(),
    "dezinstalator: nu elimina semnatura Puls")
+for slug, short in COLECTIE:
+    nume = f"Mihai Zamfir - {short}"
+    ck(f'"{nume}"' in inst, f"instalator: nu instaleaza semnatura {nume!r}")
+    ck(f'\\colectie\\{slug}"' in inst and f'\\colectie\\{slug}%SUB%' not in inst,
+       f"instalator: calea colectie/{slug} lipseste sau primeste %SUB%")
+    ck(f'set "IMPLICITA={nume}"' in inst, f"instalator: argumentul {slug} nu seteaza implicita")
+    ck(f'"{nume}"' in open(os.path.join(BASE, "instalare", "DEZINSTALEAZA.cmd"), encoding="ascii").read(),
+       f"dezinstalator: nu elimina semnatura {nume!r}")
+    for ext in ("htm", "rtf", "txt"):
+        ck(os.path.isfile(os.path.join(BASE, "colectie", slug, f"{nume}.{ext}")),
+           f"instalator: lipseste colectie/{slug}/{nume}.{ext}")
 ck('set "IMPLICITA=Mihai Zamfir - Signet"' in inst, "instalator: argumentul signet nu seteaza implicita")
 ck('\\semnatura-signet"' in inst and '\\semnatura-signet%SUB%' not in inst,
    "instalator: calea Signet nu trebuie sa primeasca %SUB%")

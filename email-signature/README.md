@@ -1,7 +1,8 @@
 # Semnături e-mail — Mihai Zamfir / ITISTUL.RO
 
-**Patru** semnături Outlook, toate **fără nimic de urcat pe site**. Instalatorul le pune pe
-toate; le comuți din Outlook la compunerea unui mesaj (`Message > Signature`).
+**Patru** semnături Outlook plus **o colecție de 17 variante** după referințele trimise —
+toate **fără nimic de urcat pe site**. Instalatorul le pune pe toate (21); le comuți din
+Outlook la compunerea unui mesaj (`Message > Signature`).
 
 ![previzualizare](documentatie/previzualizare.png)
 
@@ -12,6 +13,62 @@ toate; le comuți din Outlook la compunerea unui mesaj (`Message > Signature`).
 | Lățime | 580 px | 560 px | 560 px | 680 px |
 | Sursă HTML | 8,4 KB | 14,3 KB | 8,1 KB | 14,8 KB |
 | Implicită | `... signet` | `... puls` | da | `... clasic` |
+
+## Colecția — 17 variante după referințe
+
+![colecția](documentatie/previzualizare-colectie.png)
+
+Referințele trimise (Luxury Email Signature „Chapter 01", Rosalie Moses, Emma Johnson,
+Jessica Roche, Theo Wilton) sunt **imagini întregi** — PNG-uri exportate din Canva/Photoshop.
+Trimise ca semnătură, ele au exact problema din care a pornit tot proiectul: o singură
+imagine, blocată implicit de Outlook, cu text neselectabil și linkuri inexistente.
+Colecția reface fiecare compoziție din **text și celule**, cu aceleași proporții și aceeași
+paletă, plus îmbunătățirile de mai jos.
+
+| Familie | Variante | Ce e | Imagini |
+|---|---|---|---|
+| **Lux** | `lux-1` … `lux-9` | negru/auriu, ornamente mandala (cele 9 din „Chapter 01"), 2 pe fundal prună | 1–2 PNG-uri de ornament, de pe GitHub |
+| **Aur** | `aur` | ramă dublă aurie, medalion cu inel dublu, bară aurie (Theo Wilton) | **niciuna** |
+| **Rose** | `rose` | card alb, accente roz-teracotă, buton „Contactează-mă" (Rosalie Moses) | **niciuna** |
+| **Noir** | `noir-1` … `noir-3` | negru, tipografie subțire spațiată, bară de subsol gri (Emma Johnson) | **niciuna** |
+| **Mono** | `mono-1` … `mono-3` | negru/alb, serif, sigla „IT" în pătrat, panou alb (Jessica Roche) | **niciuna** |
+
+Numele în Outlook: `Mihai Zamfir - Lux 3`, `Mihai Zamfir - Rose`, `Mihai Zamfir - Noir 2` etc.
+Implicita se alege cu argumentul din tabel: `INSTALEAZA-SEMNATURA.cmd lux-3`.
+
+**Fotografia.** Toate referințele au portret. Până la primirea fotografiei, în locul ei stă
+un **medalion cu monograma „MZ"**, construit din celule (chenar dublu, deci nu poate fi
+blocat). Când există fotografia, medalionul e înlocuit în toate variantele; pe Lux se poate
+monta și în rama „floare" aurie din referință. Fotografia va fi o imagine (nu există altă
+cale), deci va avea comportamentul imaginilor remote: se vede automat în Gmail, Apple Mail,
+Outlook pe telefon și la orice destinatar care te are în Contacts; în Outlook Classic la un
+destinatar necunoscut apare după „Download pictures".
+
+**Ornamentele Lux** sunt PNG-uri de 1–18 KB generate procedural (nu stock), **coapte pe
+fundalul exact al celulei** (`#111111` / `#1b1424`, fără transparență — motorul Word nu
+are surprize cu ele) și fixate pe un SHA de commit, ca banda GIF. Textul **nu stă niciodată
+peste ornament**: ornamentul are celula lui, textul pe a lui. Așa, când imaginile sunt
+blocate, dispare doar decorul — numele, contactele și liniile aurii rămân, iar layout-ul nu
+se mișcă. În referință dispărea totul.
+
+**Îmbunătățiri față de referințe**, aceleași pentru toate 17:
+
+- linkuri reale (`tel:`, `mailto:`, site, hartă) și text selectabil, nu pixeli;
+- diacritice corecte (referințele erau în engleză, fără);
+- contrast: rozul din Rosalie Moses (2,6:1) e închis la 4,6:1, bara gri din Emma Johnson
+  la 5,9:1 — se citește și pe ecran prost;
+- etichete `TEL / MAIL / WEB / ADRESĂ` în loc de pictograme (pictogramele ar fi fost imagini
+  sau glifuri Unicode pe care iOS le transformă în emoji);
+- fără colțuri rotunjite, fără nume scris vertical, fără gradient: motorul Word nu le
+  randează, deci nu apar nicăieri — în loc de o variantă care se strică, una care ține;
+- dark mode: culoarea e declarată pe același element ca fundalul, deci se inversează
+  împreună (sau deloc);
+- fiecare variantă are o singură tabelă exterioară, celule cu `bgcolor`, paragrafe fixate,
+  fonturi inline — tot setul de reguli din `DE-CE-ASA.md`, verificat mecanic.
+
+Ce nu s-a putut păstra: mandala nu se poate desena din celule (de aici PNG-ul), rama
+rotundă din Theo Wilton e pătrată, numele scris vertical din Emma Johnson / Jessica Roche
+e înlocuit cu o linie verticală sau cu literele suprapuse pe rânduri (Mono 2).
 
 ## Puls — semnătura grafică
 
@@ -188,10 +245,11 @@ Argumente:
 | `INSTALEAZA-SEMNATURA.cmd clasic` | toate, implicită cea clasică |
 | `INSTALEAZA-SEMNATURA.cmd signet` | toate, implicită cea executivă |
 | `INSTALEAZA-SEMNATURA.cmd puls` | toate, implicită cea grafică |
+| `INSTALEAZA-SEMNATURA.cmd lux-3` | toate, implicită „Lux 3" (la fel: `lux-1`…`lux-9`, `aur`, `rose`, `noir-1`…`noir-3`, `mono-1`…`mono-3`) |
 | `INSTALEAZA-SEMNATURA.cmd fara-imagini` | ambele, variantele fără bandă |
 | `INSTALEAZA-SEMNATURA.cmd clasic fara-imagini` | se pot combina |
 
-Anulare completă: `instalare/DEZINSTALEAZA.cmd` (elimină toate patru).
+Anulare completă: `instalare/DEZINSTALEAZA.cmd` (elimină toate 21).
 
 Instalatorul scrie un jurnal la `instalare/jurnal-instalare.txt`. Dacă ceva
 eșuează, acolo găsești ce sursă lipsea, dacă destinația exista și dacă Outlook
@@ -251,9 +309,17 @@ email-signature/
 ├─ semnatura-clasic/            ← designul original, aceeași structură
 ├─ semnatura-signet/            ← executivă, fără imagini, fără variante
 ├─ semnatura-puls/              ← grafică, fără imagini, fără variante
+├─ colectie/                    ← cele 17 variante după referințe (lux-1 … aur)
+│  └─ lux-1/ … aur/             ← fiecare cu .htm/.rtf/.txt + fragment.html
+├─ assets/
+│  ├─ itistul-signal.gif        ← benzile, servite de pe GitHub raw
+│  ├─ itistul-pulse-clasic.gif
+│  └─ lux/                      ← ornamentele mandala (PNG), la fel
+├─ genereaza-colectie.py        ← regenerează cele 17 variante (python3 genereaza-colectie.py <sha>)
+├─ genereaza-mandale.py         ← regenerează ornamentele din assets/lux/
 ├─ genereaza-gif.py             ← regenerează banda compactă
 ├─ genereaza-gif-clasic.py      ← regenerează banda clasică
-└─ verifica.py                  ← 768 verificări, pe ambele semnături
+└─ verifica.py                  ← 5.870 verificări, pe toate 21
 ```
 
 ## După orice modificare

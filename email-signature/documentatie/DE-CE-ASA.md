@@ -165,6 +165,33 @@ orizontal pe mobil. 520 px încap peste tot și rămân lizibile citate de mai m
 
 ---
 
+## 12. Colecția: ce s-a decis diferit față de referințe
+
+Referințele sunt imagini întregi. O semnătură-imagine e blocată ca orice imagine, nu are
+linkuri, nu se poate selecta, nu se scalează pe telefon. Colecția reface compozițiile din
+text și celule; deciziile specifice:
+
+- **Medalion în loc de fotografie, până la primirea ei.** Un `<img>` blocat în Outlook
+  lasă o casetă cu X roșu; un medalion din celule (chenar dublu + monogramă) se vede
+  oricum. Când există fotografia, ea intră exact în celula medalionului, cu aceleași
+  dimensiuni, deci layout-ul nu se schimbă.
+- **Ornamentele mandala sunt PNG-uri coapte pe fundalul celulei**, nu cu transparență:
+  PNG-ul cu alfa are istoric prost în motorul Word (halo, fundal alb). Culoarea de fundal a
+  imaginii e verificată pixel cu pixel față de `bgcolor`-ul celulei (`verifica.py`).
+- **Textul nu stă niciodată peste ornament.** Referințele pun textul peste mandala
+  estompată; asta ar cere imagine de fundal (VML în Outlook — fragil) și strică lizibilitatea.
+  Ornamentul are celula lui la margine; textul are a lui.
+- **Fără colțuri rotunjite, gradient, text vertical, `text-transform`.** Niciunul nu
+  există în motorul Word. Numele e scris cu majuscule literal (de aceea verificarea
+  conținutului e insensibilă la majuscule pentru colecție).
+- **Palatino Linotype pentru serif**: instalat pe orice Windows din 2000 încoace și randat
+  de Word; pe Mac cade pe Palatino, pe Android pe serif-ul sistemului. Segoe UI Light
+  pentru Noir: pe Windows 7+; în rest Helvetica Neue / Arial.
+- **Contrast ridicat unde referința nu-l avea**: roz-teracotă `#a8655b` (4,6:1) în loc de
+  `#c8958a` (2,6:1) pentru text; bara gri `#5e5e5e` (5,9:1) în loc de `#7a7a7a`.
+- **Fiecare subsol e un tabel imbricat**, nu un `<td>` pus direct în alt `<td>`: browserul
+  scoate afară din card o celulă orfană. `verifica.py` prinde acum și cazul acesta.
+
 ## Ce s-a eliminat deliberat
 
 | Element | Motiv |

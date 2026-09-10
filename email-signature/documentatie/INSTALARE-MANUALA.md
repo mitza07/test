@@ -1,11 +1,15 @@
 # Instalare manuală — fără niciun script
 
-Pachetul conține **patru** semnături. Repetă pașii de mai jos pentru fiecare:
+Pachetul conține **patru** semnături plus **colecția de 17 variante**. Repetă pașii de
+mai jos pentru fiecare pe care o vrei:
 
 - `Mihai Zamfir` — din folderul `semnatura/`
 - `Mihai Zamfir - Clasic` — din folderul `semnatura-clasic/`
 - `Mihai Zamfir - Signet` — din folderul `semnatura-signet/` (fără folder companion: n-are imagini)
 - `Mihai Zamfir - Puls` — din folderul `semnatura-puls/` (la fel, fără imagini)
+- `Mihai Zamfir - Lux 1` … `Lux 9`, `Aur`, `Rose`, `Noir 1` … `Noir 3`, `Mono 1` … `Mono 3` —
+  din `colectie/<varianta>/` (fără folder companion; ornamentele Lux vin de pe GitHub).
+  Previzualizarea lor e în `documentatie/previzualizare-colectie.html`.
 
 Fiecare are folderul ei companion (`<nume>_files`), care trebuie copiat odată cu
 fișierele.

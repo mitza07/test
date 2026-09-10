@@ -10,11 +10,19 @@ rem    "Mihai Zamfir"           - designul compact
 rem    "Mihai Zamfir - Clasic"  - designul original, protejat
 rem    "Mihai Zamfir - Signet"  - designul executiv, fara nicio imagine
 rem    "Mihai Zamfir - Puls"    - bloc intunecat cu unda de semnal din celule, fara imagini
+rem  plus COLECTIA de 17 variante dupa referintele trimise:
+rem    "Mihai Zamfir - Lux 1".."Lux 9"   - negru/auriu cu ornamente mandala (PNG de pe GitHub)
+rem    "Mihai Zamfir - Rose"             - card alb cu accente roz-teracota
+rem    "Mihai Zamfir - Noir 1".."Noir 3" - negru, tipografie subtire
+rem    "Mihai Zamfir - Mono 1".."Mono 3" - negru/alb, serif
+rem    "Mihai Zamfir - Aur"              - negru cu rama dubla aurie
+rem  Toate au un medalion cu monograma in locul fotografiei (pana la primirea ei).
 rem
 rem  Implicita ramane cea compacta. Pentru ca implicita sa fie cea
 rem  clasica, ruleaza:  INSTALEAZA-SEMNATURA.cmd clasic
 rem  Pentru cea executiva:   INSTALEAZA-SEMNATURA.cmd signet
 rem  Pentru Puls:            INSTALEAZA-SEMNATURA.cmd puls
+rem  Pentru una din colectie: INSTALEAZA-SEMNATURA.cmd lux-3   (sau rose, noir-2, mono-1, aur ...)
 rem  Pentru variantele fara nicio imagine, adauga:  fara-imagini
 rem    ex.  INSTALEAZA-SEMNATURA.cmd clasic fara-imagini
 rem
@@ -38,6 +46,23 @@ for %%A in (%*) do (
   if /I "%%~A"=="clasic"       set "IMPLICITA=Mihai Zamfir - Clasic"
   if /I "%%~A"=="signet"       set "IMPLICITA=Mihai Zamfir - Signet"
   if /I "%%~A"=="puls"         set "IMPLICITA=Mihai Zamfir - Puls"
+  if /I "%%~A"=="lux-1"        set "IMPLICITA=Mihai Zamfir - Lux 1"
+  if /I "%%~A"=="lux-2"        set "IMPLICITA=Mihai Zamfir - Lux 2"
+  if /I "%%~A"=="lux-3"        set "IMPLICITA=Mihai Zamfir - Lux 3"
+  if /I "%%~A"=="lux-4"        set "IMPLICITA=Mihai Zamfir - Lux 4"
+  if /I "%%~A"=="lux-5"        set "IMPLICITA=Mihai Zamfir - Lux 5"
+  if /I "%%~A"=="lux-6"        set "IMPLICITA=Mihai Zamfir - Lux 6"
+  if /I "%%~A"=="lux-7"        set "IMPLICITA=Mihai Zamfir - Lux 7"
+  if /I "%%~A"=="lux-8"        set "IMPLICITA=Mihai Zamfir - Lux 8"
+  if /I "%%~A"=="lux-9"        set "IMPLICITA=Mihai Zamfir - Lux 9"
+  if /I "%%~A"=="rose"         set "IMPLICITA=Mihai Zamfir - Rose"
+  if /I "%%~A"=="noir-1"       set "IMPLICITA=Mihai Zamfir - Noir 1"
+  if /I "%%~A"=="noir-2"       set "IMPLICITA=Mihai Zamfir - Noir 2"
+  if /I "%%~A"=="noir-3"       set "IMPLICITA=Mihai Zamfir - Noir 3"
+  if /I "%%~A"=="mono-1"       set "IMPLICITA=Mihai Zamfir - Mono 1"
+  if /I "%%~A"=="mono-2"       set "IMPLICITA=Mihai Zamfir - Mono 2"
+  if /I "%%~A"=="mono-3"       set "IMPLICITA=Mihai Zamfir - Mono 3"
+  if /I "%%~A"=="aur"          set "IMPLICITA=Mihai Zamfir - Aur"
 )
 
 echo.
@@ -79,6 +104,24 @@ call :instaleaza "Mihai Zamfir - Clasic" "%ROOT%\semnatura-clasic%SUB%" || goto 
 rem  Signet nu are variante: e fara imagini prin constructie, deci nu primeste %SUB%
 call :instaleaza "Mihai Zamfir - Signet" "%ROOT%\semnatura-signet"        || goto :fail
 call :instaleaza "Mihai Zamfir - Puls"   "%ROOT%\semnatura-puls"          || goto :fail
+rem  Colectia: fara variante, fara folder companion; ornamentele Lux vin de pe GitHub
+call :instaleaza "Mihai Zamfir - Lux 1"   "%ROOT%\colectie\lux-1"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 2"   "%ROOT%\colectie\lux-2"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 3"   "%ROOT%\colectie\lux-3"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 4"   "%ROOT%\colectie\lux-4"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 5"   "%ROOT%\colectie\lux-5"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 6"   "%ROOT%\colectie\lux-6"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 7"   "%ROOT%\colectie\lux-7"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 8"   "%ROOT%\colectie\lux-8"   || goto :fail
+call :instaleaza "Mihai Zamfir - Lux 9"   "%ROOT%\colectie\lux-9"   || goto :fail
+call :instaleaza "Mihai Zamfir - Rose"    "%ROOT%\colectie\rose"    || goto :fail
+call :instaleaza "Mihai Zamfir - Noir 1"  "%ROOT%\colectie\noir-1"  || goto :fail
+call :instaleaza "Mihai Zamfir - Noir 2"  "%ROOT%\colectie\noir-2"  || goto :fail
+call :instaleaza "Mihai Zamfir - Noir 3"  "%ROOT%\colectie\noir-3"  || goto :fail
+call :instaleaza "Mihai Zamfir - Mono 1"  "%ROOT%\colectie\mono-1"  || goto :fail
+call :instaleaza "Mihai Zamfir - Mono 2"  "%ROOT%\colectie\mono-2"  || goto :fail
+call :instaleaza "Mihai Zamfir - Mono 3"  "%ROOT%\colectie\mono-3"  || goto :fail
+call :instaleaza "Mihai Zamfir - Aur"     "%ROOT%\colectie\aur"     || goto :fail
 
 rem --- semnatura implicita pentru mesaje noi si pentru raspunsuri ---
 set "MS=HKCU\Software\Microsoft\Office\16.0\Common\MailSettings"
@@ -99,12 +142,12 @@ echo   Semnaturi roaming dezactivate (altfel cloud-ul suprascrie fisierul local)
 
 >>"%LOG%" echo --- SUCCES ---  implicita: %IMPLICITA%
 echo.
-echo   GATA. Toate cele patru semnaturi sunt instalate.
+echo   GATA. Toate cele 21 de semnaturi sunt instalate.
 echo   Le poti comuta oricand din Outlook, la compunerea unui mesaj:
 echo     Message ^> Signature ^> alegi semnatura.
 echo.
 if not defined SUB (
-  echo   Banda animata se incarca de pe GitHub, dintr-un repo public.
+  echo   Banda animata si ornamentele Lux se incarca de pe GitHub, dintr-un repo public.
   echo   Nu trebuie urcata nicaieri. Daca un destinatar are imaginile oprite,
   echo   in locul ei ramane fundal curat, nu o imagine rupta.
   echo.
