@@ -1,0 +1,130 @@
+Ești consilier juridic pentru o editură. Îți dau citatele dintr-un manuscris de istorie care urmează să fie TIPĂRIT ȘI VÂNDUT în România.
+
+Autorii citați sunt în mare parte antici sau morți de peste 70 de ani, deci textele ORIGINALE sunt în domeniul public. Problema mea este alta: traducerile românești moderne sunt opere protejate separat, 70 de ani de la moartea traducătorului.
+
+Pentru fiecare citat:
+1. Identifică opera și pasajul exact (autor, lucrare, carte/capitol/paragraf).
+2. Verifică dacă formularea românească dată coincide, cuvânt cu cuvânt sau aproape, cu o traducere românească PUBLICATĂ. Dacă da: care traducător, ce editură, ce an, și dacă traducătorul a murit acum mai puțin de 70 de ani.
+3. Dacă formularea pare o retroversiune sau o traducere nouă, spune asta explicit.
+4. Pentru citatele din secolul XX (discursuri, documente politice, proclamații): cine deține drepturile și dacă documentul este act oficial. Actele oficiale nu sunt protejate, conform art. 9 din Legea 8/1996.
+5. Verdict final: SE POATE TIPĂRI CA ATARE / TREBUIE INDICAT TRADUCĂTORUL / TREBUIE RETRADUS SAU CERUT ACORD.
+
+Reguli:
+- Nu-mi explica ce e dreptul de autor. Dă-mi verdictele.
+- Dacă nu poți identifica sursa unui citat, spune "NEIDENTIFICAT" — asta e în sine un semnal că citatul poate fi apocrif.
+- Răspunde în tabel, o linie per citat.
+
+CITATELE (28 la număr):
+
+1. Herodot
+   «Tracii care stăpânesc Salmydessos […] s-au închinat lui Darius fără luptă; geții însă, care se cred nemuritori, împotrivindu-se cu îndârjire, au fost robiți pe dată, măcar că ei sunt cei mai viteji și mai drepți dintre traci.»
+   Context dat în carte: Istorii, IV, 93; traducerile românești diferă în detalii de formulare. Pasajul, redactat probabil între 440 și 425 î.Hr., descrie înaintarea armatei lui Darius I spre Istru în 514/513 î.Hr. și constituie cea dintâi mențiune sigură a geților într-un izvor scris. Formula elogioasă a fost intens exploatată de istoriografia romantică și apoi de cea național-comunistă; în context, ea servește însă mai ales la explicarea rezistenței izolate a unei populații de la marginea lumii cunoscute grecilor.
+
+2. Herodot
+   «Geții, cei mai viteji și mai drepți dintre traci, purtându-se nechibzuit, au fost robiți pe dată.»
+   Context dat în carte: Istorii, IV, 93, despre înaintarea lui Darius I spre Istru, în 514 î.Hr. Judecata îi aparține istoricului grec, nu unei tradiții getice, iar contextul ei este critic: vitejia este imediat calificată drept nesocotință. Fraza precedă nemijlocit descrierea credinței în nemurire, pe care o explică. Preluată din secolul al XIX-lea de istoriografia romantică românească, formula a fost citită într-un sens identitar pe care textul herodoteic nu îl susține.
+
+3. Strabon
+   «Ajungând în fruntea neamului său, care era istovit de războaie necontenite, Burebista, bărbat get, l-a înălțat atât de mult prin exerciții, prin abținerea de la vin și prin ascultarea poruncilor, încât în câțiva ani a făurit o mare stăpânire și a supus geților cea mai mare parte dintre vecini; ba a ajuns să fie temut chiar și de romani.»
+   Context dat în carte: Geografia, VII, 3, 11. Redactată în bună parte între anii 7 și 23 d.Hr., adică la circa două generații după evenimente, lucrarea geografului din Amaseia este izvorul central pentru domnia lui Burebista; toate reconstituirile moderne ale regatului pornesc, direct sau indirect, din acest pasaj.
+
+4. Nicolae Ceaușescu
+   «Pătrunderea trupelor celor cinci țări socialiste în Cehoslovacia constituie o mare greșeală și o gravă primejdie pentru pacea în Europa, pentru soarta socialismului în lume.»
+   Context dat în carte: Discurs rostit la 21 august 1968 din balconul clădirii Comitetului Central, în fața mulțimii adunate în Piața Palatului (azi Piața Revoluției), în ziua următoare intervenției trupelor Pactului de la Varșovia în Cehoslovacia. Momentul i-a adus lui Ceaușescu o popularitate internă reală și un considerabil capital de imagine în Occident, capital pe care regimul avea să îl cheltuiască în deceniile următoare, fără ca protestul să fi fost urmat de vreo ruptură instituțională cu blocul sovietic.
+
+5. Winston Churchill
+   «Nu s-ar putea crede că este cam cinic din partea noastră să fi rezolvat chestiuni atât de hotărâtoare pentru milioane de oameni într-un mod atât de expeditiv? Să ardem hârtia.»
+   Context dat în carte: Relatarea proprie a întrevederii cu Stalin de la Moscova, 9 octombrie 1944, în volumul „Triumf și tragedie" din memoriile sale despre Al Doilea Război Mondial. Pe hârtia respectivă influența în România era împărțită în proporție de 90% pentru Uniunea Sovietică și 10% pentru ceilalți; potrivit aceleiași relatări, Stalin i-a răspuns să o păstreze. Fiind o reconstituire retrospectivă, formularea trebuie citită ca mărturie a autorului, nu ca proces-verbal al discuției.
+
+6. Nicolae Ceaușescu
+   «Nu recunosc acest tribunal. Răspund numai în fața Marii Adunări Naționale.»
+   Context dat în carte: Răspuns dat completului Tribunalului Militar Excepțional în cazarma unității militare din Târgoviște, la 25 decembrie 1989. Replica, înregistrată pe peliculă, a fost repetată de acuzat pe tot parcursul dezbaterilor, alături de refuzul de a răspunde la întrebări și de a se supune expertizei psihiatrice; înregistrarea a fost difuzată în versiune montată la 26 decembrie, la o zi după imaginile cu cadavrele celor doi.
+
+7. Proclamația de la Timișoara, punctul 8
+   «Propunem ca legea electorală să interzică pentru primele trei legislaturi consecutive dreptul la candidatură al foștilor activiști comuniști și al foștilor ofițeri de Securitate.»
+   Context dat în carte: Document în douăzeci de puncte, redactat de Societatea Timișoara și făcut public la 11 martie 1990, la mai puțin de trei luni după căderea regimului comunist. Punctul 8 a devenit revendicarea centrală a protestului din Piața Universității și principalul punct de ruptură între societatea civilă și noua putere; nicio lege a lustrației nu a fost însă adoptată, proiectul votat în 2012 fiind declarat neconstituțional.
+
+8. Lozincă a manifestanților din București, noiembrie 2015
+   «Corupția ucide.»
+   Context dat în carte: Sintagma a apărut pe pancarte și a fost scandată în serile de 3 și 4 noiembrie 2015, în protestele declanșate de incendiul din clubul Colectiv, care au dus la demisia guvernului Ponta. Formula a legat direct tragedia de autorizațiile obținute prin complicitate administrativă și de starea sistemului sanitar, devenind motto-ul unui întreg deceniu de mobilizare civică; a fost reluată la protestele din februarie 2017 și la cele din august 2018.
+
+9. Titu Maiorescu
+   «În aparență, după statistica formelor din afară, românii posedă astăzi aproape întreaga civilizare occidentală. Avem politică și știință, avem jurnale și academii, avem școli și literatură, avem muzee, conservatorii, avem teatru, avem chiar o constituțiune. Dar în realitate toate aceste sunt producțiuni moarte, pretenții fără fundament, stafii fără trup, iluzii fără adevăr.»
+   Context dat în carte: Din studiul „În contra direcției de astăzi în cultura română”, publicat în Convorbiri literare la 1 martie 1868; pasajul este nucleul teoriei „formelor fără fond” și sinteza criticii junimiste la adresa modernizării prin import instituțional.
+
+10. Alexandru Ioan Cuza
+   «Unirea este îndeplinită, naționalitatea română este întemeiată.»
+   Context dat în carte: Proclamație către țară, dată la 11/23 decembrie 1861 și însoțită de mesajul adresat Adunărilor legiuitoare ale Moldovei și Țării Românești, prin care se anunța unificarea administrativă și politică deplină a Principatelor Unite, după obținerea acordului puterilor garante și al Porții. Actul a fost urmat, la 22 ianuarie/3 februarie 1862, de deschiderea primului parlament unic la București.
+
+11. Ferdinand I, regele României
+   «Vouă, fiilor de țărani, care ați apărat cu brațul și cu pieptul vostru pământul unde v-ați născut, [...] vă spun Eu, Regele vostru, că pe lângă răsplata cea mare a izbândei [...] ați câștigat totodată dreptul de a stăpâni într-o măsură mai largă pământul pe care v-ați luptat. Vi se va da pământ. Eu, Regele vostru, sunt cel dintâi a da pildă.»
+   Context dat în carte: Proclamație către oștire, citită în fața regimentelor adunate la Răcăciuni, la 23 martie/5 aprilie 1917, în perioada reorganizării armatei în Moldova; textul a circulat în mai multe variante, iar formularea exactă diferă de la o ediție la alta.
+
+12. Lucian Blaga
+   «Veșnicia s-a născut la sat.»
+   Context dat în carte: Discursul de recepție la Academia Română, intitulat „Elogiul satului românesc”, rostit la 5 iunie 1937. Formula a devenit emblematică pentru curentul autohtonist interbelic, care opunea satul, considerat depozitar al unei culturi organice, orașului modern și cosmopolit. Ea a fost invocată ulterior deopotrivă de admiratorii și de criticii tradiționalismului cultural românesc.
+
+13. Ion Antonescu
+   «Ostași, vă ordon: treceți Prutul! Zdrobiți vrăjmașul din răsărit și miazănoapte.»
+   Context dat în carte: Proclamație radiodifuzată către armată în dimineața zilei de 22 iunie 1941, în momentul intrării României în războiul împotriva Uniunii Sovietice. Formula a devenit cea mai cunoscută frază a regimului; ambiguitatea ei ulterioară ține de faptul că obiectivul enunțat, recuperarea Basarabiei și a nordului Bucovinei, a fost atins în circa cinci săptămâni, după care ofensiva a continuat dincolo de Nistru.
+
+14. Carol Robert de Anjou, în relatarea Chronicon Pictum
+   «Spuneți-i lui Basarab că el este păstorul oilor mele și că îl voi scoate de barbă din vizuina lui. (Dicatis Bazarad, quod ipse est pastor ovium mearum, ego ipsum per barbam suam extraham de latibulis suis.)»
+   Context dat în carte: Răspunsul atribuit regelui Ungariei — transmis, potrivit cronicii, prin curteanul Dionisie, fiul lui Nicolae — soliei prin care Basarab I oferea, în toamna anului 1330, despăgubiri și supunere formală pentru a evita războiul. Cronica iluminată a fost redactată însă către 1358, la curtea angevină, într-un moment în care înfrângerea trebuia explicată prin trufia regelui și a sfetnicilor săi; formula păstorului de oi reia totodată un loc comun despre vlahi. Textul are, prin urmare, valoare literară și morală, nu de proces-verbal diplomatic.
+
+15. Cancelaria domnească a lui Mircea cel Bătrân
+   «Io Mircea, mare voievod și domn, stăpânind și domnind peste toată Țara Ungrovlahiei și a părților de peste munți, încă și către părțile tătărești, și Amlașului și Făgărașului herțeg, și domn al Banatului Severinului, și de amândouă părțile pe toată Podunavia, încă și până la marea cea mare, și stăpânitor al cetății Dârstorului.»
+   Context dat în carte: Formula de titulatură din actele slavone emise în jurul anului 1406, în varianta ei cea mai extinsă. Ea reflectă pretențiile teritoriale maxime ale domniei, dintre care unele — îndeosebi cele asupra „părților tătărești” — au fost mai degrabă nominale sau efemere, iar altele, precum stăpânirea Dârstorului, au fost pierdute în ultimii ani ai domniei.
+
+16. Grigore Ureche
+   «Fost-au acestu Ștefan vodă om nu mare de statu, mânios și de grabu vărsătoriu de sânge nevinovat; de multe ori la ospéțe omorâea fără judecată. Amintrilea era om întreg la fire, neleneșu, și lucrul său îl știia a-l acoperi și unde nu gândiiai, acolo îl aflai.»
+   Context dat în carte: Portretul lui Ștefan cel Mare din Letopisețul Țării Moldovei, redactat în jurul anilor 1642–1647, la aproape un secol și jumătate după moartea domnului, și transmis exclusiv prin copii interpolate, între care cea a lui Simion Dascălul. Nu este o mărturie contemporană, ci o reconstrucție cărturărească, prețuită tocmai pentru că refuză hagiografia: cronicarul așază alături cruzimea și competența politică.
+
+17. Hotărârea dietei Transilvaniei
+   «Predicatorii să propovăduiască Evanghelia pretutindeni, fiecare după înțelegerea sa, iar dacă obștea voiește să o primească, bine; dacă nu, nimeni să nu fie silit [...] căci credința este darul lui Dumnezeu.»
+   Context dat în carte: Articol votat de dieta întrunită la Turda în ianuarie 1568, sub principele Ioan Sigismund și sub influența predicatorului Ferenc Dávid. Textul organiza coexistența comunităților religioase din principat; ortodoxia, credința majorității populației, rămânea în afara statutului de religie „receptă”, doar tolerată.
+
+18. Miron Costin
+   «Biruit-au gândul să mă apuc de această trudă, să scoț lumii la vedere felul neamului, din ce izvor și seminție sânt lăcuitorii țării noastre, Moldovei și Țării Muntenești și românii din Ardeal.»
+   Context dat în carte: Fragment din introducerea lucrării „De neamul moldovenilor, din ce țară au ieșit strămoșii lor”, redactată în ultimii ani ai vieții cronicarului (cca 1686-1691) și rămasă în manuscris până în secolul al XIX-lea. Textul enunță programul erudit al secolului: identificarea originii comune, romane, a locuitorilor celor trei țări.
+
+19. Tudor Vladimirescu
+   «Pe balaurii care ne înghit de vii, căpeteniile noastre, zic, atât cele bisericești, cât și cele politicești, până când să-i suferim a ne suge sângele din noi? Până când să le fim robi?»
+   Context dat în carte: Proclamația citită la Padeș, în Gorj, la 23 ianuarie 1821, păstrată în copii contemporane, prin care se chema „norodul” la adunare armată împotriva abuzurilor dregătorilor și ale ierarhiei bisericești.
+
+20. Traian
+   «Inde Berzobim, deinde Aizi processimus.»
+   Context dat în carte: Singura frază păstrată din Dacica, jurnalul de campanie redactat de împărat, citată de gramaticul Priscian în Institutiones grammaticae (VI, 13) ca exemplu de acuzativ al numelor de localități. Fixează itinerarul coloanei romane prin Banat, prin Berzobis și Aizis, în anul 101, și constituie unica mărturie directă a lui Traian despre războaiele dacice.
+
+21. Eutropius
+   «Traian, după ce a învins Dacia, strămutase acolo mulțimi nesfârșite de oameni din toată lumea romană, pentru a lucra ogoarele și a popula orașele („ex toto orbe Romano infinitas eo copias hominum transtulerat ad agros et urbes colendas”).»
+   Context dat în carte: Breviarium ab Urbe condita, VIII, 6, 2, redactat în jurul anului 369. Este pasajul antic cel mai invocat în discuția despre colonizarea Daciei, deși autorul scrie la peste două secole după evenimente și rezumă surse pierdute; formula „ex toto orbe Romano” a fost interpretată atât literal, cât și ca figură retorică.
+
+22. Kekaumenos, Strategikon (Sfaturi și povestiri)
+   «Neamul vlahilor este cu totul necredincios și stricat, nu păstrează credință față de nimeni, nici chiar față de împărații de odinioară ai romanilor.»
+   Context dat în carte: Redactat în jurul anilor 1075–1078, tratatul acestui aristocrat și comandant militar bizantin conține cea mai amplă descriere a vlahilor din secolul al XI-lea. Judecata este vădit ostilă și motivată politic: Kekaumenos scrie după răscoala vlahilor din Tesalia (1066), la care participase familia Niculiță, aceeași căreia Vasile al II-lea îi încredințase, potrivit aceluiași izvor, comanda asupra vlahilor din Elada, episod datat convențional în jurul anului 980. Textul este folosit deopotrivă ca dovadă a vechimii populației romanice sud-dunărene și ca exemplu de stereotip etnografic bizantin.
+
+23. Simion Ștefan, mitropolitul Transilvaniei
+   «Bine știm că cuvintele trebuie să fie ca banii, că banii aceia sunt buni carii îmblă în toate țărâle, așa și cuvintele acelea sunt bune carele le înțeleg toți.»
+   Context dat în carte: Predoslovia Noului Testament de la Bălgrad (Alba Iulia), 1648, atribuită mitropolitului, deși traducerea propriu-zisă îi aparține în principal ieromonahului Silvestru; transcriere ușor modernizată. Textul formulează, cu două secole înaintea normării academice, principiul unei limbi literare inteligibile tuturor românilor, indiferent de provincie.
+
+24. Simion Ștefan, mitropolit al Transilvaniei
+   «Bine știm că cuvintele trebuie să fie ca banii, că banii aceia sânt buni carii îmblă în toate țărâle, așea și cuvintele acealea sânt bune carele le înțeleg toți.»
+   Context dat în carte: Predoslovia Noului Testament tipărit la Bălgrad (Alba Iulia) în 1648, prima traducere integrală tipărită a Noului Testament în limba română. Prefața este atribuită prin tradiție mitropolitului, deși contribuția colaboratorilor săi rămâne discutată; formularea justifică alegerea unui lexic accesibil tuturor vorbitorilor și este considerată cel mai vechi enunț explicit al problemei normei literare românești.
+
+25. Mihail Kogălniceanu
+   «Pe ulițele Iașilor, în copilăria mea, am văzut ființe omenești purtând lanțuri în mâini sau la picioare, ba unii chiar coarne de fier aplicate la frunte și legate cu coliere împrejurul gâtului.»
+   Context dat în carte: Fragment din discursul de recepție rostit la Academia Română la 1 aprilie 1891, intitulat „Dezrobirea țiganilor, ștergerea privilegiilor boierești, emanciparea țăranilor”. Mărturia este retrospectivă, formulată la peste o jumătate de secol distanță de scenele descrise și cu o evidentă funcție retorică, într-un text menit să justifice reformele generației pașoptiste; ea rămâne totuși una dintre puținele descrieri directe ale condiției robilor lăsate de un contemporan.
+
+26. Titu Maiorescu
+   «Fără cultură poate încă un popor să trăiască cu speranța că la momentul firesc al dezvoltării sale se va ivi și această formă binefăcătoare a vieții omenești; dar cu o cultură falsă nu poate trăi un popor.»
+   Context dat în carte: Din studiul „În contra direcției de astăzi în cultura română”, publicat în Convorbiri literare (an. II, nr. 19) la 1 decembrie 1868. Textul a formulat teoria formelor fără fond — instituțiile și formele culturale occidentale adoptate înaintea substanței sociale care să le susțină — și a rămas, invocat sau contestat, cadrul dominant al autoevaluării culturale românești.
+
+27. Dio Cassius
+   «Traian a construit peste Istru un pod de piatră, pentru care nu știu cum să-l admir îndeajuns. Podul este alcătuit din douăzeci de stâlpi de piatră în patru muchii, înalți de o sută cincizeci de picioare, în afară de temelii, și lați de șaizeci; ei se află unul de altul la o depărtare de o sută șaptezeci de picioare și sunt uniți prin bolți.»
+   Context dat în carte: Istoria romană, LXVIII, 13. Senator și istoric roman de limbă greacă, originar din Niceea Bitiniei, Dio scrie la circa un secol după eveniment, descriind podul ridicat de Apollodor din Damasc între Pontes și Drobeta, în 103-105, pentru campania a doua împotriva Daciei. Textul, transmis prin epitoma bizantină a lui Xiphilinos, rămâne principala mărturie scrisă despre lucrare; măsurătorile arheologice ale pilelor păstrate în albia Dunării confirmă numărul stâlpilor și distanța dintre ei, în vreme ce înălțimea indicată este considerată de o parte a cercetătorilor exagerată.
+
+28. Vintilă Brătianu
+   «Prin noi înșine.»
+   Context dat în carte: Formulă apărută în publicistica liberală de dinaintea Primului Război Mondial și devenită, în anii 1920, emblema doctrinei economice a Partidului Național-Liberal, al cărei principal promotor a fost Vintilă Brătianu, ministru de finanțe și apoi prim-ministru. Ea rezuma pariul pe dezvoltarea industrială cu capital preponderent autohton, consacrat legislativ prin legea minelor din 1924 și contestat de politica porților deschise a național-țărăniștilor, care a inspirat legea minelor din 1929. Opoziția dintre cele două formule a rămas un punct de referință în toate dezbaterile ulterioare despre raportul dintre capitalul străin și cel intern.
+
