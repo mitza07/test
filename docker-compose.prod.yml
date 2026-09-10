@@ -53,7 +53,7 @@ services:
       ANAF_ENVIRONMENT: prod
     volumes:
       - storage:/data/storage
-      - schematron:/data/schematron:ro
+      - ./schematron:/data/schematron:ro
     depends_on:
       db:
         condition: service_healthy
@@ -76,7 +76,7 @@ services:
       ANAF_ENVIRONMENT: prod
     volumes:
       - storage:/data/storage
-      - schematron:/data/schematron:ro
+      - ./schematron:/data/schematron:ro
     depends_on: [redis, db]
     command: rq worker --url ${REDIS_URL} pdf spv default
     deploy:
@@ -107,7 +107,9 @@ volumes:
   db_data:
   redis_data:
   storage:
-  schematron:
+  # `schematron` NU e volum: artefactele se despacheteaza si se compileaza de
+  # mana, in /srv/facturare/schematron. Un volum numit n-are cum sa fie umplut
+  # fara `docker cp`, iar continutul lui e versionat de ANAF, nu de noi.
 
 networks:
   # Reteaua pe care sta reverse proxy-ul existent. Nu o cream noi: exista deja,

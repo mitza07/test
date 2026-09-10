@@ -10,6 +10,9 @@ mfinante.gov.ro/web/efactura/informatii-tehnice si se pun in `SCHEMATRON_PATH`
 (vezi schematron/README.md). Sunt versionate independent de codul asta —
 `ro16931-ubl-1.0.9` e in vigoare din 05.06.2024, dar se schimba.
 
+Arhiva vine cu sursele `.sch`, nu cu XSLT-ul. Se compileaza o data, cu
+`scripts/compile-schematron.py`.
+
 ## De ce nu e de ajuns lxml
 
 Schematroanele EN 16931, deci si CIUS-RO, folosesc `queryBinding="xslt2"`, iar
@@ -39,7 +42,7 @@ from lxml import etree
 
 from app.core.validation.br_ro import Report
 
-DEFAULT_PATH = "/data/schematron/ro16931-ubl-1.0.9"
+DEFAULT_PATH = "/data/schematron"
 
 SVRL_NS = "http://purl.oclc.org/dsdl/svrl"
 XSLT_NS = "http://www.w3.org/1999/XSL/Transform"
@@ -95,8 +98,9 @@ def discover(root: str | None = None) -> Artifacts:
                 return candidate
         return None
 
-    # Se prefera XSLT-ul precompilat: compilarea schematronului CIUS-RO costa
-    # secunde bune, iar arhiva oficiala il livreaza gata compilat.
+    # Se prefera XSLT-ul compilat: trecerea prin schelet costa secunde bune si
+    # nu are ce sa dea altfel de la o rulare la alta. Arhiva ANAF NU il contine —
+    # il produce `scripts/compile-schematron.py`, o data dupa despachetare.
     xslt = first("*.xslt") or first("*.xsl")
     schematron = first("*.sch")
     xsd = first("UBL-Invoice-2.1.xsd") or first("*.xsd", contains="invoice")
@@ -158,8 +162,8 @@ def _check_processor(found: Artifacts) -> None:
             return
         raise ProcessorUnavailable(
             f"{found.schematron.name} foloseste queryBinding='{binding}', pe care "
-            "lxml.isoschematron nu il suporta. Foloseste XSLT-ul precompilat din "
-            "arhiva oficiala, sau compileaza .sch-ul cu Saxon."
+            "lxml.isoschematron nu il suporta. Compileaza-l cu Saxon: "
+            "`python scripts/compile-schematron.py`."
         )
 
 
@@ -280,10 +284,12 @@ def _from_svrl(svrl: etree._Element | None) -> Report:
     if svrl is None:
         return report
 
-    for element in svrl.iter():
+    # Se cer explicit cele doua tag-uri, nu `iter()` peste tot: SVRL-ul produs de
+    # Saxon are comentarii intre elemente, iar `.tag`-ul unui comentariu e o
+    # functie, nu un string — `QName` pe el ridica ValueError.
+    for element in svrl.iter(f"{{{SVRL_NS}}}failed-assert",
+                             f"{{{SVRL_NS}}}successful-report"):
         tag = etree.QName(element).localname
-        if tag not in ("failed-assert", "successful-report"):
-            continue
         flag = (element.get("flag") or element.get("role") or "").lower()
         if flag in ("warning", "warn", "info"):
             severity = "warning"

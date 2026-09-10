@@ -46,7 +46,19 @@ atinga restul.
    `HETZNER_SSH_KEY` = continutul cheii private (fisierul intreg, cu liniile
    `BEGIN`/`END`). Fara ele, CI construieste imaginea si se opreste.
 
-5. **Nginx** — vezi `deploy/nginx/facturare.conf`. Emiti certificatul, adaugi
+5. **Artefactele de validare** in `/srv/facturare/schematron` — vezi
+   `schematron/README.md` pentru cei trei pasi. Compilarea nu cere Python pe
+   gazda, se face in container:
+
+       docker compose -f docker-compose.prod.yml run --rm \
+         -v /srv/facturare/schematron:/data/schematron:rw \
+         api python scripts/compile-schematron.py
+
+   Directorul e montat read-only in `api` si `worker`. Fara artefacte,
+   `schematron.available()` da False si validarea pe regulile oficiale nu
+   ruleaza — nu esueaza tacut, dar nici nu prinde nimic.
+
+6. **Nginx** — vezi `deploy/nginx/facturare.conf`. Emiti certificatul, adaugi
    blocul, reincarci.
 
 ## Deploy

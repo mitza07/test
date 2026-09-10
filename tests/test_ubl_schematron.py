@@ -222,3 +222,59 @@ def test_bucuresti_fara_sector_pica_si_la_schematron(valid_doc):
     valid_doc["buyer"].update(county="RO-B", city="Bucuresti")
     report = schematron.check(build(valid_doc))
     assert not report.ok
+
+
+# --- compilarea: scheletul si alegerea fisierului de intrare ---------------
+
+def test_comentariile_din_svrl_nu_opresc_traducerea():
+    """Saxon pune comentarii intre elementele SVRL. `.tag`-ul unui comentariu e o
+    functie, nu un string, si `QName` pe el ridica ValueError — a fost bug."""
+    svrl = _svrl('<!-- pattern ROmodel -->'
+                 '<svrl:failed-assert id="BR-RO-100" location="/x">'
+                 '<svrl:text>ceva</svrl:text></svrl:failed-assert>'
+                 '<?nimic?>')
+    report = schematron._from_svrl(svrl)
+    assert [f.rule for f in report.findings] == ["BR-RO-100"]
+
+
+def test_scheletul_iso_e_complet():
+    """Cele patru fisiere se importa reciproc; unul lipsa da o eroare de Saxon
+    care nu spune ce lipseste."""
+    import importlib.util
+    from pathlib import Path
+
+    spec = importlib.util.spec_from_file_location(
+        "compile_schematron", "scripts/compile-schematron.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    for name in (*module.STAGES, "iso_schematron_skeleton_for_saxon.xsl"):
+        path = Path("vendor/iso-schematron") / name
+        assert path.is_file(), f"lipseste {path}"
+        root = etree.parse(str(path)).getroot()
+        assert etree.QName(root).localname in ("stylesheet", "transform")
+
+
+def test_intrarea_e_schema_care_include_nu_un_fragment(tmp_path):
+    """Arhiva are si fragmente (`<pattern>` la radacina, incluse de altcineva) si
+    variante aplatizate. Punctul de intrare e `<schema>`-ul care le aduna: doar
+    el acopera si regulile EN 16931, si pe cele RO."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "compile_schematron", "scripts/compile-schematron.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    sch = "http://purl.oclc.org/dsdl/schematron"
+    (tmp_path / "cius-ro").mkdir()
+    (tmp_path / "preprocessed").mkdir()
+    (tmp_path / "cius-ro" / "RO16931-rules.sch").write_text(
+        f'<pattern xmlns="{sch}" id="ROmodel"/>')
+    (tmp_path / "preprocessed" / "aplatizat.sch").write_text(
+        f'<schema xmlns="{sch}" queryBinding="xslt2"/>')
+    master = tmp_path / "EN16931-CIUS_RO-UBL-validation.sch"
+    master.write_text(f'<schema xmlns="{sch}" queryBinding="xslt2">'
+                      '<include href="cius-ro/RO16931-rules.sch"/></schema>')
+
+    assert module.find_master(tmp_path) == master
