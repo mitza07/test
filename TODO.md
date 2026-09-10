@@ -120,8 +120,13 @@ Aici e toata valoarea. Daca astea sunt corecte, restul e munca obisnuita.
       intrare in `archive_entry` cu `is_legal_original = false` (originalul e
       XML-ul semnat de ANAF).
 - [x] `retain_until` = 1 iulie a anului urmator + 5 ani (`pdf.retention_deadline`).
-- [ ] Limita de memorie pe worker: e in `docker-compose.prod.yml` (`deploy.resources`),
-      dar nu e verificata nicaieri si Docker Compose fara Swarm o ignora.
+- [ ] Limita de memorie pe worker: e in `docker-compose.prod.yml` (`deploy.resources`)
+      si **Compose v2 o aplica si fara Swarm** — jumatatea „o ignora" era falsa si
+      era folclor de docker-compose v1 (Python). Verificare pe server:
+      `docker inspect -f '{{.HostConfig.Memory}}' facturare-worker` -> 805306368.
+      Ce ramane real: nu e setat `memswap_limit`, iar Docker cu `--memory` si fara
+      `--memory-swap` permite memory+swap = 2x limita. Pe o masina cu swap deja
+      atins, plafonul de 768M e practic 1536M.
 
 ## 6. API si frontend
 

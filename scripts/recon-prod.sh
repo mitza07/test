@@ -2,7 +2,8 @@
 # Ce e pe serverul de productie. Read-only, fara efecte.
 #
 # Se ruleaza pe SERVER, trimis prin stdin de `.github/workflows/server-recon.yml`.
-# Se poate rula si de mana: ssh root@server 'bash -s' < scripts/recon-prod.sh
+# Se poate rula si de mana:
+#   ssh -i <cheie> <utilizator>@<server> 'bash -s' < scripts/recon-prod.sh
 #
 # Raspunde la intrebarile de care depinde `docs/deployment.md`, si mai ales la
 # una singura: DE UNDE VIN CERTIFICATELE. Nginx-ul care tine 80 si 443 nu e al

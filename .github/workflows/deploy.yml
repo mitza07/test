@@ -66,8 +66,38 @@ jobs:
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
           script: |
+            set -euo pipefail
             cd /srv/facturare
             export IMAGE=ghcr.io/${{ github.repository }}:${{ github.sha }}
+
+            # Serverul nu a fost niciodata autentificat la ghcr. Daca pachetul e
+            # privat — implicit pentru pachetele publicate din Actions — `pull`
+            # da „denied" si deploy-ul se opreste aici. Tokenul jobului e valabil
+            # pentru pachetele repo-ului si moare odata cu el.
+            echo '${{ secrets.GITHUB_TOKEN }}' \
+              | docker login ghcr.io -u '${{ github.actor }}' --password-stdin
+
             docker compose -f docker-compose.prod.yml pull
+
+            # `db` si `redis` INAINTE, si fara `--no-deps`: pasul urmator il are,
+            # iar `--no-deps` anuleaza tot graful de dependinte. Fara linia asta
+            # `redis` nu porneste niciodata — niciun pas din runbook nu-l porneste
+            # — si workerii raman fara coada, tacut.
+            docker compose -f docker-compose.prod.yml up -d db redis
+
+            # Aici `--no-deps` e intentionat: `db` si `redis` tocmai au fost
+            # aduse la zi, si nu vrem sa fie recreate la fiecare deploy.
             docker compose -f docker-compose.prod.yml up -d --no-deps api worker scheduler
+
+            # IMAGE traia doar in shell-ul sesiunii SSH. Dupa ce jobul se termina,
+            # `scripts/migrate-prod.sh` si orice `docker compose` rulat de mana pe
+            # server esuau la interpolare. Se scrie in .env, ca sa supravietuiasca.
+            if grep -q '^IMAGE=' .env; then
+              sed -i "s|^IMAGE=.*|IMAGE=${IMAGE}|" .env
+            else
+              printf '\nIMAGE=%s\n' "${IMAGE}" >> .env
+            fi
+
+            # Credentialele nu au ce cauta in ~/.docker/config.json dupa deploy.
+            docker logout ghcr.io
             docker image prune -f

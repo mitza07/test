@@ -4,6 +4,11 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+# shellcheck source=scripts/_env.sh
+. "$(dirname "$0")/_env.sh"
+require_env POSTGRES_USER POSTGRES_DB
+require_image
+
 STAMP=$(date +%Y%m%d-%H%M%S)
 echo "1/4 backup..."
 docker compose -f docker-compose.prod.yml exec -T db \

@@ -25,13 +25,9 @@ cd "$(dirname "$0")/.."
 COMPOSE=${COMPOSE:-docker-compose.prod.yml}
 APP_DB_USER=${APP_DB_USER:-facturare_app}
 
-if [ -f .env ]; then
-  # shellcheck disable=SC1091
-  set -a; . ./.env; set +a
-fi
-
-: "${POSTGRES_USER:?POSTGRES_USER lipseste din .env}"
-: "${POSTGRES_DB:?POSTGRES_DB lipseste din .env}"
+# shellcheck source=scripts/_env.sh
+. "$(dirname "$0")/_env.sh"
+require_env POSTGRES_USER POSTGRES_DB
 : "${APP_DB_PASSWORD:?APP_DB_PASSWORD trebuie dat: APP_DB_PASSWORD='...' $0}"
 
 psql() {

@@ -10,6 +10,10 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+# shellcheck source=scripts/_env.sh
+. "$(dirname "$0")/_env.sh"
+require_env POSTGRES_USER POSTGRES_DB
+
 COMPOSE="docker compose -f docker-compose.prod.yml"
 STAMP=$(date +%Y%m%d-%H%M%S)
 TARGET_DB="restore_test_${STAMP}"
