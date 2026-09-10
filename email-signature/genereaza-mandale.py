@@ -117,65 +117,66 @@ def finish(im, w, h, path, colors=48):
     out = im.resize((w, h), Image.LANCZOS).quantize(colors=colors, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
     out.save(path, optimize=True); return os.path.getsize(path)
 
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "lux")
-os.makedirs(OUT, exist_ok=True)
-sizes = {}
+if __name__ == "__main__":
+    OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "lux")
+    os.makedirs(OUT, exist_ok=True)
+    sizes = {}
 
-# 1. L1: jumatate de mandala pe marginea stanga + panou usor mai deschis, delimitat de o curba aurie
-w, h = 200, 190
-im, d = canvas(w, h, NEGRU)
-curve = [(150 * SS + 32 * SS * math.sin(math.pi * t), t * h * SS) for t in [k / 60 for k in range(61)]]
-d.polygon([(0, 0)] + curve + [(0, h * SS)], fill=(24, 24, 24))
-d.line(curve, fill=GOLD, width=int(1.4 * SS), joint="curve")
-recipe_filled(Mandala(d, 4, 95, 92, NEGRU))
-sizes["lux-stanga.png"] = finish(im, w, h, os.path.join(OUT, "lux-stanga.png"))
+    # 1. L1: jumatate de mandala pe marginea stanga + panou usor mai deschis, delimitat de o curba aurie
+    w, h = 200, 190
+    im, d = canvas(w, h, NEGRU)
+    curve = [(150 * SS + 32 * SS * math.sin(math.pi * t), t * h * SS) for t in [k / 60 for k in range(61)]]
+    d.polygon([(0, 0)] + curve + [(0, h * SS)], fill=(24, 24, 24))
+    d.line(curve, fill=GOLD, width=int(1.4 * SS), joint="curve")
+    recipe_filled(Mandala(d, 4, 95, 92, NEGRU))
+    sizes["lux-stanga.png"] = finish(im, w, h, os.path.join(OUT, "lux-stanga.png"))
 
-# 2. L2/L7: benzi ornamentale sus/jos (mandale taiate de marginea imaginii)
-w, h = 600, 44
-im, d = canvas(w, h, NEGRU)
-for cx in (40, 200, 360, 520): recipe_filled(Mandala(d, cx, -46, 88, NEGRU), rot=math.pi / 40)
-for cx in (120, 280, 440): recipe_mini(Mandala(d, cx, 16, 11, NEGRU))
-top = im.resize((w, h), Image.LANCZOS)
-sizes["lux-banda-sus.png"] = finish(im, w, h, os.path.join(OUT, "lux-banda-sus.png"))
-bot = top.transpose(Image.FLIP_TOP_BOTTOM).quantize(colors=48, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
-bot.save(os.path.join(OUT, "lux-banda-jos.png"), optimize=True); sizes["lux-banda-jos.png"] = os.path.getsize(os.path.join(OUT, "lux-banda-jos.png"))
+    # 2. L2/L7: benzi ornamentale sus/jos (mandale taiate de marginea imaginii)
+    w, h = 600, 44
+    im, d = canvas(w, h, NEGRU)
+    for cx in (40, 200, 360, 520): recipe_filled(Mandala(d, cx, -46, 88, NEGRU), rot=math.pi / 40)
+    for cx in (120, 280, 440): recipe_mini(Mandala(d, cx, 16, 11, NEGRU))
+    top = im.resize((w, h), Image.LANCZOS)
+    sizes["lux-banda-sus.png"] = finish(im, w, h, os.path.join(OUT, "lux-banda-sus.png"))
+    bot = top.transpose(Image.FLIP_TOP_BOTTOM).quantize(colors=48, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+    bot.save(os.path.join(OUT, "lux-banda-jos.png"), optimize=True); sizes["lux-banda-jos.png"] = os.path.getsize(os.path.join(OUT, "lux-banda-jos.png"))
 
-# 3. L3/L8: mandala mare, plina, in stanga (trei sferturi vizibila)
-w, h = 250, 190
-im, d = canvas(w, h, NEGRU)
-recipe_filled(Mandala(d, 62, 95, 132, NEGRU), rot=math.pi / 20)
-sizes["lux-mare-stanga.png"] = finish(im, w, h, os.path.join(OUT, "lux-mare-stanga.png"))
+    # 3. L3/L8: mandala mare, plina, in stanga (trei sferturi vizibila)
+    w, h = 250, 190
+    im, d = canvas(w, h, NEGRU)
+    recipe_filled(Mandala(d, 62, 95, 132, NEGRU), rot=math.pi / 20)
+    sizes["lux-mare-stanga.png"] = finish(im, w, h, os.path.join(OUT, "lux-mare-stanga.png"))
 
-# 3b. mandala mare decupata la 200 (Lux 8)
-w, h = 200, 190
-im, d = canvas(w, h, NEGRU)
-recipe_filled(Mandala(d, 30, 95, 126, NEGRU), rot=math.pi / 20)
-sizes["lux-mare-stanga-200.png"] = finish(im, w, h, os.path.join(OUT, "lux-mare-stanga-200.png"))
+    # 3b. mandala mare decupata la 200 (Lux 8)
+    w, h = 200, 190
+    im, d = canvas(w, h, NEGRU)
+    recipe_filled(Mandala(d, 30, 95, 126, NEGRU), rot=math.pi / 20)
+    sizes["lux-mare-stanga-200.png"] = finish(im, w, h, os.path.join(OUT, "lux-mare-stanga-200.png"))
 
-# 4. contururi discrete (negru si pruna), la latimile cerute de fiecare design
-def contur(tag, bg, side, w, h=190):
-    faint = lerp(bg, GOLD, 0.34 if tag == "negru" else 0.38)
-    im, d = canvas(w, h, bg)
-    cx = (w - 180) if side == "dreapta" else 40
-    recipe_outline(Mandala(d, cx, 95, 118, bg, faint=faint), rot=0.0)
-    cx2 = cx + (150 if side == "stanga" else -150)
-    recipe_outline(Mandala(d, cx2, 175, 58, bg, faint=lerp(bg, GOLD, 0.22)), rot=math.pi / 24)
-    name = f"lux-contur-{tag}-{side}-{w}.png"
-    sizes[name] = finish(im, w, h, os.path.join(OUT, name), colors=16)
-contur("negru", NEGRU, "dreapta", 220)   # Lux 4
-contur("negru", NEGRU, "dreapta", 128)   # Lux 6
-contur("pruna", PRUNA, "stanga", 80)     # Lux 5
-contur("pruna", PRUNA, "dreapta", 80)    # Lux 5
-contur("pruna", PRUNA, "stanga", 120)    # Lux 9
-contur("pruna", PRUNA, "dreapta", 140)   # Lux 9
+    # 4. contururi discrete (negru si pruna), la latimile cerute de fiecare design
+    def contur(tag, bg, side, w, h=190):
+        faint = lerp(bg, GOLD, 0.34 if tag == "negru" else 0.38)
+        im, d = canvas(w, h, bg)
+        cx = (w - 180) if side == "dreapta" else 40
+        recipe_outline(Mandala(d, cx, 95, 118, bg, faint=faint), rot=0.0)
+        cx2 = cx + (150 if side == "stanga" else -150)
+        recipe_outline(Mandala(d, cx2, 175, 58, bg, faint=lerp(bg, GOLD, 0.22)), rot=math.pi / 24)
+        name = f"lux-contur-{tag}-{side}-{w}.png"
+        sizes[name] = finish(im, w, h, os.path.join(OUT, name), colors=16)
+    contur("negru", NEGRU, "dreapta", 220)   # Lux 4
+    contur("negru", NEGRU, "dreapta", 128)   # Lux 6
+    contur("pruna", PRUNA, "stanga", 80)     # Lux 5
+    contur("pruna", PRUNA, "dreapta", 80)    # Lux 5
+    contur("pruna", PRUNA, "stanga", 120)    # Lux 9
+    contur("pruna", PRUNA, "dreapta", 140)   # Lux 9
 
-# fisa de contact
-files = sorted(sizes)
-ims = [Image.open(os.path.join(OUT, f)).convert("RGB") for f in files]
-W = max(i.width for i in ims) + 40; H = sum(i.height + 34 for i in ims) + 20
-sheet = Image.new("RGB", (W, H), (60, 60, 60)); dd = ImageDraw.Draw(sheet); y = 10
-for f, i in zip(files, ims):
-    dd.text((20, y), f"{f}  {i.width}x{i.height}  {sizes[f]} B", fill=(255, 255, 255)); y += 18
-    sheet.paste(i, (20, y)); y += i.height + 16
-sheet.save(os.path.join(os.path.dirname(os.path.abspath(__file__)), "documentatie", "fisa-mandale.png"))
-for f in files: print(f"{f:34s} {sizes[f]:6d} B")
+    # fisa de contact
+    files = sorted(sizes)
+    ims = [Image.open(os.path.join(OUT, f)).convert("RGB") for f in files]
+    W = max(i.width for i in ims) + 40; H = sum(i.height + 34 for i in ims) + 20
+    sheet = Image.new("RGB", (W, H), (60, 60, 60)); dd = ImageDraw.Draw(sheet); y = 10
+    for f, i in zip(files, ims):
+        dd.text((20, y), f"{f}  {i.width}x{i.height}  {sizes[f]} B", fill=(255, 255, 255)); y += 18
+        sheet.paste(i, (20, y)); y += i.height + 16
+    sheet.save(os.path.join(os.path.dirname(os.path.abspath(__file__)), "documentatie", "fisa-mandale.png"))
+    for f in files: print(f"{f:34s} {sizes[f]:6d} B")
