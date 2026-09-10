@@ -134,7 +134,7 @@ def check_fragment(path, allow_image=False, caps=False):
     if allow_image:
         imgs = re.findall(r"<img [^>]*>", t)
         if allow_image == "png":
-            ck(1 <= len(imgs) <= 2, f"{name}: se asteapta 1-2 ornamente, gasite {len(imgs)}")
+            ck(1 <= len(imgs) <= 3, f"{name}: se asteapta 1-3 imagini (ornamente + fotografie), gasite {len(imgs)}")
         else:
             ck(len(imgs) == 1, f"{name}: se asteapta exact o imagine, gasite {len(imgs)}")
         for im in imgs:
@@ -156,15 +156,32 @@ def check_fragment(path, allow_image=False, caps=False):
             from PIL import Image as _I
             for cattrs, im in re.findall(r'<td([^>]*)>\s*<p[^>]*>\s*(<img [^>]*>)', t):
                 bg = re.search(r'bgcolor="([^"]+)"', cattrs)
-                ck(bool(bg), f"{name}: celula ornamentului nu declara bgcolor")
-                gp = os.path.join(BASE, "assets", "lux", re.search(r'src="([^"]+)"', im).group(1).rsplit("/", 1)[1])
+                ck(bool(bg), f"{name}: celula imaginii nu declara bgcolor")
+                src = re.search(r'src="([^"]+)"', im).group(1)
+                dw = int(re.search(r'width="(\d+)"', im).group(1)); dh = int(re.search(r'height="(\d+)"', im).group(1))
+                if "/assets/foto/" in src:
+                    # fotografia: fisier la 2x fata de dimensiunea afisata (clar pe HiDPI), JPEG baseline sau
+                    # PNG copt pe fundalul celulei (rama "floare"), sub 60 KB
+                    gp = os.path.join(BASE, "assets", "foto", src.rsplit("/", 1)[1])
+                    ck(os.path.isfile(gp), f"{name}: fotografia referita nu exista: {gp}")
+                    if os.path.isfile(gp):
+                        pic = _I.open(gp); raw_ = open(gp, "rb").read()
+                        ck(pic.size == (2 * dw, 2 * dh), f"{name}: fotografia e {pic.size}, se astepta {(2 * dw, 2 * dh)} (2x)")
+                        ck(len(raw_) < 60000, f"{name}: fotografie peste 60 KB: {gp}")
+                        if gp.endswith(".png") and bg:
+                            px = "#%02x%02x%02x" % pic.convert("RGB").getpixel((0, 0))
+                            ck(px == bg.group(1).lower(), f"{name}: fundalul ramei {px} != bgcolor-ul celulei {bg.group(1)}")
+                        if gp.endswith(".jpg"):
+                            ck(raw_[:2] == b"\xff\xd8" and b"\xff\xc2" not in raw_, f"{name}: JPEG progresiv sau invalid: {gp}")
+                            ck(b"Exif" not in raw_[:64], f"{name}: JPEG cu EXIF: {gp}")
+                    continue
+                gp = os.path.join(BASE, "assets", "lux", src.rsplit("/", 1)[1])
                 ck(os.path.isfile(gp), f"{name}: ornamentul referit nu exista: {gp}")
                 if bg and os.path.isfile(gp):
                     pic = _I.open(gp).convert("RGB")
                     px = "#%02x%02x%02x" % pic.getpixel((pic.width - 1, pic.height // 2))
                     ck(px == bg.group(1).lower(), f"{name}: fundalul PNG {px} != bgcolor-ul celulei {bg.group(1)}")
-                    ck(f'width="{pic.width}"' in im and f'height="{pic.height}"' in im,
-                       f"{name}: PNG-ul e {pic.width}x{pic.height}, HTML-ul declara altceva")
+                    ck(pic.size == (dw, dh), f"{name}: PNG-ul e {pic.size}, HTML-ul declara {(dw, dh)}")
                     ck(os.path.getsize(gp) < 20000, f"{name}: ornament peste 20 KB: {gp}")
             cell = None
         else:
@@ -265,27 +282,30 @@ COL = os.path.join(BASE, "colectie")
 COLECTIE = [("lux-%d" % i, "Lux %d" % i) for i in range(1, 10)] + [("rose", "Rose")] + \
            [("noir-%d" % i, "Noir %d" % i) for i in range(1, 4)] + \
            [("mono-%d" % i, "Mono %d" % i) for i in range(1, 4)] + [("aur", "Aur")]
-folosite = set()
+folosite, foto_folosite = set(), set()
 for slug, short in COLECTIE:
     d = os.path.join(COL, slug); nume = f"Mihai Zamfir - {short}"
     frag = os.path.join(d, "fragment.html")
     ck(os.path.isfile(frag), f"colectie/{slug}: lipseste fragment.html")
     if not os.path.isfile(frag): continue
-    check_fragment(frag, allow_image=("png" if slug.startswith("lux") else False), caps=True)
+    fg = open(frag, encoding="utf-8").read()
+    cu_foto = "/assets/foto/" in fg
+    check_fragment(frag, allow_image=("png" if (slug.startswith("lux") or cu_foto) else False), caps=True)
     check_htm(os.path.join(d, f"{nume}.htm"))
     for ext in ("rtf", "txt"):
         ck(os.path.isfile(os.path.join(d, f"{nume}.{ext}")), f"colectie/{slug}: lipseste {nume}.{ext}")
     ck(not os.path.exists(os.path.join(d, f"{nume}_files")), f"colectie/{slug}: nu ar trebui sa aiba folder companion")
     ck(b"File-List" not in open(os.path.join(d, f"{nume}.htm"), "rb").read(), f"colectie/{slug}: File-List fara folder companion")
-    fg = open(frag, encoding="utf-8").read()
     ck(len(fg.encode()) < 17000, f"colectie/{slug}: {len(fg.encode())} B, peste bugetul de 17 KB")
     ck(fg.count("<table") <= 10, f"colectie/{slug}: {fg.count('<table')} tabele, prea multe")
     if slug != "lux-4":   # referinta Lux 4 e singura fara fotografie
-        ck(">MZ<" in fg, f"colectie/{slug}: lipseste medalionul-monograma (locul fotografiei)")
+        ck(">MZ<" in fg or cu_foto, f"colectie/{slug}: lipseste medalionul-monograma (locul fotografiei)")
     ck('width="600"' in fg.split(">", 1)[0], f"colectie/{slug}: latimea exterioara nu e 600")
-    if not slug.startswith("lux"):
-        ck("<img" not in fg, f"colectie/{slug}: designul trebuie sa fie fara imagini")
+    if not slug.startswith("lux"):   # in afara fotografiei, niciun fel de imagine
+        ck(all("/assets/foto/" in u for u in re.findall(r'<img [^>]*src="([^"]+)"', fg)),
+           f"colectie/{slug}: designul trebuie sa fie fara imagini (in afara fotografiei)")
     folosite |= set(re.findall(r'/assets/lux/([^"]+)"', fg))
+    foto_folosite |= set(re.findall(r'/assets/foto/([^"]+)"', fg))
     rs = open(os.path.join(d, f"{nume}.rtf"), "rb").read()
     ck(rs.startswith(b"{\\rtf1") and rs.count(b"{") == rs.count(b"}") and all(b < 128 for b in rs),
        f"colectie/{slug}: RTF invalid")
@@ -293,6 +313,14 @@ lux_dir = os.path.join(BASE, "assets", "lux")
 pe_disc = set(os.listdir(lux_dir)) if os.path.isdir(lux_dir) else set()
 ck(folosite <= pe_disc, f"colectie: ornamente referite dar inexistente: {sorted(folosite - pe_disc)}")
 ck(pe_disc <= folosite, f"colectie: ornamente orfane in assets/lux: {sorted(pe_disc - folosite)}")
+foto_dir = os.path.join(BASE, "assets", "foto")
+foto_disc = set(os.listdir(foto_dir)) if os.path.isdir(foto_dir) else set()
+ck(foto_folosite <= foto_disc, f"colectie: fotografii referite dar inexistente: {sorted(foto_folosite - foto_disc)}")
+ck(foto_disc <= foto_folosite, f"colectie: fotografii orfane in assets/foto: {sorted(foto_disc - foto_folosite)}")
+# ori toate variantele cu fotografie, ori niciuna (in afara de Lux 4, care nu are loc de fotografie)
+cu = [slug for slug, _ in COLECTIE if slug != "lux-4" and os.path.isfile(os.path.join(COL, slug, "fragment.html"))
+      and "/assets/foto/" in open(os.path.join(COL, slug, "fragment.html"), encoding="utf-8").read()]
+ck(len(cu) in (0, len(COLECTIE) - 1), f"colectie: fotografia e montata doar in {len(cu)} din {len(COLECTIE) - 1} variante")
 
 rtf = open(os.path.join(SIG, "Mihai Zamfir.rtf"), "rb").read()
 ck(rtf.startswith(b"{\\rtf1"), "RTF: nu incepe cu {\\rtf1 (BOM?)")

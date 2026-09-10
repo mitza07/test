@@ -12,8 +12,11 @@ import os, sys, re
 
 SHA = sys.argv[1] if len(sys.argv) > 1 else "0" * 40
 OUT = sys.argv[2] if len(sys.argv) > 2 else "/home/user/test/email-signature/colectie"
-ASSETS_DIR = "/home/user/test/email-signature/assets/lux"
-URL = f"https://raw.githubusercontent.com/mitza07/test/{SHA}/email-signature/assets/lux/"
+FOTO = len(sys.argv) > 3 and sys.argv[3] == "foto"     # al treilea argument: monteaza fotografia
+ASSETS = "/home/user/test/email-signature/assets"
+SHA_LUX = "f06b8ff3bb09c88a80b4e33c4f7156d0558c898b"   # commit-ul cu ornamentele (nu se mai schimba)
+URL = f"https://raw.githubusercontent.com/mitza07/test/{SHA_LUX}/email-signature/assets/lux/"
+URL_FOTO = f"https://raw.githubusercontent.com/mitza07/test/{SHA}/email-signature/assets/foto/"
 
 SANS  = "font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;"
 SERIF = "font-family:'Palatino Linotype',Palatino,'Book Antiqua',Georgia,serif;"
@@ -100,14 +103,18 @@ def gap(w, bg, ff=SANS):
 def vgap(h, bg, ff=SANS, colspan=None):
     return td("&#160;", h=h, bg=bg, fs=0, lh=0, color=bg, ff=ff, colspan=colspan)
 
-def img(name, w, h, bg, ff=SANS, href=None):
-    """Celula cu imagine: fara mso-line-height-rule (ar taia imaginea la 0)."""
+def img(name, w, h, bg, ff=SANS, href=None, extra=None, base=None):
+    """Celula cu imagine: fara mso-line-height-rule (ar taia imaginea la 0).
+    Fotografiile (base=URL_FOTO) sunt fisiere la 2x, afisate la w x h."""
     tag = ('<img src="%s%s" width="%d" height="%d" alt="" border="0" style="width:%dpx;height:%dpx;'
            'display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">'
-           % (URL, name, w, h, w, h))
+           % (base or URL, name, w, h, w, h))
     if href: tag = '<a href="%s" style="text-decoration:none;%s"><span style="text-decoration:none;%s">%s</span></a>' % (href, ff, ff, tag)
-    used.add(name)
-    return td(tag, w=w, h=h, bg=bg, fs=0, lh=0, exact=False, ff=ff)
+    (used_foto if base == URL_FOTO else used).add(name)
+    return td(tag, w=w, h=h, bg=bg, fs=0, lh=0, exact=False, ff=ff, extra=extra)
+
+def foto(name, w, h, bg, ff=SANS, extra=None):
+    return img(name, w, h, bg, ff=ff, extra=extra, base=URL_FOTO)
 
 def lines(parts, w, bg, ff=SANS, top=0, align=None):
     """Bloc de text: fiecare (html, fs, lh, color, extra) pe randul lui, in celule proprii."""
@@ -122,11 +129,14 @@ def lines(parts, w, bg, ff=SANS, top=0, align=None):
 def rule(w, color, bg, ff=SANS):
     return td("&#160;", w=w, h=1, bg=color, fs=0, lh=0, color=color, ff=ff)
 
-def medalion(size, bg, ring1, ring2, text, color, ff, fs, ring_w=1, inset=3):
-    """Medalion monograma, dublu chenar, construit din celule. Aici va sta fotografia."""
+def medalion(size, bg, ring1, ring2, text, color, ff, fs, ring_w=1, inset=3, poza=None):
+    """Medalion cu dublu chenar din celule: monograma, sau fotografia daca exista."""
     inner = size - 2 * (ring_w + inset)
-    core = td(text, w=inner, h=inner, align="center", valign="middle", bg=bg, fs=fs, lh=fs + 4,
-              fw=400, color=color, ff=ff, ls="2px", extra="border:%dpx solid %s;" % (ring_w, ring2))
+    if poza and FOTO:
+        core = foto(poza, inner, inner, bg, ff=ff, extra="border:%dpx solid %s;" % (ring_w, ring2))
+    else:
+        core = td(text, w=inner, h=inner, align="center", valign="middle", bg=bg, fs=fs, lh=fs + 4,
+                  fw=400, color=color, ff=ff, ls="2px", extra="border:%dpx solid %s;" % (ring_w, ring2))
     mid = td(cols([core], inner, ff), bg=bg, pad="%dpx" % inset, ff=ff, pin=False,
              extra="border:%dpx solid %s;" % (ring_w, ring1))
     return cols([td(cols([mid], size - 2 * ring_w, ff), w=size, bg=bg, ff=ff, pin=False)], size, ff)
@@ -161,7 +171,7 @@ NEGRU, NEGRU2, PRUNA = "#111111", "#181818", "#1b1424"
 IVORY, IVORY2 = "#efe6d2", "#cfc7b5"
 GOLD, GOLD_HI, GOLD_LO = "#c9a961", "#eedaa0", "#80642c"
 W = 600
-used = set()
+used, used_foto = set(), set()
 
 # ============================ LUX 1-9 ========================================
 def lux_nume(w, bg, fs=17, lh=22, ff=SERIF, extra_rows=(), top=0, wordmark=True):
@@ -174,7 +184,10 @@ def lux_nume(w, bg, fs=17, lh=22, ff=SERIF, extra_rows=(), top=0, wordmark=True)
     parts += list(extra_rows)
     return lines(parts, w, bg, SANS, top=top)
 
-def lux_med(bg=NEGRU): return medalion(80, bg, GOLD_HI, GOLD_LO, "MZ", GOLD_HI, SERIF, 26)
+def lux_med(bg=NEGRU):
+    # cu fotografie: rama "floare" aurie din referinte, PNG copt pe fundalul celulei
+    if FOTO: return cols([foto({PRUNA: "foto-lux-pruna.png", NEGRU2: "foto-lux-negru2.png"}.get(bg, "foto-lux-negru.png"), 80, 80, bg)], 80)
+    return medalion(80, bg, GOLD_HI, GOLD_LO, "MZ", GOLD_HI, SERIF, 26)
 
 def lux_contacte(w, bg, adresa=True, lh=15):
     return contacte(w, bg, SANS, GOLD, IVORY, lab_fs=8, val_fs=11, lh=lh, adresa=adresa, lab_w=36, gapw=6)
@@ -272,7 +285,7 @@ def lux9():
 # ============================ ROSE ===========================================
 ROSE, ROSE_BG, ROSE_LT, GRAY, GRAY2, ALB = "#a8655b", "#c8958a", "#f6ece9", "#4a4a4a", "#6b6b6b", "#ffffff"
 def rose():
-    med = medalion(150, ROSE_LT, ROSE_BG, ROSE_BG, "MZ", ROSE, VERD, 44, inset=4)
+    med = medalion(150, ROSE_LT, ROSE_BG, ROSE_BG, "MZ", ROSE, VERD, 44, inset=4, poza="foto-rose.jpg")
     buton = cols([td(a(MAIL_HREF, "Contacteaz&#259;-m&#259;", ALB, 13, fw=700, ff=VERD), w=150, h=40, align="center",
                      valign="middle", bg=ROSE_BG, fs=13, lh=18, fw=700, color=ALB, ff=VERD)], 150, VERD)
     stanga = stack([td(med, bg=ALB, ff=VERD, pin=False), vgap(14, ALB, VERD), td(buton, bg=ALB, ff=VERD, pin=False)], 150, VERD)
@@ -304,6 +317,7 @@ def noir_contacte(w, bg, adresa=True, fs=10, lh=16):
     if adresa: parts.append((a(MAPS, ADR, NG, 9), 9, 13, NG))
     return lines(parts, w, bg)
 def noir_panou(w, h, bg=NB2, fs=44):
+    if FOTO: return cols([foto("foto-noir-1.jpg" if w == 300 else "foto-noir-2.jpg", w, h, bg)], w)
     mono = td("MZ", w=w, h=h, align="center", valign="middle", bg=bg, fs=fs, lh=fs + 6, color=NW, ff=THIN, ls="4px")
     return cols([mono], w)
 def noir_brand(w, bg, discipline=True):
@@ -353,6 +367,7 @@ def mono_bloc(w, bg, brokerage=False, nume_fs=22, tagline=True):
     parts += [(discipl(DOT), 8, 12, MG, {"ls": "1px", "extra": "border-top:1px solid #3a3a3a;", "pad": "8px 0 0 0"})]
     return lines(parts, w, bg)
 def mono_panou(w, h, bg=MB2, fs=48):
+    if FOTO: return cols([foto("foto-mono-1.jpg" if w == 220 else "foto-mono-2.jpg", w, h, bg)], w)
     return cols([td("MZ", w=w, h=h, align="center", valign="middle", bg=bg, fs=fs, lh=fs + 6, color=MW, ff=SERIF, ls="4px")], w)
 def mono_logo_alb(size=72):
     return cols([td(span("IT", MB, 30, ff=SERIF) + "<br>" + span(BRAND, MB, 7, ls="2px", fw=700), w=size, h=size, align="center", valign="middle",
@@ -373,7 +388,7 @@ def mono2():
     return card([band(row, W, MB, "0")], W, bg=MB)
 
 def mono3():
-    med = medalion(64, MB, MW, "#5a5a5a", "MZ", MW, SERIF, 20, inset=2)
+    med = medalion(64, MB, MW, "#5a5a5a", "MZ", MW, SERIF, 20, inset=2, poza="foto-mono-3.jpg")
     stanga = cols([gap(26, MB), td(med, w=64, bg=MB, valign="middle", pin=False), gap(16, MB),
                    td(mono_bloc(268, MB, nume_fs=20, tagline=False), w=268, bg=MB, valign="middle", pin=False), gap(26, MB)], 400)
     dreapta = lines([("IT", 34, 40, MB, {"ff": SERIF}),
@@ -385,7 +400,7 @@ def mono3():
 # ============================ AUR ============================================
 AB, AB2 = "#141414", "#141414"
 def aur():
-    med = medalion(80, AB, GOLD_HI, GOLD_LO, "MZ", GOLD_HI, SERIF, 26)
+    med = medalion(80, AB, GOLD_HI, GOLD_LO, "MZ", GOLD_HI, SERIF, 26, poza="foto-aur.jpg")
     nume = lines([(span("MIHAI", IVORY, 19, fw=700, ls="1px") + " " + span("ZAMFIR", GOLD_HI, 19, fw=700, ls="1px"), 19, 24, IVORY, {"fw": 700}),
                   (TITLU, 11, 16, IVORY2), ("&#160;", 6, 8, AB),
                   (discipl(" / "), 7, 11, GOLD, {"ls": "1px", "fw": 700})], 160, AB)
@@ -432,7 +447,7 @@ def rtf(ff):
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
     for slug, short, fn, ff in DESIGNS:
-        used.clear()
+        used.clear(); used_foto.clear()
         frag = fn()
         assert all(ord(c) < 128 for c in frag), slug
         d = os.path.join(OUT, slug); os.makedirs(d, exist_ok=True)
@@ -441,5 +456,6 @@ if __name__ == "__main__":
         open(os.path.join(d, nume + ".htm"), "w", encoding="utf-8", newline="").write(HEAD + frag.replace("\n", "\r\n") + "\r\n</body>\r\n</html>\r\n")
         open(os.path.join(d, nume + ".txt"), "wb").write(TXT)
         open(os.path.join(d, nume + ".rtf"), "w", encoding="ascii", newline="\n").write(rtf(ff))
-        for u in used: assert os.path.isfile(os.path.join(ASSETS_DIR, u)), u
-        print(f"{slug:8s} {len(frag.encode()):6d} B  {frag.count('<td'):3d} celule  {frag.count('<table'):2d} tabele  imagini: {sorted(used)}")
+        for u in used: assert os.path.isfile(os.path.join(ASSETS, "lux", u)), u
+        for u in used_foto: assert os.path.isfile(os.path.join(ASSETS, "foto", u)), u
+        print(f"{slug:8s} {len(frag.encode()):6d} B  {frag.count('<td'):3d} celule  {frag.count('<table'):2d} tabele  imagini: {sorted(used | used_foto)}")

@@ -44,6 +44,20 @@ cale), deci va avea comportamentul imaginilor remote: se vede automat în Gmail,
 Outlook pe telefon și la orice destinatar care te are în Contacts; în Outlook Classic la un
 destinatar necunoscut apare după „Download pictures".
 
+Montarea ei, când există fișierul (trei comenzi, tot mecanic):
+
+```
+python3 genereaza-foto.py portret.jpg          # decupajele, la 2x, în assets/foto/
+git add assets/foto && git commit && git push  # SHA-ul commit-ului fixează adresele
+python3 genereaza-colectie.py <sha> colectie foto
+python3 verifica.py
+```
+
+`genereaza-foto.py` face din portret: rama „floare" aurie (PNG copt pe fundalul celulei,
+pentru Lux), decupaje pătrate pentru medalioanele Aur/Rose/Mono 3 și decupaje-panou pentru
+Noir/Mono 1–2 — toate centrate pe față, JPEG baseline fără EXIF, sub 60 KB fiecare.
+`verifica.py` cere ca fotografia să fie ori în toate variantele, ori în niciuna.
+
 **Ornamentele Lux** sunt PNG-uri de 1–18 KB generate procedural (nu stock), **coapte pe
 fundalul exact al celulei** (`#111111` / `#1b1424`, fără transparență — motorul Word nu
 are surprize cu ele) și fixate pe un SHA de commit, ca banda GIF. Textul **nu stă niciodată
@@ -317,6 +331,7 @@ email-signature/
 │  └─ lux/                      ← ornamentele mandala (PNG), la fel
 ├─ genereaza-colectie.py        ← regenerează cele 17 variante (python3 genereaza-colectie.py <sha>)
 ├─ genereaza-mandale.py         ← regenerează ornamentele din assets/lux/
+├─ genereaza-foto.py            ← decupajele fotografiei, în assets/foto/
 ├─ genereaza-gif.py             ← regenerează banda compactă
 ├─ genereaza-gif-clasic.py      ← regenerează banda clasică
 └─ verifica.py                  ← 5.870 verificări, pe toate 21
