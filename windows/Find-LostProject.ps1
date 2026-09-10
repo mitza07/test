@@ -67,6 +67,53 @@ function Format-Size {
     '{0:N0} B' -f $Bytes
 }
 
+function Step-CcPath {
+    # Walk one level down the REAL tree, consuming as much of the remaining
+    # store name as an existing child accounts for. Longest child first, so
+    # 'Design-agentie' is tried before 'Design', with backtracking.
+    param([string]$Current, [string]$Rest)
+
+    if ([string]::IsNullOrEmpty($Rest)) { return $Current }
+    if (-not (Test-Path -LiteralPath $Current)) { return $null }
+
+    $children = @(Get-ChildItem -LiteralPath $Current -Directory -ErrorAction SilentlyContinue |
+        Sort-Object { $_.Name.Length } -Descending)
+
+    foreach ($c in $children) {
+        $enc = $c.Name -replace '[:\\/]', '-'
+        if ($Rest -ieq $enc) { return $c.FullName }
+        if ($Rest.StartsWith("$enc-", [StringComparison]::OrdinalIgnoreCase)) {
+            $deeper = Step-CcPath -Current $c.FullName -Rest $Rest.Substring($enc.Length + 1)
+            if ($deeper) { return $deeper }
+        }
+    }
+    $null
+}
+
+function Resolve-CcProjectPath {
+    # Claude Code names a store folder after the project path with every
+    # separator replaced by a hyphen, which is lossy: 'imobiliare-design'
+    # encodes exactly like 'imobiliare\design'. Decoding blindly therefore
+    # yields a path that does not exist. So walk the real tree instead and let
+    # the directories that exist decide where each hyphen came from.
+    param([Parameter(Mandatory)][string]$StoreName)
+
+    $starts = @()
+    $m = [regex]::Match($StoreName, '^([A-Za-z])--(.*)$')
+    if ($m.Success) {
+        $starts += [pscustomobject]@{ Root = ($m.Groups[1].Value + ':\'); Rest = $m.Groups[2].Value }
+    } else {
+        foreach ($d in (Get-PSDrive -PSProvider FileSystem -ErrorAction SilentlyContinue)) {
+            $starts += [pscustomobject]@{ Root = $d.Root; Rest = $StoreName.TrimStart('-') }
+        }
+    }
+    foreach ($s in $starts) {
+        $hit = Step-CcPath -Current $s.Root -Rest $s.Rest
+        if ($hit) { return $hit }
+    }
+    $null
+}
+
 Write-Host ''
 Write-Host "  Looking for: $($Keyword -join ', ')" -ForegroundColor White
 
@@ -152,8 +199,10 @@ foreach ($pr in $projectRoots) {
     if (-not (Test-Path -LiteralPath $pr)) { continue }
     foreach ($d in (Get-ChildItem -LiteralPath $pr -Directory -ErrorAction SilentlyContinue)) {
         $sessions = @(Get-ChildItem -LiteralPath $d.FullName -Filter *.jsonl -ErrorAction SilentlyContinue)
+        $real = Resolve-CcProjectPath -StoreName $d.Name
         $projects += [pscustomobject]@{
-            # The folder name is the project path with separators replaced.
+            Real     = $real
+            # Only shown when the folder is gone and cannot be resolved.
             Guess    = ($d.Name -replace '^([A-Za-z])--', '$1:\') -replace '-', '\'
             Sessions = $sessions.Count
             Newest   = if ($sessions) { ($sessions | Sort-Object LastWriteTime -Descending)[0].LastWriteTime } else { $d.LastWriteTime }
@@ -170,13 +219,17 @@ if ($projects.Count -eq 0) {
 } else {
     Write-Host "  $($projects.Count) project(s) Claude Code has worked in:" -ForegroundColor Gray
     Write-Host ''
-    Write-Host ('  {0,-16} {1,8}  {2}' -f 'Last used', 'Sessions', 'Original path (approximate)') -ForegroundColor DarkGray
+    Write-Host ('  {0,-16} {1,8}  {2}' -f 'Last used', 'Sessions', 'Project path') -ForegroundColor DarkGray
     foreach ($pj in ($projects | Sort-Object Newest -Descending | Select-Object -First 25)) {
-        Write-Host ('  {0,-16} {1,8}  {2}' -f ('{0:yyyy-MM-dd HH:mm}' -f $pj.Newest), $pj.Sessions, $pj.Guess)
+        $label = if ($pj.Real) { $pj.Real } else { '? ' + $pj.Guess }
+        Write-Host ('  {0,-16} {1,8}  {2}' -f ('{0:yyyy-MM-dd HH:mm}' -f $pj.Newest), $pj.Sessions, $label) `
+            -ForegroundColor $(if ($pj.Real) { 'Gray' } else { 'DarkGray' })
     }
     Write-Host ''
-    Write-Host '  Paths are decoded from the folder name, so a project whose own name' -ForegroundColor DarkGray
-    Write-Host '  contains a hyphen comes back with a backslash there instead.' -ForegroundColor DarkGray
+    Write-Host '  A path with no "?" was resolved against folders that really exist.' -ForegroundColor DarkGray
+    Write-Host '  A "?" means the folder is gone, so the path is only decoded from the' -ForegroundColor DarkGray
+    Write-Host '  store name - every hyphen becomes a backslash, which is wrong for any' -ForegroundColor DarkGray
+    Write-Host '  project whose own name contains one.' -ForegroundColor DarkGray
 }
 
 # ---------------------------------------------------------------------------
