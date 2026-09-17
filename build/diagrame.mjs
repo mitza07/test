@@ -2,8 +2,9 @@
    Diagramele volumului. Fiecare marca este asezata pe o singura scara,
    fiecare eticheta numeste o valoare pe care graficul chiar o atinge.
    =========================================================================== */
+import { tipografic } from './tipo.mjs'
 const f = (n) => Math.round(n * 100) / 100
-const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+const esc = (s) => tipografic(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 const nr = (n) => n.toLocaleString('ro-RO')
 
 /* --- suprafata statului roman, in kilometri patrati ---------------------- */

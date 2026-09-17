@@ -5,8 +5,11 @@ import { readFileSync, writeFileSync, existsSync } from 'fs'
 import { HARTI } from './harti.mjs'
 import { cronograma, diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagramaEtnic } from './diagrame.mjs'
 import { bandaCronologica } from './cronograf.mjs'
+import { bandaVietilor } from './vieti.mjs'
+import { toateTabelele, sectiuneTabel } from './tabele.mjs'
+import { tipografic } from './tipo.mjs'
 
-const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+const esc = (s) => tipografic(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 /* --- planul volumului ---------------------------------------------------- */
 export const PLAN = [
@@ -171,6 +174,11 @@ function anexeCapitol(c) {
       `<div class="cifra"><b>${esc(x.valoare)}</b><span>${esc(x.eticheta)}</span><small>${esc(x.nota)}</small></div>`).join('') + `</div>`)
   }
   if (c.figuri && c.figuri.length) {
+    /* Anii celor cinci oameni stau scrisi in fise, dar nimeni nu-i aseaza in
+       cap unul langa altul cat citeste: banda ii aseaza. */
+    const bv = bandaVietilor(c, { de: c.de, la: c.la })
+    if (bv) p.push(`<div class="vieti"><div class="rubrica-m">Cine trăiește când</div>
+<figure class="banda-cron banda-vieti"><svg viewBox="${bv.vb}" role="img" aria-label="Viețile oamenilor capitolului, la scară" preserveAspectRatio="xMidYMid meet">${bv.body}</svg></figure></div>`)
     p.push(`<div class="figuri">` + c.figuri.map((x) =>
       `<div class="pers"><div class="pers-cap"><span class="pers-nume">${esc(x.nume)}</span><span class="pers-ani">${esc(x.ani)}</span></div><div class="pers-rol">${esc(x.rol)}</div><p>${esc(x.descriere)}</p></div>`).join('') + `</div>`)
   }
@@ -215,6 +223,8 @@ export function construieste(continut) {
 
   const cuprins = [...cap, ...teme].map((c) =>
     `<a href="#${c.id}"><b>${esc(c.per === 'transversal' ? '—' : c.per)}</b><span>${esc(c.titlu)}</span></a>`).join('')
+
+  const TABELE = toateTabelele([...cap, ...teme.map((t) => ({ ...t, tema: true, per: 'transversal' }))])
 
   const corpCapitole = cap.map((c, i) => {
     const fig = (c.harti || []).map(figura).join('')
@@ -316,6 +326,15 @@ ${atlas.map(figuraIlustratie).join('')}</div>
     ${plansaAtlas}
   </div>
 </main>
+
+<section class="capitol aparat" id="aparat">
+  <div class="corp">
+    <div class="rubrica">Material final</div>
+    <h2 class="cap-titlu" style="margin-top:.4rem">Tot ce e în carte, așezat ca să poată fi căutat</h2>
+    <p class="cap-rezumat">Volumul are două sute de fișe de oameni împrăștiate câte cinci prin patruzeci de secțiuni, patruzeci de dispute istoriografice fiecare la coada capitolului ei și o sută șaizeci de cifre. Aici nu se adaugă nimic: se strâng la un loc.</p>
+  </div>
+  ${TABELE.map((t) => `<div class="corp" id="${t.id}">${sectiuneTabel(t, { esc, nivel: 'h3' })}</div>`).join('')}
+</section>
 
 <footer class="colofon">
   <div class="banda">

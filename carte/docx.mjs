@@ -8,11 +8,13 @@ import { execFileSync } from 'child_process'
 import { PLAN, PLAN_TEME } from '../build/build.mjs'
 import { HARTI } from '../build/harti.mjs'
 import { SUBT_DIAG } from './tipar.mjs'
+import { toateTabelele } from '../build/tabele.mjs'
+import { tipografic } from '../build/tipo.mjs'
 
 const RAD = new URL('./', import.meta.url).pathname
 const OUT = RAD + '.docx-lucru'
 const CTRL = new RegExp('[\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f]', 'g')
-const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+const esc = (s) => tipografic(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;').replace(CTRL, '')
 const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV',
   'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX', 'XXI', 'XXII', 'XXIII', 'XXIV', 'XXV', 'XXVI', 'XXVII', 'XXVIII']
@@ -67,6 +69,7 @@ ${stil('Rezumat', 'Rezumat', '<w:pPr><w:ind w:firstLine="0" w:left="567" w:right
 ${stil('Perioada', 'Perioada', '<w:pPr><w:ind w:firstLine="0"/></w:pPr><w:rPr><w:i/><w:color w:val="666666"/></w:rPr>')}
 ${stil('Ilustratie', 'Ilustratie', '<w:pPr><w:ind w:firstLine="0"/><w:jc w:val="center"/><w:spacing w:before="240" w:after="0"/></w:pPr>')}
 ${stil('Legenda', 'Legenda ilustratiei', '<w:pPr><w:ind w:firstLine="0" w:left="567" w:right="567"/><w:jc w:val="left"/><w:spacing w:line="240" w:lineRule="auto" w:after="240"/></w:pPr><w:rPr><w:sz w:val="20"/></w:rPr>')}
+${stil('Celula', 'Celula de tabel', '<w:pPr><w:ind w:firstLine="0"/><w:jc w:val="left"/><w:spacing w:line="240" w:lineRule="auto" w:after="0"/></w:pPr><w:rPr><w:sz w:val="18"/></w:rPr>')}
 ${stil('Aparat', 'Aparat critic', '<w:pPr><w:ind w:firstLine="0" w:left="283" w:hanging="283"/><w:jc w:val="left"/><w:spacing w:line="240" w:lineRule="auto"/></w:pPr><w:rPr><w:sz w:val="22"/></w:rPr>')}
 </w:styles>`
 
@@ -102,12 +105,20 @@ const FIGURI = (() => {
   return Object.fromEntries(JSON.parse(readFileSync(cale, 'utf8')).map((f) => [f.cheie, f]))
 })()
 
+const TITLU_BANDA = {
+  banda: ['Reperele capitolului, la scară',
+    'Fiecare semn este un reper din lista de mai jos, așezat la locul lui în timp; cercul gol înseamnă datare aproximativă, bara sub axă o durată. Fâșia de sus arată unde cade capitolul în cele opt mii de ani ale volumului.'],
+  vieti: ['Cine trăiește când',
+    'Anii celor cinci oameni ai capitolului, pe aceeași axă: se vede cine pe cine a apucat. Bara goală înseamnă datare aproximativă, săgeata că textul nu dă un an de sfârșit. Fâșia umbrită este epoca propriu-zisă a capitolului.'],
+}
+
 function puneFigura(cheie, stare) {
   const f = FIGURI[cheie]
   const src = RAD + 'ilustratii/figuri/' + cheie + '.png'
   if (!f || !existsSync(src)) return ''
   const h = HARTI[cheie]
-  const [titlu, jos] = h ? [h.titlu, h.jos] : (SUBT_DIAG[cheie] || ['', ''])
+  const banda = TITLU_BANDA[(cheie.split('-')[0])]
+  const [titlu, jos] = h ? [h.titlu, h.jos] : banda || (SUBT_DIAG[cheie] || ['', ''])
   if (!titlu) return ''
   const id = ++stare.id
   copyFileSync(src, `${OUT}/word/media/fig${id}.png`)
@@ -117,8 +128,46 @@ function puneFigura(cheie, stare) {
   let cx = LAT_TEXT, cy = Math.round(cx * raport)
   if (cy > INALT_MAX) { cy = INALT_MAX; cx = Math.round(cy / raport) }
   const leg = (h?.legenda || []).map(([, t]) => t).join('; ')
-  const cap = `${h ? 'Harta' : 'Diagrama'} ${nr}. ${titlu}. ${jos}` + (leg ? ` Legendă: ${leg}.` : '')
+  const fel = h ? 'Harta' : banda ? 'Banda' : 'Diagrama'
+  const cap = `${fel} ${nr}. ${titlu}. ${jos}` + (leg ? ` Legendă: ${leg}.` : '')
   return imagine(id, cx, cy, titlu, nr, `fig${id}.png`) + p(cap, 'Legenda')
+}
+
+/* --- tabelele materialului final ------------------------------------------
+   Un manuscris fara tabele obliga editura sa le refaca. Se scriu aici ca tabele
+   de Word adevarate, nu ca text aliniat cu spatii. */
+const LAT_TABEL = 9000                        /* douazecimi de punct, cat coloana */
+
+function tabelDocx(t) {
+  const n = t.coloane.length
+  /* coloanele numerice sunt inguste; restul isi impart ce ramane */
+  const inguste = t.coloane.filter((c) => c.clasa === 'num').length
+  const latIngusta = Math.round(LAT_TABEL * 0.09)
+  const latLarga = Math.round((LAT_TABEL - inguste * latIngusta) / Math.max(1, n - inguste))
+  const lat = t.coloane.map((c) => (c.clasa === 'num' ? latIngusta : latLarga))
+
+  const celula = (text, i, cap) =>
+    `<w:tc><w:tcPr><w:tcW w:w="${lat[i]}" w:type="dxa"/></w:tcPr>` +
+    `<w:p><w:pPr><w:pStyle w:val="Celula"/></w:pPr><w:r>${cap ? '<w:rPr><w:b/></w:rPr>' : ''}` +
+    `<w:t xml:space="preserve">${esc(text)}</w:t></w:r></w:p></w:tc>`
+
+  const cap = `<w:tr><w:trPr><w:tblHeader/></w:trPr>` +
+    t.coloane.map((c, i) => celula(c.et, i, true)).join('') + `</w:tr>`
+  const randuri = t.randuri.map((r) =>
+    `<w:tr>` + t.coloane.map((c, i) => celula(r[c.cheie], i, false)).join('') + `</w:tr>`).join('')
+
+  const margine = `<w:tblCellMar><w:top w:w="40" w:type="dxa"/><w:left w:w="0" w:type="dxa"/>` +
+    `<w:bottom w:w="40" w:type="dxa"/><w:right w:w="113" w:type="dxa"/></w:tblCellMar>`
+  const borduri = `<w:tblBorders><w:insideH w:val="single" w:sz="4" w:space="0" w:color="CCCCCC"/>` +
+    `<w:top w:val="single" w:sz="8" w:space="0" w:color="888888"/>` +
+    `<w:bottom w:val="single" w:sz="8" w:space="0" w:color="888888"/></w:tblBorders>`
+  return `<w:tbl><w:tblPr><w:tblW w:w="${LAT_TABEL}" w:type="dxa"/>${borduri}${margine}</w:tblPr>` +
+    `<w:tblGrid>${lat.map((w) => `<w:gridCol w:w="${w}"/>`).join('')}</w:tblGrid>` +
+    cap + randuri + `</w:tbl>`
+}
+
+function sectiuneaTabel(t) {
+  return p(t.titlu, 'Heading1') + p(t.intro, 'Legenda') + tabelDocx(t) + pgol() + saltPagina()
 }
 
 /* --- un capitol sau o tema ------------------------------------------------ */
@@ -142,10 +191,12 @@ function sectiune(c, eticheta, poze, stare) {
 
   if (c.cronologie?.length) {
     b.push(p('Cronologie', 'Heading2'))
+    b.push(puneFigura('banda-' + c.id, stare))
     for (const x of c.cronologie) b.push(p(`${x.an} — ${x.eveniment}`, 'Aparat'))
   }
   if (c.figuri?.length) {
     b.push(p('Oameni', 'Heading2'))
+    b.push(puneFigura('vieti-' + c.id, stare))
     for (const x of c.figuri) b.push(p(`${x.nume} (${x.ani}), ${x.rol}. ${x.descriere}`, 'Aparat'))
   }
   if (c.cifre?.length) {
@@ -183,7 +234,10 @@ export function construiesteDocx(continut) {
   b.push(p(TITLU, 'Titlu'), p(SUBTITLU, 'Subtitlu'), pgol(), p(AUTOR, 'Subtitlu'), saltPagina())
   cap.forEach((c, i) => b.push(sectiune(c, `Capitolul ${ROMAN[i + 1]}`, ILUSTRATII[c.id] || [], stare)))
   teme.forEach((c) => b.push(sectiune(c, 'Priviri transversale', ILUSTRATII[c.id] || [], stare)))
-  /* plansa cartografica, la sfarsit */
+  /* materialul final: tabelele, apoi plansa cartografica */
+  for (const t of toateTabelele([...cap, ...teme.map((x) => ({ ...x, tema: true, per: 'transversal' }))]))
+    b.push(sectiuneaTabel(t))
+
   const atlas = ILUSTRATII.atlas || []
   if (atlas.length) {
     b.push(p('Planșă cartografică', 'Perioada'), p('Cum a fost desenat acest pământ', 'Heading1'))

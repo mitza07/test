@@ -7,7 +7,10 @@ import { HARTI } from '../build/harti.mjs'
 import { cronograma, diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagramaEtnic } from '../build/diagrame.mjs'
 import { PLAN, PLAN_TEME } from '../build/build.mjs'
 import { bandaCronologica } from '../build/cronograf.mjs'
+import { bandaVietilor } from '../build/vieti.mjs'
+import { toateTabelele, sectiuneTabel } from '../build/tabele.mjs'
 import { readFileSync as citeste, existsSync as exista, statSync as stat } from 'fs'
+import { tipografic } from '../build/tipo.mjs'
 
 /* --- ilustratiile de arhiva ---------------------------------------------- */
 const RAD_C = new URL('./', import.meta.url).pathname
@@ -59,7 +62,7 @@ function figuraIlustratie(m) {
 }
 const ilustratiile = (cap) => (ILUSTRATII[cap] || []).map(figuraIlustratie).join('')
 
-const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+const esc = (s) => tipografic(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 /* Intervalul acoperit de volum, pentru strip-ul de context al fiecarei benzi */
 const VOLUM_DE = -6000, VOLUM_LA = 2026
 function figuraBanda(c) {
@@ -201,6 +204,9 @@ function aparat(c, termeni) {
       `<div class="cifra"><b>${esc(x.valoare)}</b><div><span>${esc(x.eticheta)}</span><small>${esc(x.nota)}</small></div></div>`).join('') + `</div>`)
   }
   if (c.figuri && c.figuri.length) {
+    const bv = bandaVietilor(c, { de: c.de, la: c.la })
+    if (bv) p.push(`<div class="vieti"><div class="cap-mic">Cine trăiește când</div>
+<figure class="banda-cron banda-vieti"><svg viewBox="${bv.vb}" role="img" aria-label="Viețile oamenilor capitolului, la scară" preserveAspectRatio="xMidYMid meet">${bv.body}</svg></figure></div>`)
     p.push(`<div class="figuri"><div class="cap-mic">Figuri</div>` + c.figuri.map((x) =>
       `<div class="pers"><div class="pers-cap">${marcheaza(esc(x.nume), termeni)} <span class="pers-ani">${esc(x.ani)}</span></div>
 <div class="pers-rol">${esc(x.rol)}</div><p>${marcheaza(esc(x.descriere), termeni)}</p></div>`).join('') + `</div>`)
@@ -273,6 +279,11 @@ ${aparat(c, termeni)}
 </article>`).join('')
 
   /* cuprins */
+  /* Tabelele materialului final: nimic nou, numai ce e deja in carte, asezat
+     la un loc ca sa poata fi cautat. */
+  const TABELE = toateTabelele([...cap, ...teme.map((t) => ({ ...t, tema: true, per: 'transversal' }))])
+  const tabelHtmlTipar = (t) => sectiuneTabel(t, { esc }).replace(/^<h2>[\s\S]*?<\/p>\n/, '')
+
   const cuprins = (cap.length ? `<div class="grup">Partea întâi · Cronologia</div><ol>` +
     cap.map((c, i) => `<li><span class="nr">${ROMAN[i + 1]}</span><span class="tit">${esc(c.titlu)}</span>
 <span class="per">${esc(c.per)}</span><span class="pct"></span><a class="pg" href="#${c.id}"></a></li>`).join('') +
@@ -281,7 +292,8 @@ ${aparat(c, termeni)}
     teme.map((c) => `<li class="fara-nr"><span class="nr"></span><span class="tit">${esc(c.titlu)}</span>
 <span class="pct"></span><a class="pg" href="#${c.id}"></a></li>`).join('') + `</ol>` : '') +
     `<div class="grup">Material final</div><ol>` +
-    [['lista-figuri', 'Lista hărților și a diagramelor'], ['indice', 'Indice de nume și locuri'], ['nota-metoda', 'Notă asupra metodei']]
+    [...TABELE.map((t) => [t.id, t.titlu]),
+      ['lista-figuri', 'Lista hărților și a diagramelor'], ['indice', 'Indice de nume și locuri'], ['nota-metoda', 'Notă asupra metodei']]
       .map(([id, t]) => `<li class="fara-nr"><span class="nr"></span><span class="tit">${esc(t)}</span>
 <span class="pct"></span><a class="pg" href="#${id}"></a></li>`).join('') + `</ol>`
 
@@ -352,6 +364,12 @@ ${volum === 1 ? '' : `
 <div class="corp"><p class="cap-rezumat">Hărțile de mai jos nu sunt ilustrații ale textului, ci izvoare în sine. Fiecare arată nu numai un teritoriu, ci și ce știa și ce voia să arate cel care a desenat-o: un cartograf venețian de secol XVI care nu văzuse niciodată Carpații, un geograf grec care pregătea o insurecție, un statistician maghiar care apăra la Paris hotarele unui regat pe cale să dispară.</p></div>
 ${ilustratiile('atlas')}
 </section>`}
+
+${TABELE.map((t) => `<section class="anexa" id="${t.id}">
+  <h2>${esc(t.titlu)}</h2>
+  <p class="tabel-intro">${esc(t.intro)}</p>
+  ${tabelHtmlTipar(t)}
+</section>`).join('\n')}
 
 <section class="anexa" id="lista-figuri">
   <h2>Lista hărților și a ilustrațiilor</h2>

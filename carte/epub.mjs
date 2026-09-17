@@ -5,12 +5,16 @@
 import { writeFileSync, mkdirSync, rmSync, cpSync, readFileSync, existsSync } from 'fs'
 import { execFileSync } from 'child_process'
 import { HARTI } from '../build/harti.mjs'
+import { bandaCronologica } from '../build/cronograf.mjs'
+import { bandaVietilor } from '../build/vieti.mjs'
+import { toateTabelele, sectiuneTabel } from '../build/tabele.mjs'
 import { diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagramaEtnic } from '../build/diagrame.mjs'
 import { PLAN, PLAN_TEME } from '../build/build.mjs'
+import { tipografic } from '../build/tipo.mjs'
 
 const RAD = new URL('./', import.meta.url).pathname
 const OUT = RAD + '.epub-lucru'
-const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+const esc = (s) => tipografic(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 const ROMAN = ['', 'I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII',
   'XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV',
   'XXV','XXVI','XXVII','XXVIII']
@@ -85,6 +89,15 @@ dd { margin: 0.1em 0 0 0; font-size: 0.92em; text-align: left; }
 .caseta p { text-indent: 0; }
 .coperta { text-align: center; margin: 0; padding: 0; }
 .coperta img { max-width: 100%; height: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.78em; }
+th, td { text-align: left; vertical-align: top; padding: 0.3em 0.5em 0.3em 0;
+  border-bottom: 1px solid #ddd; hyphens: none; }
+th { font-size: 0.86em; letter-spacing: 0.07em; text-transform: uppercase; color: #555;
+  border-bottom: 1px solid #999; }
+td.num, th.num { white-space: nowrap; }
+.tabel-intro { text-indent: 0; font-size: 0.85em; color: #555; margin-bottom: 0.8em; }
+figure.banda-timp { margin: 1.1em 0; page-break-inside: avoid; }
+figure.banda-timp svg { width: 100%; height: auto; display: block; }
 .legenda-harta { text-indent: 0; text-align: left; font-size: 0.72em; line-height: 1.7;
   color: #444; margin: 0.4em 0 0; }
 .legenda-harta span { margin-right: 1.1em; white-space: nowrap; }
@@ -102,7 +115,18 @@ dd { margin: 0.1em 0 0 0; font-size: 0.92em; text-align: left; }
    cale cu negru: pana acum fiecare harta din EPUB era un dreptunghi negru.
    Se scot deci regulile din foaia de stil a editiei de web si se pun aici, cu
    variabilele deja rezolvate — unele cititoare nu le inteleg. */
-function stilulFigurilor(caleCss) {
+/* Clasele folosite in SVG-urile chiar generate. Se string pe masura ce se
+   compun figurile, ca foaia de stil sa fie facuta dupa ele, nu dupa o lista
+   scrisa de mana care ramane in urma la fiecare clasa noua. Exact asa au ajuns
+   hartile sa fie dreptunghiuri negre: clasa exista, regula nu. */
+const CLASE_SVG = new Set()
+function strangeClase(svg) {
+  for (const m of String(svg).matchAll(/class="([^"]+)"/g))
+    for (const c of m[1].trim().split(/\s+/)) if (c) CLASE_SVG.add(c)
+  return svg
+}
+
+function stilulFigurilor(caleCss, folosite) {
   let css = readFileSync(caleCss, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
   /* intai se scot blocurile @media: ele poarta varianta intunecata */
   let curat = '', adanc = 0
@@ -125,23 +149,28 @@ function stilulFigurilor(caleCss) {
     }
     return v
   }
-  const vrem = /^\s*\.(m-|d-|cg-|leg-h|banda-cron|diagrama)/
+  /* o regula intra daca vreo clasa din selectorul ei chiar e folosita in SVG */
+  const vrem = (sel) => {
+    const clase = [...sel.matchAll(/\.([\w-]+)/g)].map((m) => m[1])
+    return clase.length > 0 && clase.some((c) => folosite.has(c))
+  }
   const out = [], petice = []
   for (const bloc of curat.split('}')) {
     const k = bloc.indexOf('{')
     if (k < 0) continue
     const sel = bloc.slice(0, k).trim(), corp = rezolva(bloc.slice(k + 1).trim())
-    if (!vrem.test(sel) || !corp) continue
+    if (!vrem(sel) || !corp) continue
     out.push(`${sel} { ${corp} }`)
     /* petecul din legenda e un <i> de HTML: "fill" nu-l coloreaza, ii trebuie
        fundal. Se ia culoarea chiar din regula tonului, ca sa nu se desparta */
     const t = sel.match(/^\.(m-t[a-g])$/)
     const f = corp.match(/fill:\s*([^;]+)/)
     if (t && f) petice.push(`.legenda-harta i.${t[1]} { background: ${f[1].trim()}; }`)
+    const h = sel.match(/^\.(leg-h[0-4])$/)
+    if (h) petice.push(`.legenda-harta i.${h[1]} { ${corp} }`)
   }
   return out.concat(petice).join('\n')
 }
-const STIL_FIGURI = stilulFigurilor(RAD + '../build/stil.css')
 
 /* ---- continut ------------------------------------------------------------ */
 const continut = JSON.parse(readFileSync(RAD + '../build/continut.json', 'utf8'))
@@ -164,10 +193,11 @@ function figHarta(cheie) {
     if (t === 'sit') return '<i class="simb">▲</i>'
     if (t === 'oras') return '<i class="simb">●</i>'
     if (t === 'capitala') return '<i class="simb">◉</i>'
-    return `<i class="pata ${/^h[0-4]$/.test(t) ? 'leg-' + t : 'm-t' + t}"></i>`
+    return `<i class="${/^h[0-4]$/.test(t) ? "leg-" + t : "m-t" + t}"></i>`
   }
-  const leg = (h.legenda || []).map(([t, txt]) => `<span>${semn(t)}${esc(txt)}</span>`).join('')
-  return `<figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(h.titlu)}">${body}</svg>
+  const leg = (h.legenda || []).map(([t, txt]) => `<span>${strangeClase(semn(t))}${esc(txt)}</span>`).join('')
+  CLASE_SVG.add('diagrama')
+  return `<figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(h.titlu)}">${strangeClase(body)}</svg>
 ${leg ? `<p class="legenda-harta">${leg}</p>` : ''}
 <figcaption><b>Harta ${n}. ${esc(h.titlu)}</b> ${esc(h.jos)}</figcaption></figure>`
 }
@@ -176,7 +206,7 @@ function figDiagrama(cheie) {
   const { vb, body } = gen()
   const [t, j] = SUBT_DIAG[cheie]
   const n = ++nrFig
-  return `<figure><svg xmlns="http://www.w3.org/2000/svg" class="diagrama" viewBox="${vb}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(t)}">${body}</svg>
+  return `<figure><svg xmlns="http://www.w3.org/2000/svg" class="diagrama" viewBox="${vb}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(t)}">${strangeClase(body)}</svg>
 <figcaption><b>Diagrama ${n}. ${esc(t)}</b> ${esc(j)}</figcaption></figure>`
 }
 
@@ -203,9 +233,17 @@ function figIlustratie(m) {
 <figcaption><b>Ilustrația ${n}.</b> ${esc(m.legenda)} <span class="sursa">${esc(credit)}</span></figcaption></figure>`
 }
 
+/* Benzile de timp lipseau cu totul din EPUB, desi sunt in web si in tipar:
+   inca un caz in care acelasi continut ajunge intr-un format si nu in altul. */
+function banda(b, eticheta) {
+  if (!b) return ''
+  return `<figure class="banda-timp"><svg xmlns="http://www.w3.org/2000/svg" viewBox="${b.vb}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(eticheta)}">${strangeClase(b.body)}</svg></figure>`
+}
+
 function corpul(c) {
   let s = ''
   if (c.rezumat) s += `<p class="rezumat">${esc(c.rezumat)}</p>`
+  s += banda(bandaCronologica(c, { de: -6000, la: 2026 }), 'Reperele capitolului, la scară')
   /* pozele se intercaleaza intre sectiuni, ca in editia tiparita */
   const poze = ILUSTRATII[c.id] || []
   const sectiuni = c.sectiuni || []
@@ -223,9 +261,12 @@ function corpul(c) {
 <p class="sursa"><b>${esc(c.citat.autor)}</b>${c.citat.context ? ' · ' + esc(c.citat.context) : ''}</p>`
   if (c.cifre?.length) { s += `<h2>Cifre</h2>` + c.cifre.map((x) =>
     `<p class="cifra"><b>${esc(x.valoare)}</b> — ${esc(x.eticheta)}<em>${esc(x.nota)}</em></p>`).join('') }
-  if (c.figuri?.length) { s += `<h2>Figuri</h2>` + c.figuri.map((x) =>
+  if (c.figuri?.length) {
+    s += `<h2>Cine trăiește când</h2>` + banda(bandaVietilor(c, { de: c.de, la: c.la }), 'Viețile oamenilor capitolului, la scară')
+    s += `<h2>Figuri</h2>` + c.figuri.map((x) =>
     `<p class="pers"><span class="nume">${esc(x.nume)}</span> <span class="ani">${esc(x.ani)}</span>
-<span class="rol">${esc(x.rol)}</span>${esc(x.descriere)}</p>`).join('') }
+<span class="rol">${esc(x.rol)}</span>${esc(x.descriere)}</p>`).join('')
+  }
   if (c.cronologie?.length) { s += `<h2>Repere</h2><dl>` + c.cronologie.map((x) =>
     `<dt>${esc(x.an)}</dt><dd>${esc(x.eveniment)}</dd>`).join('') + `</dl>` }
   if (c.controversa) s += `<div class="caseta"><p class="eticheta">Dispută istoriografică</p><p>${esc(c.controversa)}</p></div>`
@@ -250,7 +291,8 @@ writeFileSync(OUT + '/META-INF/container.xml', `<?xml version="1.0" encoding="UT
 <container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
 <rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles>
 </container>`)
-writeFileSync(OUT + '/OEBPS/stil.css', STIL + '\n' + STIL_FIGURI)
+/* stil.css se scrie la sfarsit, dupa ce s-au compus toate paginile: abia
+   atunci se stie ce clase folosesc SVG-urile. Vezi mai jos. */
 for (const f of ['Literata-400.ttf','Literata-400i.ttf','Literata-600.ttf','Spectral-300.ttf','Spectral-600.ttf'])
   cpSync(RAD + 'fonturi/' + f, OUT + '/OEBPS/fonturi/' + f)
 
@@ -298,6 +340,19 @@ teme.forEach((c) => {
 <p class="perioada">de la antichitate până azi</p>${corpul(c)}`))
   fisiere.push({ id: 'tema-' + c.id, href: f, titlu: c.titlu, inToc: true })
 })
+
+/* --- materialul final: tabelele -------------------------------------------
+   Nimic nou in ele; numai ce e deja raspandit prin carte, asezat ca sa poata fi
+   cautat. Intr-un EPUB conteaza cu atat mai mult, fiindca nu are numere de
+   pagina la care sa trimita un indice. */
+{
+  const TABELE = toateTabelele([...cap, ...teme.map((t) => ({ ...t, tema: true, per: 'transversal' }))])
+  for (const t of TABELE) {
+    writeFileSync(OUT + `/OEBPS/tabel-${t.id}.xhtml`, pag(t.titlu,
+      `<p class="eticheta">Material final</p>` + sectiuneTabel(t, { esc, nivel: 'h1', legaturi: false })))
+    fisiere.push({ id: 'tabel-' + t.id, href: `tabel-${t.id}.xhtml`, titlu: t.titlu, inToc: true })
+  }
+}
 
 /* --- plansa cartografica --------------------------------------------------- */
 if ((ILUSTRATII.atlas || []).length) {
@@ -374,6 +429,13 @@ writeFileSync(OUT + '/OEBPS/content.opf', `<?xml version="1.0" encoding="utf-8"?
 /* --- ambalarea: mimetype primul, necomprimat -------------------------------- */
 /* Ediția compactă merge la numele ei: altfel a doua rulare o scria peste cea
    întreagă, iar diferența — de trei ori mai mare — nu se vedea decât la KDP. */
+/* Acum, cu toate paginile compuse, se stie ce clase apar in SVG-uri. */
+const STIL_FIGURI = stilulFigurilor(RAD + '../build/stil.css', CLASE_SVG)
+writeFileSync(OUT + '/OEBPS/stil.css', STIL + '\n' + STIL_FIGURI)
+const totCss = STIL + STIL_FIGURI
+const nedefinite = [...CLASE_SVG].filter((c) => !new RegExp('\\.' + c + '\\b').test(totCss))
+if (nedefinite.length) console.warn('ATENȚIE: clase folosite în SVG dar fără regulă: ' + nedefinite.join(', '))
+
 const epub = RAD + (process.env.EPUB_MIC ? 'Istoria-Romaniei-compact.epub' : 'Istoria-Romaniei.epub')
 rmSync(epub, { force: true })
 execFileSync('zip', ['-X0', epub, 'mimetype'], { cwd: OUT })

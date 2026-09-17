@@ -12,9 +12,10 @@
    capitolului, desfasurata pe toata latimea oglinzii.
    =========================================================================== */
 import { citesteData, mijloc, etichetaAn } from './data.mjs'
+import { tipografic } from './tipo.mjs'
 
 const f = (n) => Math.round(n * 100) / 100
-const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+const esc = (s) => tipografic(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 /* Anul primeste sufixul erei ori de cate ori banda trece peste anul 1: fara
    el, "100" de sub "100 î.Hr." ar fi citit tot ca inainte de Hristos. */
