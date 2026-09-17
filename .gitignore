@@ -20,3 +20,8 @@ carte/ilustratii/mini2/
 carte/ilustratii/p2-*.jpg
 carte/ilustratii/fond.json
 build/.continut-*.json
+carte/.docx-lucru/
+carte/.epub-lucru/
+carte/*.docx
+carte/*.epub
+carte/ilustratii/control-*.jpg

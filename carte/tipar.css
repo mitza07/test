@@ -333,3 +333,13 @@ figcaption { break-inside: avoid; page-break-inside: avoid; }
 .ilustratie figcaption { break-before: avoid; page-break-before: avoid; }
 /* în plansa cartografică imaginile primesc toată înălțimea paginii */
 #atlas-vechi .ilustratie img { max-height: 158mm; width: auto; max-width: 100%; margin: 0 auto; }
+
+/* O imagine mai inalta decat lata nu are voie sa umple pagina pe latime:
+   la 117 mm oglinda, un portret in picioare ar depasi inaltimea utila si
+   ar arunca legenda pe pagina urmatoare. */
+.ilustratie img { max-height: 150mm; width: auto; max-width: 100%; margin: 0 auto; }
+.ilustratie.lata img { width: 100%; max-height: none; }
+
+/* numele volumului pe semititlu, cand cartea apare in doua tomuri */
+.semi-vol { margin-top: 6mm; font-family: var(--sans); font-size: 9pt;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--gri-45); }

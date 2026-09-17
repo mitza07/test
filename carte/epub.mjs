@@ -12,7 +12,8 @@ const RAD = new URL('./', import.meta.url).pathname
 const OUT = RAD + '.epub-lucru'
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 const ROMAN = ['', 'I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII',
-  'XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII']
+  'XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV',
+  'XXV','XXVI','XXVII','XXVIII']
 
 const TITLU = 'Istoria României'
 const SUBTITLU = 'în 3.026 de ani'
@@ -60,6 +61,9 @@ p + p { margin-top: 0; }
   margin-bottom: 1.4em; }
 figure { margin: 1.6em 0; page-break-inside: avoid; text-align: center; }
 figure svg { max-width: 100%; height: auto; }
+figure.ilustratie img { max-width: 100%; max-height: 88vh; height: auto; }
+figure.ilustratie figcaption .sursa { display: block; margin-top: .35em;
+  font-size: .88em; color: #777; font-style: italic; }
 figcaption { font-size: 0.76em; line-height: 1.45; color: #444; text-align: left;
   margin-top: 0.5em; padding-top: 0.4em; border-top: 1px solid #bbb; hyphens: none; }
 blockquote { margin: 1.4em 0; padding-left: 1em; border-left: 2px solid #333;
@@ -107,13 +111,41 @@ function figDiagrama(cheie) {
 <figcaption><b>Diagrama ${n}. ${esc(t)}</b> ${esc(j)}</figcaption></figure>`
 }
 
+/* --- ilustratiile de arhiva ------------------------------------------------ */
+const ILUSTRATII = {}
+if (existsSync(RAD + 'ilustratii/manifest.json'))
+  for (const m of JSON.parse(readFileSync(RAD + 'ilustratii/manifest.json', 'utf8'))) {
+    const redus = RAD + 'ilustratii/tipar/' + m.local.split('/').pop()
+    if (!existsSync(redus)) continue
+    ;(ILUSTRATII[m.cap] = ILUSTRATII[m.cap] || []).push({ ...m, redus })
+  }
+let nrIl = 0
+const pozeIncluse = []
+function figIlustratie(m) {
+  const n = ++nrIl
+  const nume = `il/${String(n).padStart(3, '0')}.jpg`
+  cpSync(m.redus, OUT + '/OEBPS/' + nume)
+  pozeIncluse.push(nume)
+  const credit = [m.autor, m.data, m.sursa, /domeniu public/i.test(m.tipLicenta) ? 'domeniu public' : m.licenta]
+    .filter(Boolean).join(' · ')
+  return `<figure class="ilustratie"><img src="${nume}" alt="${esc(m.legenda).slice(0, 200)}"/>
+<figcaption><b>Ilustrația ${n}.</b> ${esc(m.legenda)} <span class="sursa">${esc(credit)}</span></figcaption></figure>`
+}
+
 function corpul(c) {
   let s = ''
   if (c.rezumat) s += `<p class="rezumat">${esc(c.rezumat)}</p>`
-  for (const sec of c.sectiuni || []) {
+  /* pozele se intercaleaza intre sectiuni, ca in editia tiparita */
+  const poze = ILUSTRATII[c.id] || []
+  const sectiuni = c.sectiuni || []
+  const intre = sectiuni.length > 1 ? Math.floor(poze.length / sectiuni.length) : 0
+  let k = 0
+  sectiuni.forEach((sec, j) => {
     s += `<h2>${esc(sec.subtitlu)}</h2>`
     ;(sec.paragrafe || []).forEach((p, i) => { s += `<p${i === 0 ? ' class="prim"' : ''}>${esc(p)}</p>` })
-  }
+    if (j < sectiuni.length - 1) { s += poze.slice(k, k + intre).map(figIlustratie).join(''); k += intre }
+  })
+  s += poze.slice(k).map(figIlustratie).join('')
   s += (c.harti || []).map(figHarta).join('')
   s += (c.diagrame || []).map(figDiagrama).join('')
   if (c.citat?.text) s += `<blockquote><p>${esc(c.citat.text)}</p></blockquote>
@@ -140,6 +172,7 @@ const pag = (titlu, corp, clasa = '') => `<?xml version="1.0" encoding="utf-8"?>
 rmSync(OUT, { recursive: true, force: true })
 mkdirSync(OUT + '/META-INF', { recursive: true })
 mkdirSync(OUT + '/OEBPS/fonturi', { recursive: true })
+mkdirSync(OUT + '/OEBPS/il', { recursive: true })
 
 writeFileSync(OUT + '/mimetype', 'application/epub+zip')
 writeFileSync(OUT + '/META-INF/container.xml', `<?xml version="1.0" encoding="UTF-8"?>
@@ -195,6 +228,15 @@ teme.forEach((c) => {
   fisiere.push({ id: 'tema-' + c.id, href: f, titlu: c.titlu, inToc: true })
 })
 
+/* --- plansa cartografica --------------------------------------------------- */
+if ((ILUSTRATII.atlas || []).length) {
+  writeFileSync(OUT + '/OEBPS/atlas.xhtml', pag('Cum a fost desenat acest pământ',
+    `<p class="eticheta">Planșă cartografică</p><h1>Cum a fost desenat acest pământ</h1>
+<p class="rezumat">Hărțile de mai jos nu sunt ilustrații ale textului, ci izvoare în sine. Fiecare arată nu numai un teritoriu, ci și ce știa și ce voia să arate cel care a desenat-o.</p>
+${ILUSTRATII.atlas.map(figIlustratie).join('')}`))
+  fisiere.push({ id: 'atlas', href: 'atlas.xhtml', titlu: 'Cum a fost desenat acest pământ', inToc: true })
+}
+
 writeFileSync(OUT + '/OEBPS/nota.xhtml', pag('Notă asupra metodei',
   `<h1>Notă asupra metodei</h1>
 <p class="prim">Volumul a fost redactat capitol cu capitol și trecut apoi printr-o verificare factuală separată, care a urmărit datele, numele proprii, cifrele și atribuirea citatelor. Au rezultat 568 de corecții. Acolo unde o cifră este disputată în literatura de specialitate — numărul victimelor răscoalei din 1907, bilanțul Holocaustului din România, numărul morților din decembrie 1989 — ea este dată ca interval, cu menționarea disputei.</p>
@@ -237,7 +279,7 @@ writeFileSync(OUT + '/OEBPS/content.opf', `<?xml version="1.0" encoding="utf-8"?
   <dc:publisher>[editura]</dc:publisher>
   <dc:subject>Istorie</dc:subject>
   <dc:subject>România</dc:subject>
-  <dc:description>${esc(SUBTITLU)}. Douăzeci și două de capitole cronologice și șase priviri transversale, cu douăsprezece hărți desenate din coordonate geografice reale.</dc:description>
+  <dc:description>${esc(SUBTITLU)}. Douăzeci și trei de capitole cronologice și șaptesprezece priviri transversale, cu douăsprezece hărți desenate din coordonate geografice reale și peste două sute de ilustrații de arhivă.</dc:description>
   <dc:rights>Toate drepturile rezervate.</dc:rights>
   <meta property="dcterms:modified">${azi}</meta>
   ${areCoperta ? '<meta name="cover" content="img-coperta"/>' : ''}
@@ -250,6 +292,7 @@ writeFileSync(OUT + '/OEBPS/content.opf', `<?xml version="1.0" encoding="utf-8"?
   ${['Literata-400','Literata-400i','Literata-600','Spectral-300','Spectral-600']
     .map((f) => `<item id="f-${f}" href="fonturi/${f}.ttf" media-type="font/ttf"/>`).join('\n  ')}
   ${fisiere.map((f) => `<item id="${f.id}" href="${f.href}" media-type="application/xhtml+xml" properties="svg"/>`).join('\n  ')}
+  ${pozeIncluse.map((n, i) => `<item id="il${i + 1}" href="${n}" media-type="image/jpeg"/>`).join('\n  ')}
 </manifest>
 <spine toc="ncx">
   ${fisiere.map((f) => `<itemref idref="${f.id}"/>`).join('\n  ')}
@@ -264,4 +307,4 @@ execFileSync('zip', ['-X0', epub, 'mimetype'], { cwd: OUT })
 execFileSync('zip', ['-Xr9D', epub, 'META-INF', 'OEBPS'], { cwd: OUT })
 
 const { statSync } = await import('fs')
-console.log(`Istoria-Romaniei.epub · ${fisiere.length} documente · ${nrFig} figuri · ${(statSync(epub).size / 1048576).toFixed(1)} MB`)
+console.log(`Istoria-Romaniei.epub · ${fisiere.length} documente · ${nrFig} hărți/diagrame · ${nrIl} ilustrații · ${(statSync(epub).size / 1048576).toFixed(1)} MB`)

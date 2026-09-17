@@ -6,13 +6,18 @@
    =========================================================================== */
 import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from 'fs'
 import { execFileSync } from 'child_process'
+import { createHash } from 'crypto'
 import { adresaFisier } from './cauta.mjs'
 import { manifest as manifestVechi } from './program.mjs'
 import { SELECTIE } from './selectie.mjs'
 
 const RAD = new URL('./', import.meta.url).pathname
 const UA = 'IstoriaRomaniei-carte/1.0 (contact: mitza0704@gmail.com)'
-const LAT = 2400
+/* Commons pre-genereaza miniaturi doar la latimi standard — 250, 330, 500,
+   960, 1280, 1920, 3840 — si respinge cu 429 atat cererile de original cat si
+   latimile din afara listei. 1920 e prima treapta peste cei 1700 px de care
+   are nevoie tiparul la 6x9 inch. */
+const LAT = 1920
 
 const liste = {}
 const lista = (g) => (liste[g] ||= JSON.parse(readFileSync(`${RAD}ilustratii/lista-${g}.json`, 'utf8')))
@@ -20,10 +25,29 @@ const lista = (g) => (liste[g] ||= JSON.parse(readFileSync(`${RAD}ilustratii/lis
 const curata = (s) => String(s || '').replace(/<[^>]*>/g, ' ').replace(/\s*\(\s*talk\s*\)/gi, '')
   .replace(/\s*date QS.*/i, '').replace(/\s+/g, ' ').trim()
 
+
+/* ---------------------------------------------------------------------------
+   Respinse la controlul vizual. Verificarea de licenta si scorul de relevanta
+   nu vad ce vede ochiul: o plansa lunga de douazeci de mii de pixeli nu incape
+   intr-o pagina de 6x9, iar o scanare de bibliotec cu rigla de culoare alaturi
+   nu e o ilustratie, ci un document de laborator.
+   --------------------------------------------------------------------------- */
+const RESPINSE = new Map([
+  ['Ulpia Traiana Sarmizegetusa Amphitheatre Panorama.jpg', 'panoramă de 22.501 px: în pagină ar fi o dungă'],
+  ['TabulaPeutingeriana.jpg', 'sulul întreg, 26.381 px; în planșă intră cele două segmente decupate'],
+  ['Principatus Moldaviae nova & accurata descriptio - Delineante Principe Demetrio Cantemirio - btv1b52511045w (2 of 2).jpg', 'scanarea e versoul alb al foii, nu harta'],
+  ['Interior rear view angle of the Status Quo Ante synagogue Târgu Mureș, Romania.jpg', 'decupaj îngust, ilizibil la dimensiunea paginii'],
+  ['Retezat National Park at Bucura Lake - panoramio.jpg', 'panoramă, raport de laturi inutilizabil'],
+  ['A reverie of Prince Demetrius Cantemir, Ospidar of Moldavia (BM 1868,0808.5718 1).jpg', 'scanare cu riglă de culoare; avem două portrete Cantemir mai bune'],
+  ['Palaces in Bucharest are elaborate. This is the old home of the beloved Carmen Sylva or first Queen of Roumania LCCN2011660177.jpg', 'pagină de carte fotografiată, cu riglă de culoare'],
+  ['Peasant boys in white pants, embroidered short skirt, bright red and yellow girdle, and ornamental vests swing through the streets of Bucharest vending fruits of delicious taste LCCN2011660149.jpg', 'pagină de carte fotografiată, cu riglă de culoare'],
+  ['A driver of the old school. He hopes to die before the inartistic automobile supplants his elegant victoria with prancing teams of greys, on the boulevards of Buckharest (i.e. Bucharest) LCCN2011660147.jpg', 'pagină de carte fotografiată, cu riglă de culoare'],
+])
+
 export function manifestMare() {
   const out = [], vazut = new Set()
   const adauga = (o) => {
-    if (vazut.has(o.fisier)) return false
+    if (vazut.has(o.fisier) || RESPINSE.has(o.fisier)) return false
     vazut.add(o.fisier); out.push(o); return true
   }
   /* primul val; plansa cartografica poarta un singur nume */
@@ -36,11 +60,15 @@ export function manifestMare() {
     if (!c) { console.error(`lipsă: ${id}`); lipsa++; continue }
     adauga({ cap, legenda, fisier: c.fisier, pagina: c.pagina, autor: curata(c.autor),
       data: curata(c.data), licenta: c.licenta, tipLicenta: c.tipLicenta,
-      latime: c.latime, inaltime: c.inaltime, sursa: 'Wikimedia Commons', val: 2, grup: g })
+      latime: c.latime, inaltime: c.inaltime, octeti: c.octeti,
+      sursa: 'Wikimedia Commons', val: 2, grup: g })
   }
   if (lipsa) console.error(`${lipsa} poziții nerezolvate`)
+  /* Numele fisierului local se calculeaza din numele sursei, nu din pozitia in
+     lista: asa, cand scoatem sau adaugam o ilustratie, restul descarcarilor
+     raman valabile. */
   return out.map((m, i) => ({ ...m, n: i + 1,
-    local: `ilustratii/mari/${String(i + 1).padStart(3, '0')}-${m.cap}.jpg` }))
+    local: `ilustratii/mari/${m.cap}-${createHash('sha1').update(m.fisier).digest('hex').slice(0, 10)}.jpg` }))
 }
 
 if (process.argv[1]?.endsWith('program2.mjs')) {
@@ -53,25 +81,31 @@ if (process.argv[1]?.endsWith('program2.mjs')) {
   console.log(Object.entries(dupa).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k}:${v}`).join('  '))
 
   const de_la = Number(process.argv[2] || 1), pana = Number(process.argv[3] || man.length)
-  /* serverul da 429 cand cererile vin prea des: se asteapta si se reia */
-  const asteapta = (ms) => execFileSync('sleep', [String(ms / 1000)])
-  let ok = 0, rau = []
+  /* Commons raspunde 429 cand cererile vin prea des de pe acelasi IP.
+     Ritmul se regleaza singur: creste pauza la refuz, o scade la reusita. */
+  const dormi = (s) => execFileSync('sleep', [String(s.toFixed(2))])
+  let pauza = 1.5, ok = 0, rau = []
   for (const m of man) {
     if (m.n < de_la || m.n > pana) continue
     const dest = RAD + m.local
-    if (existsSync(dest) && statSync(dest).size > 60000) { ok++; continue }
+    if (existsSync(dest) && statSync(dest).size > 40000) { ok++; continue }
     let izbandit = false
-    for (let incercare = 0; incercare < 5 && !izbandit; incercare++) {
-      if (incercare) asteapta(3000 * 2 ** (incercare - 1))
+    for (let i = 0; i < 4 && !izbandit; i++) {
+      dormi(pauza)
+      let cod = '000', dim = 0
       try {
-        const cod = execFileSync('curl', ['-sSL', '--max-time', '180', '-A', UA, '-w', '%{http_code}',
-          '-o', dest, adresaFisier(m.fisier, LAT)], { stdio: ['pipe', 'pipe', 'pipe'] }).toString().trim()
-        const dim = existsSync(dest) ? statSync(dest).size : 0
-        if (cod === '200' && dim > 60000) {
-          izbandit = true; ok++
-          console.log(`✓ ${String(m.n).padStart(3)} ${m.cap.padEnd(13)} ${(dim / 1024).toFixed(0).padStart(5)} KB${incercare ? ' (reluat)' : ''}`)
-        } else if (cod !== '429') { console.log(`✗ ${String(m.n).padStart(3)} ${m.cap.padEnd(13)} cod ${cod}`); break }
-      } catch (e) { console.log(`✗ ${m.n} ${m.cap} — ${String(e).slice(0, 50)}`); break }
+        /* daca originalul e deja mai mic decat treapta, se cere treapta de sub el */
+        const lat = (m.latime && m.latime < LAT) ? (m.latime < 960 ? 500 : m.latime < 1280 ? 960 : 1280) : LAT
+        cod = execFileSync('curl', ['-sSL', '--max-time', '180', '-A', UA, '-w', '%{http_code}',
+          '-o', dest, adresaFisier(m.fisier, lat)], { stdio: ['pipe', 'pipe', 'pipe'] }).toString().trim()
+        dim = existsSync(dest) ? statSync(dest).size : 0
+      } catch (e) { cod = 'err' }
+      if (cod === '200' && dim > 40000) {
+        izbandit = true; ok++; pauza = Math.max(1.5, pauza * 0.8)
+        console.log(`\u2713 ${String(m.n).padStart(3)} ${m.cap.padEnd(13)} ${(dim / 1024).toFixed(0).padStart(5)} KB` +
+          `${i ? ' (' + (i + 1) + ' incercari)' : ''}  ritm ${pauza.toFixed(1)}s`)
+      } else if (cod === '429') { pauza = Math.min(18, pauza * 1.6 + 1) }
+      else { console.log(`\u2717 ${String(m.n).padStart(3)} ${m.cap.padEnd(13)} cod ${cod}, ${(dim / 1024).toFixed(0)} KB`); break }
     }
     if (!izbandit) rau.push(m.n)
   }

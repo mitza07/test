@@ -12,18 +12,32 @@ const RAD = new URL('./', import.meta.url).pathname
 const UA = 'IstoriaRomaniei-carte/1.0 (contact: mitza0704@gmail.com)'
 const API = 'https://commons.wikimedia.org/w/api.php'
 
+/* Commons raspunde cu text simplu, nu JSON, cand se depaseste rata permisa pe
+   API. Fara verificarea asta, raspunsul pica la JSON.parse si cautarea pare doar
+   sa nu fi gasit nimic — cea mai perfida forma de esec. Aici se astepta si se
+   reia, iar ritmul de baza creste dupa fiecare refuz. */
+let pauzaApi = 0.25
 export const json = (params) => {
   const u = API + '?' + new URLSearchParams({ format: 'json', formatversion: '2', ...params })
-  for (let i = 0; i < 4; i++) {
-    try { return JSON.parse(execFileSync('curl', ['-sS', '--max-time', '60', '-A', UA, u], { maxBuffer: 128e6 }).toString()) }
-    catch (e) { if (i === 3) return null }
+  for (let i = 0; i < 6; i++) {
+    try { execFileSync('sleep', [String(pauzaApi.toFixed(2))]) } catch {}
+    let brut = ''
+    try { brut = execFileSync('curl', ['-sS', '--max-time', '60', '-A', UA, u], { maxBuffer: 128e6 }).toString() }
+    catch { continue }
+    if (/^\s*[[{]/.test(brut)) {
+      try { const r = JSON.parse(brut); pauzaApi = Math.max(0.25, pauzaApi * 0.85); return r } catch {}
+    }
+    if (/too many requests/i.test(brut)) pauzaApi = Math.min(20, pauzaApi * 2 + 0.5)
   }
+  console.error(`  API refuză (ritm ${pauzaApi.toFixed(1)}s): ${params.gcmtitle || params.gsrsearch || ''}`)
   return null
 }
 
+/* Fara latime se ia originalul, ceea ce scuteste serverul de generarea unei
+   miniaturi — tocmai operatia pe care Commons o limiteaza cel mai strans. */
 export const adresaFisier = (nume, latime = 2000) =>
   'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/' +
-  encodeURIComponent(nume.replace(/ /g, '_')) + '&width=' + latime
+  encodeURIComponent(nume.replace(/ /g, '_')) + (latime ? '&width=' + latime : '')
 
 const curata = (h) => String(h || '').replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&')
   .replace(/&quot;/g, '"').replace(/&#0?39;/g, "'").replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim()

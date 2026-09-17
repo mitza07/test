@@ -98,13 +98,51 @@ function diagrama(cheie) {
 </div></figure>`
 }
 
+/* ---------------------------------------------------------------------------
+   Ilustratiile de arhiva. In pagina web nu se incarca fisierele in document —
+   ar insemna sute de megaocteti — ci se cer de la Commons prin Special:FilePath,
+   la o latime standard, singura pe care serverul o serveste direct.
+   --------------------------------------------------------------------------- */
+const ILUSTRATII = (() => {
+  const cale = new URL('../carte/ilustratii/manifest.json', import.meta.url)
+  let man = []
+  try { man = JSON.parse(readFileSync(cale, 'utf8')) } catch { return {} }
+  const pe = {}
+  for (const m of man) (pe[m.cap] = pe[m.cap] || []).push(m)
+  return pe
+})()
+const LATIMI = [500, 960, 1280, 1920]
+const adresaCommons = (nume, lat) =>
+  'https://commons.wikimedia.org/wiki/Special:FilePath/' +
+  encodeURIComponent(String(nume).replace(/ /g, '_')) + '?width=' + lat
+let nrIl = 0
+function figuraIlustratie(m) {
+  const n = ++nrIl
+  const lat = LATIMI.filter((x) => !m.latime || x <= Math.max(m.latime, 500))
+  const set = (lat.length ? lat : [500]).map((x) => `${adresaCommons(m.fisier, x)} ${x}w`).join(', ')
+  const credit = [m.autor, m.data, m.sursa, /domeniu public/i.test(m.tipLicenta) ? 'domeniu public' : m.licenta]
+    .filter(Boolean).join(' · ')
+  return `<figure class="ilustratie" id="il-${n}">
+<a href="${esc(m.pagina)}" target="_blank" rel="noopener"><img loading="lazy" decoding="async"
+ src="${esc(adresaCommons(m.fisier, 960))}" srcset="${esc(set)}"
+ sizes="(max-width: 700px) 92vw, 640px" alt="${esc(m.legenda)}"/></a>
+<figcaption><b>Ilustrația ${n}.</b> ${esc(m.legenda)}<small>${esc(credit)}</small></figcaption>
+</figure>`
+}
+
 function corpCapitol(c) {
   const p = []
   if (c.rezumat) p.push(`<p class="cap-rezumat">${esc(c.rezumat)}</p>`)
-  ;(c.sectiuni || []).forEach((s) => {
+  const poze = ILUSTRATII[c.id] || []
+  const sec = c.sectiuni || []
+  const intre = sec.length > 1 ? Math.floor(poze.length / sec.length) : 0
+  let k = 0
+  sec.forEach((s, i) => {
     p.push(`<section class="sectiune"><h3>${esc(s.subtitlu)}</h3><div class="proza">` +
       (s.paragrafe || []).map((x) => `<p>${esc(x)}</p>`).join('') + `</div></section>`)
+    if (i < sec.length - 1) { p.push(poze.slice(k, k + intre).map(figuraIlustratie).join('')); k += intre }
   })
+  p.push(poze.slice(k).map(figuraIlustratie).join(''))
   return p.join('')
 }
 
@@ -192,6 +230,17 @@ ${dia}
 </article>`
   }).join('')
 
+  /* plansa cartografica: hartile vechi, adunate la sfarsit, ca izvoare */
+  const atlas = ILUSTRATII.atlas || []
+  const plansaAtlas = atlas.length ? `<article class="capitol" id="atlas">
+<header class="cap-cap"><div class="cap-meta">
+<span class="cap-per">Planșă cartografică</span>
+<span class="cap-durata">1513 – 1920</span>
+</div><h2 class="cap-titlu">Cum a fost desenat acest pământ</h2></header>
+<div class="corp"><p class="cap-rezumat">Hărțile de mai jos nu sunt ilustrații ale textului, ci izvoare în sine. Fiecare arată nu numai un teritoriu, ci și ce știa și ce voia să arate cel care a desenat-o: un cartograf venețian de secol XVI care nu văzuse niciodată Carpații, un geograf grec care pregătea o insurecție, un statistician maghiar care apăra la Paris hotarele unui regat pe cale să dispară.</p>
+${atlas.map(figuraIlustratie).join('')}</div>
+</article>` : ''
+
   return `<title>Istoria României</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -249,6 +298,7 @@ ${dia}
     </section>
     ${corpCapitole}
     ${corpTeme}
+    ${plansaAtlas}
   </div>
 </main>
 

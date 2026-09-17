@@ -83,7 +83,7 @@ if (process.argv[1]?.endsWith('planse.mjs')) {
   for (const c of lista) {
     const sigur = c.fisier.replace(/[^\w.-]/g, '_').slice(0, 80)
     const dest = `${MINI}/${grup}-${sigur}.jpg`
-    if (ia(c.fisier, dest, 500)) bune.push({ ...c, cale: dest })
+    if (ia(c.fisier, dest, 500)) bune.push({ ...c, cale: dest })  /* 500 e treapta standard Commons */
   }
   writeFileSync(RAD + `ilustratii/lista-${grup}.json`, JSON.stringify(bune.map((b, i) => ({ i, ...b, cale: undefined })), null, 1))
   const PER = 30

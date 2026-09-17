@@ -321,3 +321,22 @@ th { font-family: var(--sans); font-size: 11px; letter-spacing: .09em; text-tran
   color: var(--muted); background: var(--surface2); font-weight: 600; }
 td.num { font-variant-numeric: tabular-nums; font-family: var(--sans); }
 tbody tr:last-child td { border-bottom: 0; }
+
+/* --------------------- ilustratiile de arhiva ---------------------------- */
+.ilustratie {
+  margin: 2.6rem 0 0; background: var(--surface);
+  border: 1px solid var(--rule); border-radius: 3px; overflow: hidden;
+}
+.ilustratie a { display: block; line-height: 0; background: #111; }
+.ilustratie img {
+  display: block; width: 100%; height: auto; max-height: 76vh;
+  object-fit: contain; background: #111;
+}
+.ilustratie figcaption small {
+  display: block; margin-top: .45rem; font-size: 11px; color: var(--muted);
+  font-style: italic; opacity: .85;
+}
+.ilustratie a:hover img { filter: brightness(1.06); }
+@media (prefers-reduced-motion: no-preference) {
+  .ilustratie img { transition: filter .2s ease; }
+}

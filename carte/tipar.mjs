@@ -39,7 +39,9 @@ function figuraIlustratie(m) {
   const n = ++nrIl
   const id = 'il' + n
   ilustratiiFolosite.push({ ...m, n, id })
-  return `<figure class="ilustratie" id="${id}">
+  /* imaginile late umplu oglinda; cele inalte sunt limitate pe inaltime */
+  const lata = m.latime && m.inaltime && m.latime / m.inaltime > 1.28
+  return `<figure class="ilustratie${lata ? ' lata' : ''}" id="${id}">
 <img src="ilustratii/tipar/${m.local.split('/').pop()}" alt="${esc(m.legenda)}"/>
 <figcaption><span class="fig-nr">Ilustrația ${n}</span>${esc(m.legenda)}
 <span class="credit">${esc(creditScurt(m))}</span></figcaption>
@@ -195,14 +197,31 @@ function aparat(c, termeni) {
 }
 
 /* ========================================================================== */
+/* ---------------------------------------------------------------------------
+   Volumele. La 6x9 inch, KDP nu leaga peste 828 de pagini, indiferent de hartie
+   si de cerneala; cu peste doua sute de ilustratii, cartea trece de 870. Taietura
+   cade unde o cere si structura: Partea intai, cronologia, intr-un volum; Partea
+   a doua, privirile transversale si plansa cartografica, in celalalt.
+   volum: 0 = totul intr-un fisier (pentru ecran), 1 sau 2 = volumul tiparit.
+   --------------------------------------------------------------------------- */
+const TITLU_VOLUM = {
+  1: ['Volumul I', 'Cronologia', 'de la 1000 î.Hr. până azi'],
+  2: ['Volumul II', 'Priviri transversale', 'și atlasul hărților vechi'],
+}
+
 export function construiesteTipar(continut, optiuni = {}) {
   nrFig = 0; nrAncora = 0; figuriLista.length = 0; ancore.length = 0
   nrIl = 0; ilustratiiFolosite.length = 0
+  const volum = Number(optiuni.volum || 0)
   const capById = Object.fromEntries((continut.capitole || []).map((c) => [c.id, c]))
   const temeById = Object.fromEntries((continut.teme || []).map((c) => [c.id, c]))
-  const cap = PLAN.map((pl) => ({ ...pl, ...(capById[pl.id] || {}) })).filter((c) => c.sectiuni?.length)
-  const teme = PLAN_TEME.map((pl) => ({ ...pl, titlu: TEME_TITLU[pl.id], ...(temeById[pl.id] || {}) })).filter((c) => c.sectiuni?.length)
-  const termeni = culegeTermeni([...cap, ...teme])
+  const totCap = PLAN.map((pl) => ({ ...pl, ...(capById[pl.id] || {}) })).filter((c) => c.sectiuni?.length)
+  const totTeme = PLAN_TEME.map((pl) => ({ ...pl, titlu: TEME_TITLU[pl.id], ...(temeById[pl.id] || {}) })).filter((c) => c.sectiuni?.length)
+  const cap = volum === 2 ? [] : totCap
+  const teme = volum === 1 ? [] : totTeme
+  /* termenii indicelui se culeg din tot volumul dublu: un nume care apare in
+     amandoua partile trebuie marcat la fel in amandoua */
+  const termeni = culegeTermeni([...totCap, ...totTeme])
 
   /* corpul se compune intai, ca sa se numere figurile si sa se aseze ancorele */
   const corpCap = cap.map((c, i) => `<article class="capitol" id="${c.id}">
@@ -229,13 +248,14 @@ ${aparat(c, termeni)}
 </article>`).join('')
 
   /* cuprins */
-  const cuprins = `<div class="grup">Partea întâi · Cronologia</div><ol>` +
+  const cuprins = (cap.length ? `<div class="grup">Partea întâi · Cronologia</div><ol>` +
     cap.map((c, i) => `<li><span class="nr">${ROMAN[i + 1]}</span><span class="tit">${esc(c.titlu)}</span>
 <span class="per">${esc(c.per)}</span><span class="pct"></span><a class="pg" href="#${c.id}"></a></li>`).join('') +
-    `</ol><div class="grup">Partea a doua · Priviri transversale</div><ol>` +
+    `</ol>` : '') +
+    (teme.length ? `<div class="grup">Partea a doua · Priviri transversale</div><ol>` +
     teme.map((c) => `<li class="fara-nr"><span class="nr"></span><span class="tit">${esc(c.titlu)}</span>
-<span class="pct"></span><a class="pg" href="#${c.id}"></a></li>`).join('') +
-    `</ol><div class="grup">Material final</div><ol>` +
+<span class="pct"></span><a class="pg" href="#${c.id}"></a></li>`).join('') + `</ol>` : '') +
+    `<div class="grup">Material final</div><ol>` +
     [['lista-figuri', 'Lista hărților și a diagramelor'], ['indice', 'Indice de nume și locuri'], ['nota-metoda', 'Notă asupra metodei']]
       .map(([id, t]) => `<li class="fara-nr"><span class="nr"></span><span class="tit">${esc(t)}</span>
 <span class="pct"></span><a class="pg" href="#${id}"></a></li>`).join('') + `</ol>`
@@ -257,13 +277,13 @@ ${aparat(c, termeni)}
 </head><body>
 <div style="string-set: titlu-carte '${TITLU.toUpperCase()}'; height:0"></div>
 
-<section class="semititlu"><h1>${esc(TITLU)}</h1></section>
+<section class="semititlu"><h1>${esc(TITLU)}</h1>${volum ? `<div class="semi-vol">${esc(TITLU_VOLUM[volum][0])} · ${esc(TITLU_VOLUM[volum][1])}</div>` : ''}</section>
 <section class="alba"></section>
 
 <section class="foaie-titlu">
-  <div class="supra">Volum enciclopedic ilustrat</div>
+  <div class="supra">${volum ? esc(TITLU_VOLUM[volum][0]) + ' din două' : 'Volum enciclopedic ilustrat'}</div>
   <h1>${esc(TITLU)}</h1>
-  <div class="subtitlu">${esc(SUBTITLU)}</div>
+  <div class="subtitlu">${esc(volum ? TITLU_VOLUM[volum][1] + ' — ' + TITLU_VOLUM[volum][2] : SUBTITLU)}</div>
   <div class="rigla-titlu"></div>
   <div class="jos">${AN}</div>
 </section>
@@ -297,6 +317,7 @@ ${aparat(c, termeni)}
 ${corpCap}
 ${corpTeme}
 
+${volum === 1 ? '' : `
 <section class="capitol" id="atlas-vechi">
 <header class="cap-cap">
 <div class="cap-nr">Plansa cartografica</div>
@@ -305,13 +326,14 @@ ${corpTeme}
 </header>
 <div class="corp"><p class="cap-rezumat">Hărțile de mai jos nu sunt ilustrații ale textului, ci izvoare în sine. Fiecare arată nu numai un teritoriu, ci și ce știa și ce voia să arate cel care a desenat-o: un cartograf venețian de secol XVI care nu văzuse niciodată Carpații, un geograf grec care pregătea o insurecție, un statistician maghiar care apăra la Paris hotarele unui regat pe cale să dispară.</p></div>
 ${ilustratiile('atlas')}
+</section>`}
+
 <section class="anexa" id="lista-figuri">
   <h2>Lista hărților și a ilustrațiilor</h2>
   <div class="lista-figuri">${listaFig}</div>
   <h3>Proveniența ilustrațiilor</h3>
   <div class="proveniente">${ilustratiiFolosite.map((m) =>
     `<p><b>Ilustrația ${m.n}.</b> ${esc(m.legenda.slice(0, 90))}… ${esc(m.autor || '')}${m.data ? ', ' + esc(m.data) : ''}. ${esc(m.sursa)}, ${esc(/domeniu public/i.test(m.tipLicenta) ? 'domeniu public' : m.licenta)}. ${esc(m.pagina)}</p>`).join('')}</div>
-</section>
 </section>
 
 <section class="anexa" id="indice">
@@ -355,7 +377,9 @@ ${ilustratiile('atlas')}
 if (process.argv[1] && process.argv[1].endsWith('tipar.mjs')) {
   const continut = JSON.parse(readFileSync(new URL('../build/continut.json', import.meta.url), 'utf8'))
   const color = process.argv.includes('--color')
-  const { html, ancore: a, figuri } = construiesteTipar(continut, { color })
-  writeFileSync(new URL(color ? './tipar-color.html' : './tipar-ab.html', import.meta.url), html)
-  console.log(`${(html.length / 1024).toFixed(0)} KB · ${figuri.length} figuri · ${a.length} ancore de indice`)
+  const volum = Number((process.argv.find((x) => x.startsWith('--volum=')) || '').split('=')[1] || 0)
+  const { html, ancore: a, figuri } = construiesteTipar(continut, { color, volum })
+  const nume = `./tipar-${volum ? 'v' + volum + '-' : ''}${color ? 'color' : 'ab'}.html`
+  writeFileSync(new URL(nume, import.meta.url), html)
+  console.log(`${nume.slice(2)} · ${(html.length / 1024).toFixed(0)} KB · ${figuri.length} figuri · ${a.length} ancore`)
 }

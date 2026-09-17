@@ -68,9 +68,35 @@ Format ales: **6 × 9 inch** (15,24 × 22,86 cm) — singura dimensiune disponib
 | Parametru | Cerință KDP | Ce am pus |
 |---|---|---|
 | Margine interioară (cotor), 301–500 pag. | min. 0,625″ / 15,9 mm | 19 mm |
+| Margine interioară, 501–700 pag. | min. 0,75″ / 19,1 mm | 19 mm |
 | Margini exterioare, fără bleed | min. 0,25″ / 6,4 mm | 15–20 mm |
 | Bleed (dacă e nevoie) | 0,125″ / 3,2 mm | doar la copertă |
-| Număr de pagini | 24–828 | ~380 |
+
+### Limita de pagini decide ce ediție color poți face
+
+Numărul maxim de pagini la 6 × 9 inch depinde de cerneală și de hârtie:
+
+| Cerneală și hârtie | Interval |
+|---|---|
+| Negru pe hârtie albă | 24 – 828 |
+| Negru pe hârtie crem | 24 – 776 |
+| **Color standard, hârtie albă** | **72 – 600** |
+| Color premium, hârtie albă | 24 – 828 |
+
+Asta e constrângerea reală a volumului. Cu peste două sute de ilustrații, ediția
+depășește 600 de pagini, deci **color standard nu mai e disponibil**. Rămân trei
+variante, în ordinea în care le-aș încerca:
+
+1. **Color premium** — merge până la 828 de pagini, redă cel mai bine hărțile vechi
+   și fotografia de epocă, dar costul pe exemplar e de câteva ori mai mare, iar
+   prețul de vânzare trebuie să-l acopere.
+2. **Două volume** — se taie între Partea întâi (cronologia) și Partea a doua
+   (privirile transversale), fiecare volum sub 600 de pagini, ambele în color
+   standard. E soluția care iese cel mai ieftin la tiraj mare.
+3. **Ediția alb-negru** — 828 de pagini disponibile, cel mai mic cost. Machetele
+   sunt deja identice ca paginație, așa că ambele ediții pot merge în paralel.
+
+Paginile exacte, calculate după machetare, sunt în secțiunea de la sfârșit.
 
 ### Coperta
 

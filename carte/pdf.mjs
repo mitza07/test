@@ -13,7 +13,9 @@ import { COMPLETEAZA_CAPETE } from './capete.mjs'
 const RAD = new URL('./', import.meta.url).pathname
 const POLYFILL = RAD + 'node_modules/pagedjs/dist/paged.polyfill.js'
 const color = process.argv.includes('--color')
-const eticheta = color ? 'color' : 'alb-negru'
+/* --volum=1 sau --volum=2 scoate tomul respectiv; fara el, cartea intreaga */
+const volum = Number((process.argv.find((x) => x.startsWith('--volum=')) || '').split('=')[1] || 0)
+const eticheta = (volum ? `vol${volum}-` : '') + (color ? 'color' : 'alb-negru')
 
 const continut = JSON.parse(readFileSync(RAD + '../build/continut.json', 'utf8'))
 
@@ -91,7 +93,7 @@ const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromi
 console.log(`ediția ${eticheta}`)
 
 /* --- trecerea I: aflam paginile ancorelor --------------------------------- */
-const p1 = construiesteTipar(continut, { color })
+const p1 = construiesteTipar(continut, { color, volum })
 console.log(`  trecerea I: ${p1.ancore.length} ancore, se paginează…`)
 const r1 = await pagineaza(browser, p1.html, `.lucru-1-${eticheta}.html`)
 console.log(`  trecerea I: ${r1.date.pagini} pagini, ${r1.date.ancore.length} ancore localizate`)
@@ -109,7 +111,7 @@ const { html: indiceHtml, nrTermeni } = compuneIndice(perTermen)
 console.log(`  indice: ${nrTermeni} intrări`)
 
 /* --- trecerea a II-a: cu indicele complet ---------------------------------- */
-const p2 = construiesteTipar(continut, { color, indice: indiceHtml })
+const p2 = construiesteTipar(continut, { color, volum, indice: indiceHtml })
 const r2 = await pagineaza(browser, p2.html, `.lucru-2-${eticheta}.html`)
 console.log(`  trecerea a II-a: ${r2.date.pagini} pagini`)
 
