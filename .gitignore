@@ -15,3 +15,5 @@ carte/.lucru-*.html
 carte/tipar-*.html
 carte/.coperta.html
 carte/.log-*.txt
+carte/ilustratii/tipar/
+carte/.paginatie-*.json

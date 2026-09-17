@@ -40,7 +40,7 @@ function figuraIlustratie(m) {
   const id = 'il' + n
   ilustratiiFolosite.push({ ...m, n, id })
   return `<figure class="ilustratie" id="${id}">
-<img src="${m.local}" alt="${esc(m.legenda)}"/>
+<img src="ilustratii/tipar/${m.local.split('/').pop()}" alt="${esc(m.legenda)}"/>
 <figcaption><span class="fig-nr">Ilustrația ${n}</span>${esc(m.legenda)}
 <span class="credit">${esc(creditScurt(m))}</span></figcaption>
 </figure>`
