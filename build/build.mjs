@@ -4,6 +4,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs'
 import { HARTI } from './harti.mjs'
 import { cronograma, diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagramaEtnic } from './diagrame.mjs'
+import { bandaCronologica } from './cronograf.mjs'
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
@@ -134,9 +135,17 @@ function figuraIlustratie(m) {
 </figure>`
 }
 
+/* banda cronologica de la deschiderea capitolului */
+function bandaCap(c) {
+  const b = bandaCronologica(c, { de: -6000, la: 2026 })
+  if (!b) return ''
+  return `<figure class="banda-cron"><svg viewBox="${b.vb}" role="img" aria-label="Reperele capitolului, la scară" preserveAspectRatio="xMidYMid meet">${b.body}</svg></figure>`
+}
+
 function corpCapitol(c) {
   const p = []
   if (c.rezumat) p.push(`<p class="cap-rezumat">${esc(c.rezumat)}</p>`)
+  p.push(bandaCap(c))
   const poze = ILUSTRATII[c.id] || []
   const sec = c.sectiuni || []
   const intre = sec.length > 1 ? Math.floor(poze.length / sec.length) : 0

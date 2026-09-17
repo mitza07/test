@@ -340,3 +340,21 @@ tbody tr:last-child td { border-bottom: 0; }
 @media (prefers-reduced-motion: no-preference) {
   .ilustratie img { transition: filter .2s ease; }
 }
+
+/* ------------------ banda cronologică de deschidere de capitol ------------ */
+.banda-cron { margin: 2rem 0 0; max-width: var(--masura); }
+.banda-cron svg { display: block; width: 100%; height: auto; }
+.cg-ax { stroke: var(--ink); stroke-width: .32; }
+.cg-grad { stroke: var(--muted); stroke-width: .22; }
+.cg-an { font-family: var(--sans); font-size: 3.1px; fill: var(--muted);
+  font-variant-numeric: tabular-nums; }
+.cg-trim { stroke: var(--muted); stroke-width: .16; }
+.cg-pct { fill: var(--ink); }
+.cg-pct-gol { fill: var(--surface); stroke: var(--ink); stroke-width: .3; }
+.cg-durata { fill: var(--ink); opacity: .15; }
+.cg-data { font-family: var(--sans); font-size: 3px; font-weight: 600;
+  fill: var(--ink); font-variant-numeric: tabular-nums; }
+.cg-ctx { fill: var(--muted); opacity: .22; }
+.cg-ctx-cap { fill: var(--chinovar); }
+.cg-lupa { fill: none; stroke: var(--muted); stroke-width: .16; stroke-dasharray: .8 .7; }
+.cg-mic { font-family: var(--sans); font-size: 2.8px; fill: var(--muted); }

@@ -43,3 +43,6 @@
 .d-pct   { fill: #1d5a8c; }
 .d-marc  { stroke: #9e2f18; }
 .d-et-marc { fill: #9e2f18; }
+
+/* în ediția color, fereastra capitolului de pe banda cronologică e chinovar */
+.cg-ctx-cap { fill: #a6321c; }

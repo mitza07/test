@@ -6,6 +6,7 @@ import { readFileSync, writeFileSync } from 'fs'
 import { HARTI } from '../build/harti.mjs'
 import { cronograma, diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagramaEtnic } from '../build/diagrame.mjs'
 import { PLAN, PLAN_TEME } from '../build/build.mjs'
+import { bandaCronologica } from '../build/cronograf.mjs'
 import { readFileSync as citeste, existsSync as exista, statSync as stat } from 'fs'
 
 /* --- ilustratiile de arhiva ---------------------------------------------- */
@@ -56,6 +57,14 @@ function figuraIlustratie(m) {
 const ilustratiile = (cap) => (ILUSTRATII[cap] || []).map(figuraIlustratie).join('')
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+/* Intervalul acoperit de volum, pentru strip-ul de context al fiecarei benzi */
+const VOLUM_DE = -6000, VOLUM_LA = 2026
+function figuraBanda(c) {
+  const b = bandaCronologica(c, { de: VOLUM_DE, la: VOLUM_LA })
+  if (!b) return ''
+  return `<figure class="banda-cron"><svg viewBox="${b.vb}" role="img" aria-label="Reperele capitolului, la scară" preserveAspectRatio="xMidYMid meet">${b.body}</svg></figure>`
+}
+
 const ROMAN = ['', 'I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII',
   'XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV',
   'XXV','XXVI','XXVII','XXVIII','XXIX','XXX']
@@ -193,8 +202,12 @@ function aparat(c, termeni) {
 <div class="pers-rol">${esc(x.rol)}</div><p>${marcheaza(esc(x.descriere), termeni)}</p></div>`).join('') + `</div>`)
   }
   if (c.cronologie && c.cronologie.length) {
-    p.push(`<div class="cronologie"><div class="cap-mic">Repere</div><dl class="cron-lista">` +
-      c.cronologie.map((x) => `<dt>${esc(x.an)}</dt><dd>${marcheaza(esc(x.eveniment), termeni)}</dd>`).join('') + `</dl></div>`)
+    /* Nu grid: Paged.js nu pastreaza atribuirea pe coloane cand grila se rupe
+       peste pagina — perechile se decaleaza cu o celula si anul ajunge in
+       coloana larga, iar textul in cea ingusta. Alineat atarnat, care se
+       fragmenteaza corect fiindca e simplu text curgator. */
+    p.push(`<div class="cronologie"><div class="cap-mic">Repere</div><div class="cron-lista">` +
+      c.cronologie.map((x) => `<p class="cron-r"><b>${esc(x.an)}</b>${marcheaza(esc(x.eveniment), termeni)}</p>`).join('') + `</div></div>`)
   }
   if (c.controversa) {
     p.push(`<div class="controversa"><div class="cap-mic">Dispută istoriografică</div><p>${marcheaza(esc(c.controversa), termeni)}</p></div>`)
@@ -236,6 +249,7 @@ export function construiesteTipar(continut, optiuni = {}) {
 <h2 class="cap-titlu">${esc(c.titlu)}</h2>
 <div class="cap-per">${esc(c.per)}</div>
 </header>
+${figuraBanda(c)}
 ${corp(c, termeni, ILUSTRATII[c.id] || [])}
 ${(c.harti || []).map(figuraHarta).join('')}
 ${(c.diagrame || []).map(figuraDiagrama).join('')}
@@ -248,6 +262,7 @@ ${aparat(c, termeni)}
 <h2 class="cap-titlu">${esc(c.titlu)}</h2>
 <div class="cap-per">de la antichitate până azi</div>
 </header>
+${figuraBanda(c)}
 ${corp(c, termeni, ILUSTRATII[c.id] || [])}
 ${(c.diagrame || []).map(figuraDiagrama).join('')}
 ${aparat(c, termeni)}

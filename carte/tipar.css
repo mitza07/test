@@ -268,13 +268,18 @@ figcaption b { color: var(--negru); font-weight: 600; }
   font-size: 8.8pt; margin-bottom: .8mm; }
 
 .cronologie { margin: 6mm 0; }
-.cron-lista { display: grid; grid-template-columns: 26mm 1fr; gap: 0 3.5mm; margin: 0; }
-.cron-lista dt { font-family: var(--sans); font-size: 8.2pt; font-weight: 600;
-  font-variant-numeric: tabular-nums; padding: 1.5mm 0; border-top: .4pt solid #ddd;
-  text-align: right; }
-.cron-lista dd { margin: 0; padding: 1.5mm 0; border-top: .4pt solid #ddd;
-  font-size: 8.6pt; line-height: 11.6pt; text-align: left; }
-.cron-lista dt:first-of-type, .cron-lista dd:first-of-type { border-top: .6pt solid var(--negru); }
+.cron-lista { margin: 0; }
+/* Anul e flotat in adancitura din stanga, nu inline-block: asa, cand data e
+   lunga si ocupa doua randuri, textul evenimentului curge in continuare
+   alaturi de ea, in loc sa fie impins sub ea. */
+.cron-r { margin: 0; padding: 1.5mm 0 1.5mm 29.5mm;
+  border-top: .4pt solid #ddd; font-size: 8.6pt; line-height: 11.6pt;
+  text-align: left; hyphens: none; break-inside: avoid; }
+.cron-r::after { content: ""; display: block; clear: left; }
+.cron-r:first-child { border-top: .6pt solid var(--negru); }
+.cron-r b { float: left; width: 26mm; margin-left: -29.5mm; text-align: right;
+  font-family: var(--sans); font-size: 8.2pt; font-weight: 600;
+  font-variant-numeric: tabular-nums; line-height: 11.6pt; }
 
 .controversa { margin: 6mm 0; padding: 3.4mm 4mm; border: .5pt solid var(--rigla);
   break-inside: avoid; font-size: 8.8pt; line-height: 12pt; }
@@ -345,3 +350,22 @@ figcaption { break-inside: avoid; page-break-inside: avoid; }
   letter-spacing: .18em; text-transform: uppercase; color: var(--gri-45); }
 /* figura ingusta se centreaza in oglinda, cu tot cu legenda ei */
 .ilustratie.ingusta { margin-left: auto; margin-right: auto; }
+
+/* ------------------ banda cronologică de deschidere de capitol ------------ */
+.banda-cron { margin: 4mm 0 6mm; break-inside: avoid; }
+.banda-cron svg { display: block; width: 100%; height: auto; }
+.cg-ax { stroke: var(--negru); stroke-width: .32; }
+.cg-grad { stroke: var(--gri-45); stroke-width: .22; }
+.cg-an { font-family: var(--sans); font-size: 3.1px; fill: var(--gri-45);
+  font-variant-numeric: tabular-nums; }
+.cg-trim { stroke: var(--gri-45); stroke-width: .16; }
+.cg-pct { fill: var(--negru); }
+.cg-pct-gol { fill: #fff; stroke: var(--negru); stroke-width: .3; }
+.cg-durata { fill: var(--negru); opacity: .15; }
+.cg-data { font-family: var(--sans); font-size: 3px; font-weight: 600;
+  fill: var(--negru); font-variant-numeric: tabular-nums; }
+.cg-ctx { fill: var(--gri-45); opacity: .2; }
+.cg-ctx-cap { fill: var(--gri-70); }
+.cg-lupa { fill: none; stroke: var(--gri-45); stroke-width: .16; stroke-dasharray: .8 .7; }
+.cg-mic { font-family: var(--sans); font-size: 2.8px; fill: var(--gri-45); }
+
