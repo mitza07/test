@@ -49,7 +49,8 @@ const ilustratiile = (cap) => (ILUSTRATII[cap] || []).map(figuraIlustratie).join
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 const ROMAN = ['', 'I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII',
-  'XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII']
+  'XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV',
+  'XXV','XXVI','XXVII','XXVIII','XXIX','XXX']
 
 const TITLU = 'Istoria României'
 const SUBTITLU = 'în 3.026 de ani'
@@ -150,13 +151,21 @@ function figuraDiagrama(cheie) {
 }
 
 /* --- corpul unei sectiuni ------------------------------------------------- */
-function corp(c, termeni) {
+/* Ilustratiile se intercaleaza intre sectiuni, nu se ingramadesc la coada
+   capitolului: dupa fiecare sectiune intra partea ei din teanc, iar restul
+   se aseaza la sfarsit. Plansa cartografica ramane un bloc compact. */
+function corp(c, termeni, poze = []) {
+  const sec = c.sectiuni || []
+  const intre = sec.length > 1 ? Math.floor(poze.length / sec.length) : 0
   const p = []
   if (c.rezumat) p.push(`<p class="cap-rezumat">${marcheaza(esc(c.rezumat), termeni)}</p>`)
-  for (const s of c.sectiuni || []) {
+  let k = 0
+  sec.forEach((s, i) => {
     p.push(`<section class="sectiune"><h3>${esc(s.subtitlu)}</h3><div class="proza">` +
       (s.paragrafe || []).map((x) => `<p>${marcheaza(esc(x), termeni)}</p>`).join('') + `</div></section>`)
-  }
+    if (i < sec.length - 1) { p.push(poze.slice(k, k + intre).map(figuraIlustratie).join('')); k += intre }
+  })
+  p.push(poze.slice(k).map(figuraIlustratie).join(''))
   return p.join('')
 }
 
@@ -202,8 +211,7 @@ export function construiesteTipar(continut, optiuni = {}) {
 <h2 class="cap-titlu">${esc(c.titlu)}</h2>
 <div class="cap-per">${esc(c.per)}</div>
 </header>
-${corp(c, termeni)}
-${ilustratiile(c.id)}
+${corp(c, termeni, ILUSTRATII[c.id] || [])}
 ${(c.harti || []).map(figuraHarta).join('')}
 ${(c.diagrame || []).map(figuraDiagrama).join('')}
 ${aparat(c, termeni)}
@@ -215,8 +223,7 @@ ${aparat(c, termeni)}
 <h2 class="cap-titlu">${esc(c.titlu)}</h2>
 <div class="cap-per">de la antichitate până azi</div>
 </header>
-${corp(c, termeni)}
-${ilustratiile(c.id)}
+${corp(c, termeni, ILUSTRATII[c.id] || [])}
 ${(c.diagrame || []).map(figuraDiagrama).join('')}
 ${aparat(c, termeni)}
 </article>`).join('')
@@ -297,7 +304,7 @@ ${corpTeme}
 <div class="cap-per">1513 – 1920</div>
 </header>
 <div class="corp"><p class="cap-rezumat">Hărțile de mai jos nu sunt ilustrații ale textului, ci izvoare în sine. Fiecare arată nu numai un teritoriu, ci și ce știa și ce voia să arate cel care a desenat-o: un cartograf venețian de secol XVI care nu văzuse niciodată Carpații, un geograf grec care pregătea o insurecție, un statistician maghiar care apăra la Paris hotarele unui regat pe cale să dispară.</p></div>
-${ilustratiile('harti')}
+${ilustratiile('atlas')}
 <section class="anexa" id="lista-figuri">
   <h2>Lista hărților și a ilustrațiilor</h2>
   <div class="lista-figuri">${listaFig}</div>

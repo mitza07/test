@@ -9,6 +9,7 @@ const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').
 
 /* --- planul volumului ---------------------------------------------------- */
 export const PLAN = [
+  { id: 'neolitic',     de: -6000, la: -1000, per: 'c. 6000 – 1000 î.Hr.', preludiu: true },
   { id: 'preistorie',   de: -1000, la: -514, per: 'c. 1000 – 514 î.Hr.' },
   { id: 'geti',         de: -514,  la: -300, per: '514 – 300 î.Hr.' },
   { id: 'burebista',    de: -300,  la: 87,   per: '300 î.Hr. – 87 d.Hr.', harti: ['daciaBurebista'] },
@@ -33,12 +34,23 @@ export const PLAN = [
   { id: 'contemporan',  de: 2007,  la: 2026, per: '2007 – 2026', harti: ['azi'] },
 ]
 export const PLAN_TEME = [
-  { id: 'limba',      diagrame: ['lexic'] },
+  { id: 'limba',        diagrame: ['lexic'] },
   { id: 'religie' },
-  { id: 'minoritati', diagrame: ['etnic'] },
+  { id: 'minoritati',   diagrame: ['etnic'] },
+  { id: 'evrei' },
+  { id: 'romi' },
+  { id: 'aromani' },
+  { id: 'moldova-rep' },
   { id: 'cultura' },
-  { id: 'economie',   diagrame: ['teritoriu'] },
+  { id: 'stiinta' },
+  { id: 'orase' },
+  { id: 'femei' },
+  { id: 'mancare' },
+  { id: 'boli' },
+  { id: 'sport' },
   { id: 'geografie' },
+  { id: 'mediu' },
+  { id: 'economie',     diagrame: ['teritoriu'] },
 ]
 
 const DIAG = { populatie: diagramaPopulatie, lexic: diagramaLexic, etnic: diagramaEtnic, teritoriu: diagramaTeritoriu }
@@ -136,13 +148,14 @@ export function construieste(continut) {
   const nrHarti = new Set(cap.flatMap((c) => c.harti || [])).size
 
   /* cronograma foloseste planul complet, ca scara sa nu sara intre versiuni */
-  const crono = cronograma(PLAN.map((p) => ({ ...p, titlu: (capById[p.id] || {}).titlu || p.id })))
+  const crono = cronograma(PLAN.filter((p) => !p.preludiu).map((p) => ({ ...p, titlu: (capById[p.id] || {}).titlu || p.id })))
 
   /* --- rail: inaltimi proportionale cu durata reala --------------------- */
   const A0 = -1000, A1 = 2026
   const rail = PLAN.map((p) => {
-    const top = ((p.de - A0) / (A1 - A0)) * 100
-    const h = ((Math.min(p.la, A1) - p.de) / (A1 - A0)) * 100
+    const de = Math.max(p.de, A0)
+    const top = ((de - A0) / (A1 - A0)) * 100
+    const h = p.preludiu ? 1.2 : ((Math.min(p.la, A1) - de) / (A1 - A0)) * 100
     const c = capById[p.id]
     return `<a class="rail-ep${h < 1.6 ? ' mic' : h < 5 ? ' fara-titlu' : ''}" href="#${p.id}" data-id="${p.id}" data-per="${esc(p.per)}" data-titlu="${esc((c || {}).titlu || '')}" style="top:${top.toFixed(3)}%;height:${h.toFixed(3)}%" title="${esc(p.per)} — ${esc((c || {}).titlu || '')}">
 <span><i>${esc(p.per)}</i><b>${esc((c || {}).titlu || '')}</b></span></a>`
