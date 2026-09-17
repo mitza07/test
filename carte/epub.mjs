@@ -85,7 +85,63 @@ dd { margin: 0.1em 0 0 0; font-size: 0.92em; text-align: left; }
 .caseta p { text-indent: 0; }
 .coperta { text-align: center; margin: 0; padding: 0; }
 .coperta img { max-width: 100%; height: auto; }
+.legenda-harta { text-indent: 0; text-align: left; font-size: 0.72em; line-height: 1.7;
+  color: #444; margin: 0.4em 0 0; }
+.legenda-harta span { margin-right: 1.1em; white-space: nowrap; }
+.legenda-harta i { display: inline-block; width: 1.5em; height: 0.72em; margin-right: 0.35em;
+  vertical-align: -0.08em; border: 1px solid #999; font-style: normal; }
+.legenda-harta i.simb { border: 0; width: auto; height: auto; }
+.legenda-harta i.lin { border: 0; border-top: 2px solid #a6321c; height: 0; vertical-align: 0.2em; }
+.legenda-harta i.lin-punct { border: 0; border-top: 2px dashed #a6321c; height: 0; vertical-align: 0.2em; }
 `
+
+
+/* --- stilul hartilor, diagramelor si benzilor cronologice ------------------
+   SVG-urile vin din atlas.js si din diagrame.mjs cu clase, nu cu culori scrise
+   in cale. Fara regulile lor, un cititor de carti electronice umple fiecare
+   cale cu negru: pana acum fiecare harta din EPUB era un dreptunghi negru.
+   Se scot deci regulile din foaia de stil a editiei de web si se pun aici, cu
+   variabilele deja rezolvate — unele cititoare nu le inteleg. */
+function stilulFigurilor(caleCss) {
+  let css = readFileSync(caleCss, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
+  /* intai se scot blocurile @media: ele poarta varianta intunecata */
+  let curat = '', adanc = 0
+  for (let i = 0; i < css.length; i++) {
+    if (css.startsWith('@media', i)) {
+      let j = css.indexOf('{', i), n = 0
+      do { if (css[j] === '{') n++; if (css[j] === '}') n--; j++ } while (n > 0 && j < css.length)
+      i = j - 1
+      continue
+    }
+    curat += css[i]
+  }
+  /* variabilele, din primul :root */
+  const rad = curat.slice(curat.indexOf(':root'), curat.indexOf('}', curat.indexOf(':root')))
+  const vari = {}
+  for (const m of rad.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) vari[m[1]] = m[2].trim()
+  const rezolva = (v) => {
+    for (let i = 0; i < 5 && v.includes('var('); i++) {
+      v = v.replace(/var\(\s*(--[\w-]+)\s*(?:,\s*([^()]*))?\)/g, (_, k, alt) => vari[k] || alt || 'inherit')
+    }
+    return v
+  }
+  const vrem = /^\s*\.(m-|d-|cg-|leg-h|banda-cron|diagrama)/
+  const out = [], petice = []
+  for (const bloc of curat.split('}')) {
+    const k = bloc.indexOf('{')
+    if (k < 0) continue
+    const sel = bloc.slice(0, k).trim(), corp = rezolva(bloc.slice(k + 1).trim())
+    if (!vrem.test(sel) || !corp) continue
+    out.push(`${sel} { ${corp} }`)
+    /* petecul din legenda e un <i> de HTML: "fill" nu-l coloreaza, ii trebuie
+       fundal. Se ia culoarea chiar din regula tonului, ca sa nu se desparta */
+    const t = sel.match(/^\.(m-t[a-g])$/)
+    const f = corp.match(/fill:\s*([^;]+)/)
+    if (t && f) petice.push(`.legenda-harta i.${t[1]} { background: ${f[1].trim()}; }`)
+  }
+  return out.concat(petice).join('\n')
+}
+const STIL_FIGURI = stilulFigurilor(RAD + '../build/stil.css')
 
 /* ---- continut ------------------------------------------------------------ */
 const continut = JSON.parse(readFileSync(RAD + '../build/continut.json', 'utf8'))
@@ -99,7 +155,20 @@ function figHarta(cheie) {
   const h = HARTI[cheie]; if (!h) return ''
   const { vb, body } = h.spec()
   const n = ++nrFig
+  /* legenda lipsea din EPUB: fara ea, tonurile hartii nu spun nimic */
+  const semn = (t) => {
+    if (t === 'ceda') return '<i class="lin-punct"></i>'
+    if (t === 'campanie') return '<i class="lin"></i>'
+    if (t === 'hasu') return '<i class="hasu"></i>'
+    if (t === 'batalie') return '<i class="simb">✕</i>'
+    if (t === 'sit') return '<i class="simb">▲</i>'
+    if (t === 'oras') return '<i class="simb">●</i>'
+    if (t === 'capitala') return '<i class="simb">◉</i>'
+    return `<i class="pata ${/^h[0-4]$/.test(t) ? 'leg-' + t : 'm-t' + t}"></i>`
+  }
+  const leg = (h.legenda || []).map(([t, txt]) => `<span>${semn(t)}${esc(txt)}</span>`).join('')
   return `<figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(h.titlu)}">${body}</svg>
+${leg ? `<p class="legenda-harta">${leg}</p>` : ''}
 <figcaption><b>Harta ${n}. ${esc(h.titlu)}</b> ${esc(h.jos)}</figcaption></figure>`
 }
 function figDiagrama(cheie) {
@@ -181,7 +250,7 @@ writeFileSync(OUT + '/META-INF/container.xml', `<?xml version="1.0" encoding="UT
 <container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
 <rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles>
 </container>`)
-writeFileSync(OUT + '/OEBPS/stil.css', STIL)
+writeFileSync(OUT + '/OEBPS/stil.css', STIL + '\n' + STIL_FIGURI)
 for (const f of ['Literata-400.ttf','Literata-400i.ttf','Literata-600.ttf','Spectral-300.ttf','Spectral-600.ttf'])
   cpSync(RAD + 'fonturi/' + f, OUT + '/OEBPS/fonturi/' + f)
 

@@ -20,6 +20,36 @@ const eta = (p, text, o = {}) => ({ p, text, clasa: 'm-et-apa', ...o })
 
 export const HARTI = {
 
+/* ------------------------------------------------------------------ 0 --- */
+cadrulGeografic: {
+  titlu: 'Cadrul geografic: relieful spațiului românesc',
+  legenda: [['h0','Sub 200 m — câmpie'], ['h1','200–600 m — dealuri și podișuri'],
+    ['h2','600–1.200 m — munte mijlociu'], ['h3','1.200–1.800 m'], ['h4','Peste 1.800 m']],
+  jos: 'Treptele sunt calculate din ETOPO1, modelul de teren al agenției americane NOAA, aflat în domeniul public; cursurile de apă și țărmul, din Natural Earth. Nicio altă hartă din volum nu poate fi citită fără aceasta: arcul carpatic închide un podiș la mijloc și lasă în afara lui trei câmpii deschise spre răsărit, spre sud și spre apus. Acolo unde muntele se retrage — la Porțile de Fier, în Poarta Focșanilor, pe culoarul Mureșului — trec drumurile, negustorii și armatele, iar granițele se mută cel mai des.',
+  spec: () => harta({ id: 'h0', view: [19.9, 43.1, 30.9, 48.8], scaraKm: 150, relief: 'trepte',
+    rauri: ['dunare', 'prut', 'nistru', 'mures', 'olt', 'siret', 'tisa', 'somes', 'jiu', 'arges', 'ialomita', 'timis', 'buzau', 'bistrita'],
+    conturZone: [FRONTIERE.romaniaAzi],
+    note: [
+      etm([25.90, 46.90], 'C A R P A Ț I I\u2003O R I E N T A L I', { rot: -74 }),
+      etm([24.10, 45.22], 'C A R P A Ț I I\u2003M E R I D I O N A L I'),
+      etm([22.80, 46.48], 'MUNȚII\nAPUSENI'),
+      et([24.60, 46.55], 'PODIȘUL\nTRANSILVANIEI'),
+      et([27.30, 47.25], 'PODIȘUL\nMOLDOVEI'),
+      et([25.40, 44.30], 'CÂMPIA ROMÂNĂ'),
+      et([21.25, 46.75], 'CÂMPIA\nDE VEST'),
+      etm([28.32, 44.42], 'PODIȘUL\nDOBROGEI'),
+      etm([29.00, 45.02], 'Delta\nDunării'),
+      etm([22.30, 44.50], 'Porțile de Fier', { anc: 'end' }),
+      etm([27.05, 45.55], 'Poarta\nFocșanilor'),
+      eta([25.60, 43.72], 'D u n ă r e a', { rot: 5 }),
+      eta([23.60, 46.20], 'M u r e ș u l', { rot: -8 }),
+      eta([24.32, 44.70], 'O l t u l', { rot: 82 }),
+      eta([26.70, 46.55], 'S i r e t u l', { rot: 70 }),
+      eta([28.12, 46.55], 'P r u t u l', { rot: 72 }),
+      eta([29.75, 47.25], 'N i s t r u l', { rot: 56 }),
+      eta([20.70, 47.55], 'T i s a', { rot: 66 }),
+      eta([29.95, 43.80], 'M A R E A\nN E A G R Ă') ] }) },
+
 /* ------------------------------------------------------------------ 1 --- */
 daciaBurebista: {
   titlu: 'Stăpânirea lui Burebista la apogeu, c. 60–44 î.Hr.',
@@ -34,7 +64,7 @@ daciaBurebista: {
       { p: L.dionysopolis, anc: 'end' }, { p: L.olbia, anc: 'end' },
       { p: L.singidunum, anc: 'end' }, { p: L.cetateaAlba, anc: 'end' },
     ],
-    note: [ et([25.4, 46.4], 'DACIA'), etm([24.6, 48.05], 'M U N Ț I I    C A R P A Ț I', { rot: -14 }),
+    note: [ et([25.4, 46.4], 'DACIA'), etm([24.6, 48.05], 'M U N Ț I I\u2003C A R P A Ț I', { rot: -14 }),
       etm([30.9, 48.5], 'Sciți'), etm([20.4, 44.0], 'Iliri'), etm([25.6, 42.4], 'Tracii sudici'),
       etm([23.35, 45.28], 'Munții Orăștiei', { anc: 'middle' }),
       eta([26.4, 43.6], 'D u n ă r e a', { rot: 6 }), eta([30.9, 44.4], 'PONTUL EUXIN') ] }) },
@@ -71,7 +101,7 @@ migratii: {
   titlu: 'Valurile migratoare și retragerea în munți, sec. III–XIII',
   legenda: [['campanie','Direcția principală a unui val migrator'], ['a','Aria de continuitate romanică presupusă']],
   jos: 'Fiecare val a folosit același culoar de stepă dintre Nistru și Dunăre, iar Câmpia Română și cea de Vest au fost drumuri, nu adăposturi. Arcul carpatic, podișul Transilvaniei și zonele împădurite sunt spațiile unde izvoarele semnalează cel mai devreme populația romanică.',
-  spec: () => harta({ id: 'h3', view: VL, scaraKm: 200,
+  spec: () => harta({ id: 'h3', view: VL, scaraKm: 200, relief: 'linii', nivele: [600, 1200],
     zone: [{ ring: FRONTIERE.principatTransilvania, ton: 'a', opac: .5 }],
     linii: [
       { pts: [[32.2,48.6],[29.5,47.6],[26.5,46.6],[23.5,46.4]], stil: 'campanie', sageata: 1 },

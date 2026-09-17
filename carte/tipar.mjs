@@ -145,6 +145,7 @@ function figuraHarta(cheie) {
     if (t === 'sit')      return `<span><i style="border:0">▲</i>${esc(txt)}</span>`
     if (t === 'oras')     return `<span><i style="border:0">●</i>${esc(txt)}</span>`
     if (t === 'capitala') return `<span><i style="border:0">◉</i>${esc(txt)}</span>`
+    if (/^h[0-4]$/.test(t)) return `<span><i class="leg-${t}"></i>${esc(txt)}</span>`
     return `<span><i class="m-t${t}" style="background:currentColor"></i>${esc(txt)}</span>`
   }).join('')
   return `<figure id="${id}">

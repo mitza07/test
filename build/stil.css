@@ -26,6 +26,8 @@
   --m-a: #7ba3c6;  --m-b: #d3ad63;  --m-c: #9d90b4;
   --m-d: #7ba48d;  --m-e: #cb8266;  --m-f: #b8b09a;
   --m-linie:  #131820;
+  /* trepte hipsometrice, de la campie la culme */
+  --m-h0: #e9e7d5;  --m-h1: #dcd6bf;  --m-h2: #cbbf9c;  --m-h3: #b9a47c;  --m-h4: #a2866a;
 
   --sans: "IBM Plex Sans Condensed", "Helvetica Neue", Arial, sans-serif;
   --serif: Literata, Georgia, "Times New Roman", serif;
@@ -46,6 +48,7 @@
     --m-uscat:  #1c242d;  --m-mare:   #17303f;
     --m-a: #4a7ba8;  --m-b: #a8823c;  --m-c: #756a90;
     --m-d: #4d7c66;  --m-e: #a05c44;  --m-f: #6e6a5c;
+    --m-h0: #1f2730;  --m-h1: #2a3238;  --m-h2: #3a4038;  --m-h3: #4c4d3e;  --m-h4: #5e5a45;
     --m-linie:  #cfd8e2;
     color-scheme: dark;
   }
@@ -60,6 +63,7 @@
   --m-uscat:  #1c242d;  --m-mare:   #17303f;
   --m-a: #4a7ba8;  --m-b: #a8823c;  --m-c: #756a90;
   --m-d: #4d7c66;  --m-e: #a05c44;  --m-f: #6e6a5c;
+  --m-h0: #1f2730;  --m-h1: #2a3238;  --m-h2: #3a4038;  --m-h3: #4c4d3e;  --m-h4: #5e5a45;
   --m-linie:  #cfd8e2;
   color-scheme: dark;
 }
@@ -363,3 +367,15 @@ tbody tr:last-child td { border-bottom: 0; }
 .m-tarm { fill: none; stroke: var(--m-mare); stroke-width: .7; stroke-linejoin: round; }
 .m-lac { fill: var(--m-mare); stroke: none; }
 .m-rau-mic { fill: none; stroke: var(--m-mare); stroke-width: 1; stroke-linejoin: round; stroke-linecap: round; }
+
+/* trepte hipsometrice și curbe de nivel — din ETOPO1 */
+.m-relief { stroke: none; }
+.m-h0 { fill: var(--m-h0); }
+.m-h1 { fill: var(--m-h1); }
+.m-h2 { fill: var(--m-h2); }
+.m-h3 { fill: var(--m-h3); }
+.m-h4 { fill: var(--m-h4); }
+.m-nivel-halo { fill: none; stroke: #fff; stroke-width: 1.5; opacity: .35; stroke-linejoin: round; }
+.m-nivel { fill: none; stroke: #6b5a44; stroke-width: .5; opacity: .3; stroke-linejoin: round; }
+.leg-h0 { background: var(--m-h0); } .leg-h1 { background: var(--m-h1); }
+.leg-h2 { background: var(--m-h2); } .leg-h3 { background: var(--m-h3); } .leg-h4 { background: var(--m-h4); }

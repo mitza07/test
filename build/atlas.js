@@ -8,6 +8,9 @@ import { REGIUNI, FRONTIERE, ZONE, VECINI, L } from './geo.js'
    domeniu public si poate intra intr-o carte vanduta. Dunarea are aici o suta
    saptezeci de puncte in loc de treizeci si cinci, iar Delta isi are bratele. */
 import { RAURI, COASTA, LACURI, MARE } from './hidro.js'
+/* Relieful vine din ETOPO1, tot domeniu public, ca trepte hipsometrice
+   vectoriale: se maresc oricat si se tiparesc curat si in negru. */
+import { RELIEF, TREPTE } from './relief.js'
 
 const LAT0 = 45.8, LON0 = 25.0, K = 100
 const kx = Math.cos((LAT0 * Math.PI) / 180) * K
@@ -67,6 +70,17 @@ export function harta(spec) {
   s.push(`<g clip-path="url(#${uid}-c)">`)
   /* uscat + mare */
   s.push(`<rect class="m-uscat" x="${fmt(x0)}" y="${fmt(y0)}" width="${fmt(W)}" height="${fmt(H)}"/>`)
+  /* treptele de relief, sub tot restul: fiecare treapta e o singura cale, cu
+     golurile in sens invers, ca sa se umple corect */
+  if (spec.relief === 'trepte') {
+    /* campia de sub cel dintai prag se asterne peste tot: treptele de deasupra
+       o acopera pe rand, iar marea vine la urma */
+    s.push(`<rect class="m-relief m-h0" x="${fmt(x0)}" y="${fmt(y0)}" width="${fmt(W)}" height="${fmt(H)}"/>`)
+    TREPTE.forEach((t, i) => {
+      const cale = RELIEF[t].map((r) => d(r)).join('')
+      if (cale) s.push(`<path class="m-relief m-h${i + 1}" d="${cale}"/>`)
+    })
+  }
   s.push(`<path class="m-mare" d="${d(MARE)}"/>`)
   for (const l of LACURI) s.push(`<path class="m-lac" d="${d(l.pct)}"/>`)
 
@@ -94,6 +108,18 @@ export function harta(spec) {
   for (const k in REGIUNI) {
     if (!tonuri[k] || tonuri[k] === 'nul') continue
     s.push(`<path class="m-lim" d="${d(REGIUNI[k].ring)}"/>`)
+  }
+
+  /* curbele de nivel, peste tonurile politice: arata unde sta muntele fara sa
+     acopere culoarea regiunii */
+  if (spec.relief === 'linii') {
+    for (const t of (spec.nivele || [600, 1200])) {
+      const cale = (RELIEF[t] || []).map((r) => d(r)).join('')
+      /* de doua ori: o data deschis, o data inchis. Pe tonurile palide se vede
+         linia inchisa, pe cele adanci cea deschisa — altfel curbele ar disparea
+         exact peste regiunile tiparite in gri inchis. */
+      if (cale) s.push(`<path class="m-nivel-halo" d="${cale}"/>`, `<path class="m-nivel" d="${cale}"/>`)
+    }
   }
 
   /* ape desenate peste uscat */

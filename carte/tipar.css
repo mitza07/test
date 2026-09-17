@@ -375,3 +375,15 @@ figcaption { break-inside: avoid; page-break-inside: avoid; }
 .m-lac { fill: #d7d7d7; stroke: var(--gri-45); stroke-width: .35; }
 .m-rau-mic { fill: none; stroke: var(--gri-45); stroke-width: .55;
   stroke-linejoin: round; stroke-linecap: round; }
+
+/* trepte hipsometrice și curbe de nivel — din ETOPO1 */
+.m-relief { stroke: none; }
+.m-h0 { fill: #f5f5f5; }
+.m-h1 { fill: #e6e6e6; }
+.m-h2 { fill: #d1d1d1; }
+.m-h3 { fill: #b6b6b6; }
+.m-h4 { fill: #9a9a9a; }
+.m-nivel-halo { fill: none; stroke: #fff; stroke-width: 1.4; opacity: .38; stroke-linejoin: round; }
+.m-nivel { fill: none; stroke: var(--gri-45); stroke-width: .45; opacity: .32; stroke-linejoin: round; }
+.leg-h0 { background: #f5f5f5; } .leg-h1 { background: #e6e6e6; }
+.leg-h2 { background: #d1d1d1; } .leg-h3 { background: #b6b6b6; } .leg-h4 { background: #9a9a9a; }

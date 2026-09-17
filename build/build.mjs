@@ -10,7 +10,7 @@ const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').
 
 /* --- planul volumului ---------------------------------------------------- */
 export const PLAN = [
-  { id: 'neolitic',     de: -6000, la: -1000, per: 'c. 6000 – 1000 î.Hr.', preludiu: true },
+  { id: 'neolitic',     de: -6000, la: -1000, per: 'c. 6000 – 1000 î.Hr.', preludiu: true, harti: ['cadrulGeografic'] },
   { id: 'preistorie',   de: -1000, la: -514, per: 'c. 1000 – 514 î.Hr.' },
   { id: 'geti',         de: -514,  la: -300, per: '514 – 300 î.Hr.' },
   { id: 'burebista',    de: -300,  la: 87,   per: '300 î.Hr. – 87 d.Hr.', harti: ['daciaBurebista'] },
@@ -80,6 +80,7 @@ function figura(cheie) {
     if (t === 'sit') return `<span><i style="border:0;color:var(--chinovar)">▲</i>${esc(txt)}</span>`
     if (t === 'oras') return `<span><i style="border:0">●</i>${esc(txt)}</span>`
     if (t === 'capitala') return `<span><i style="border:0">◉</i>${esc(txt)}</span>`
+    if (/^h[0-4]$/.test(t)) return `<span><i class="leg-${t}"></i>${esc(txt)}</span>`
     return `<span><i style="background:var(--m-${t})"></i>${esc(txt)}</span>`
   }).join('')
   return `<figure class="lat-plin"><div class="figura">
