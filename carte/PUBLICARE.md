@@ -84,22 +84,22 @@ Numărul maxim de pagini la 6 × 9 inch depinde de cerneală și de hârtie:
 | Color premium, hârtie albă | 24 – 828 |
 
 Asta a decis structura cărții. Cu 147.479 de cuvinte și 331 de ilustrații, într-un
-singur volum macheta dă **1.022 de pagini** — peste plafonul de 828, indiferent de
+singur volum macheta dă **peste o mie de pagini** — peste plafonul de 828, indiferent de
 hârtie și cerneală. De aceea cartea apare **în două volume**, tăiate acolo unde o
 cere și structura ei:
 
 | | Pagini | Cotor (crem) | Intră la |
 |---|---|---|---|
-| **Volumul I — Cronologia** (23 de capitole) | 540 | 34,3 mm | toate variantele, inclusiv color standard |
-| **Volumul II — Priviri transversale** (17 teme + atlasul) | 494 | 31,4 mm | toate variantele, inclusiv color standard |
+| **Volumul I — Cronologia** (23 de capitole) | 520 | 33,0 mm | toate variantele, inclusiv color standard |
+| **Volumul II — Priviri transversale** (17 teme + atlasul) | 484 | 30,7 mm | toate variantele, inclusiv color standard |
 
 Amândouă stau sub 600, deci **color standard e disponibil pentru amândouă** — varianta
 cea mai ieftină la culoare. Color premium și alb-negru rămân și ele posibile; macheta
 alb-negru are exact aceeași paginație, așa că cele două ediții pot merge în paralel,
 cu aceeași copertă și același cotor.
 
-PDF-ul într-un singur volum, de 1.022 de pagini, rămâne pentru citit pe ecran și
-pentru tipografii fără plafonul KDP.
+PDF-ul într-un singur volum rămâne pentru citit pe ecran și pentru tipografii fără
+plafonul KDP.
 
 ### Coperta
 
@@ -107,9 +107,9 @@ pentru tipografii fără plafonul KDP.
 - Înălțime totală = 0,125″ + 9″ + 0,125″ = **9,25″**
 - Cotor = număr de pagini × **0,002252″** (hârtie albă) sau × **0,0025″** (crem)
 
-Calculat pe hârtie crem: **volumul I, 540 de pagini → cotor 34,3 mm**; **volumul II,
-494 de pagini → cotor 31,4 mm**. Copertele sunt deja generate la aceste dimensiuni
-(`Istoria-Romaniei-coperta-vol1.pdf`, 345,4 × 235,0 mm, și `-vol2.pdf`, 342,5 × 235,0 mm),
+Calculat pe hârtie crem: **volumul I, 520 de pagini → cotor 33,0 mm**; **volumul II,
+484 de pagini → cotor 30,7 mm**. Copertele sunt deja generate la aceste dimensiuni
+(`Istoria-Romaniei-coperta-vol1.pdf`, 344,2 × 235,0 mm, și `-vol2.pdf`, 341,9 × 235,0 mm),
 cu bleed de 3,2 mm și cu dreptunghiul alb de 48 × 26 mm rezervat codului de bare.
 
 ### ISBN la KDP
@@ -153,15 +153,15 @@ Sunt generate din coordonate geografice, nu copiate. Nu reproduc nicio hartă pu
 
 | Fișier | Ce e | Dimensiune |
 |---|---|---|
-| `Istoria-Romaniei-interior-vol1-color.pdf` | interiorul volumului I, color | 540 pag. · 59 MB |
-| `Istoria-Romaniei-interior-vol1-alb-negru.pdf` | idem, alb-negru, aceeași paginație | 540 pag. · 59 MB |
-| `Istoria-Romaniei-interior-vol2-color.pdf` | interiorul volumului II, color | 494 pag. · 82 MB |
-| `Istoria-Romaniei-interior-vol2-alb-negru.pdf` | idem, alb-negru | 494 pag. · 82 MB |
-| `Istoria-Romaniei-coperta-vol1.pdf` | copertă completă, față–cotor–spate, cu bleed | 345,4 × 235,0 mm |
-| `Istoria-Romaniei-coperta-vol2.pdf` | idem, volumul II | 342,5 × 235,0 mm |
+| `Istoria-Romaniei-interior-vol1-color.pdf` | interiorul volumului I, color | 520 pag. · 59 MB |
+| `Istoria-Romaniei-interior-vol1-alb-negru.pdf` | idem, alb-negru, aceeași paginație | 520 pag. · 59 MB |
+| `Istoria-Romaniei-interior-vol2-color.pdf` | interiorul volumului II, color | 484 pag. · 82 MB |
+| `Istoria-Romaniei-interior-vol2-alb-negru.pdf` | idem, alb-negru | 484 pag. · 82 MB |
+| `Istoria-Romaniei-coperta-vol1.pdf` | copertă completă, față–cotor–spate, cu bleed | 344,2 × 235,0 mm |
+| `Istoria-Romaniei-coperta-vol2.pdf` | idem, volumul II | 341,9 × 235,0 mm |
 | `Istoria-Romaniei.epub` | ediția digitală, cu hărțile ca SVG | 36 MB |
 | `Istoria-Romaniei-manuscris.docx` | manuscrisul pentru editură, cu stiluri numite | 36 MB |
-| `Istoria-Romaniei-interior-color.pdf` | volumul întreg, pentru citit pe ecran | 1.022 pag. · 141 MB |
+| `Istoria-Romaniei-interior-color.pdf` | volumul întreg, pentru citit pe ecran | ~990 pag. · 141 MB |
 | `coperta-ebook-vol1.png`, `-vol2.png` | coperta de ebook, 1600 × 2560 px | — |
 
 ### Costul de livrare al EPUB-ului, la KDP
