@@ -315,3 +315,21 @@ figcaption b { color: var(--negru); font-weight: 600; }
 
 /* ancorele de indice nu trebuie să schimbe nimic în pagină */
 .ix { font: inherit; color: inherit; }
+
+/* --------------------------- ilustrații de arhivă ------------------------- */
+.ilustratie { margin: 6mm 0; break-inside: avoid; page-break-inside: avoid; }
+.ilustratie img { display: block; width: 100%; height: auto; }
+.ilustratie figcaption { font-family: var(--sans); font-size: 7.6pt; line-height: 10.4pt;
+  color: var(--gri-70); text-align: left; hyphens: none; margin-top: 2.2mm;
+  padding-top: 1.8mm; border-top: .5pt solid var(--rigla); }
+.ilustratie .credit { display: block; margin-top: 1.2mm; font-size: 6.9pt;
+  color: var(--gri-45); font-style: italic; }
+.proveniente { font-size: 7.2pt; line-height: 9.8pt; text-align: left; hyphens: none; }
+.proveniente p { margin-bottom: 1.8mm; }
+.proveniente b { font-family: var(--sans); font-size: 7pt; }
+
+/* legenda nu se rupe niciodată de imaginea ei */
+figcaption { break-inside: avoid; page-break-inside: avoid; }
+.ilustratie figcaption { break-before: avoid; page-break-before: avoid; }
+/* în plansa cartografică imaginile primesc toată înălțimea paginii */
+#atlas-vechi .ilustratie img { max-height: 158mm; width: auto; max-width: 100%; margin: 0 auto; }

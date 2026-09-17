@@ -6,6 +6,46 @@ import { readFileSync, writeFileSync } from 'fs'
 import { HARTI } from '../build/harti.mjs'
 import { cronograma, diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagramaEtnic } from '../build/diagrame.mjs'
 import { PLAN, PLAN_TEME } from '../build/build.mjs'
+import { readFileSync as citeste, existsSync as exista, statSync as stat } from 'fs'
+
+/* --- ilustratiile de arhiva ---------------------------------------------- */
+const RAD_C = new URL('./', import.meta.url).pathname
+function incarcaIlustratii() {
+  const cale = RAD_C + 'ilustratii/manifest.json'
+  if (!exista(cale)) return {}
+  const man = JSON.parse(citeste(cale, 'utf8'))
+  const pe = {}
+  for (const m of man) {
+    const f = RAD_C + m.local
+    if (!exista(f) || stat(f).size < 60000) continue
+    ;(pe[m.cap] = pe[m.cap] || []).push(m)
+  }
+  return pe
+}
+const ILUSTRATII = incarcaIlustratii()
+let nrIl = 0
+const ilustratiiFolosite = []
+
+function creditScurt(m) {
+  const p = []
+  if (m.autor && !/neidentificat|unknown/i.test(m.autor)) p.push(m.autor.slice(0, 70))
+  if (m.data) p.push(m.data.slice(0, 24))
+  p.push(m.sursa || 'Wikimedia Commons')
+  p.push(/domeniu public/i.test(m.tipLicenta) ? 'domeniu public' : m.licenta)
+  return p.filter(Boolean).join(' · ')
+}
+
+function figuraIlustratie(m) {
+  const n = ++nrIl
+  const id = 'il' + n
+  ilustratiiFolosite.push({ ...m, n, id })
+  return `<figure class="ilustratie" id="${id}">
+<img src="${m.local}" alt="${esc(m.legenda)}"/>
+<figcaption><span class="fig-nr">Ilustrația ${n}</span>${esc(m.legenda)}
+<span class="credit">${esc(creditScurt(m))}</span></figcaption>
+</figure>`
+}
+const ilustratiile = (cap) => (ILUSTRATII[cap] || []).map(figuraIlustratie).join('')
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 const ROMAN = ['', 'I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII',
@@ -148,6 +188,7 @@ function aparat(c, termeni) {
 /* ========================================================================== */
 export function construiesteTipar(continut, optiuni = {}) {
   nrFig = 0; nrAncora = 0; figuriLista.length = 0; ancore.length = 0
+  nrIl = 0; ilustratiiFolosite.length = 0
   const capById = Object.fromEntries((continut.capitole || []).map((c) => [c.id, c]))
   const temeById = Object.fromEntries((continut.teme || []).map((c) => [c.id, c]))
   const cap = PLAN.map((pl) => ({ ...pl, ...(capById[pl.id] || {}) })).filter((c) => c.sectiuni?.length)
@@ -162,6 +203,7 @@ export function construiesteTipar(continut, optiuni = {}) {
 <div class="cap-per">${esc(c.per)}</div>
 </header>
 ${corp(c, termeni)}
+${ilustratiile(c.id)}
 ${(c.harti || []).map(figuraHarta).join('')}
 ${(c.diagrame || []).map(figuraDiagrama).join('')}
 ${aparat(c, termeni)}
@@ -174,6 +216,7 @@ ${aparat(c, termeni)}
 <div class="cap-per">de la antichitate până azi</div>
 </header>
 ${corp(c, termeni)}
+${ilustratiile(c.id)}
 ${(c.diagrame || []).map(figuraDiagrama).join('')}
 ${aparat(c, termeni)}
 </article>`).join('')
@@ -247,9 +290,21 @@ ${aparat(c, termeni)}
 ${corpCap}
 ${corpTeme}
 
+<section class="capitol" id="atlas-vechi">
+<header class="cap-cap">
+<div class="cap-nr">Plansa cartografica</div>
+<h2 class="cap-titlu">Cum a fost desenat acest pământ</h2>
+<div class="cap-per">1513 – 1920</div>
+</header>
+<div class="corp"><p class="cap-rezumat">Hărțile de mai jos nu sunt ilustrații ale textului, ci izvoare în sine. Fiecare arată nu numai un teritoriu, ci și ce știa și ce voia să arate cel care a desenat-o: un cartograf venețian de secol XVI care nu văzuse niciodată Carpații, un geograf grec care pregătea o insurecție, un statistician maghiar care apăra la Paris hotarele unui regat pe cale să dispară.</p></div>
+${ilustratiile('harti')}
 <section class="anexa" id="lista-figuri">
-  <h2>Lista hărților și a diagramelor</h2>
+  <h2>Lista hărților și a ilustrațiilor</h2>
   <div class="lista-figuri">${listaFig}</div>
+  <h3>Proveniența ilustrațiilor</h3>
+  <div class="proveniente">${ilustratiiFolosite.map((m) =>
+    `<p><b>Ilustrația ${m.n}.</b> ${esc(m.legenda.slice(0, 90))}… ${esc(m.autor || '')}${m.data ? ', ' + esc(m.data) : ''}. ${esc(m.sursa)}, ${esc(/domeniu public/i.test(m.tipLicenta) ? 'domeniu public' : m.licenta)}. ${esc(m.pagina)}</p>`).join('')}</div>
+</section>
 </section>
 
 <section class="anexa" id="indice">

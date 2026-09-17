@@ -5,3 +5,13 @@ build/continut.json
 node_modules/
 carte/node_modules/
 carte/css-woff2.txt
+carte/ilustratii/mari/
+carte/ilustratii/miniaturi/
+carte/ilustratii/redimensionate/
+carte/ilustratii/plansa-*.jpg
+carte/*.pdf
+carte/*.png
+carte/.lucru-*.html
+carte/tipar-*.html
+carte/.coperta.html
+carte/.log-*.txt
