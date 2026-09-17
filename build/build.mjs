@@ -111,21 +111,25 @@ const ILUSTRATII = (() => {
   for (const m of man) (pe[m.cap] = pe[m.cap] || []).push(m)
   return pe
 })()
-const LATIMI = [500, 960, 1280, 1920]
-const adresaCommons = (nume, lat) =>
-  'https://commons.wikimedia.org/wiki/Special:FilePath/' +
-  encodeURIComponent(String(nume).replace(/ /g, '_')) + '?width=' + lat
+/* Vizualizatorul de artefacte incarca numai fisierele paginii, nu si imagini
+   de pe alte domenii, deci ilustratiile intra in pagina ca date incorporate.
+   La 520 px si calitate 58 incap toate cele 331 sub plafonul de 16 MB al
+   paginii; cine vrea rezolutia mare urmeaza legatura din legenda, la Commons. */
 let nrIl = 0
+const CALE_IL = new URL('../carte/ilustratii/il/', import.meta.url).pathname
+function incorporeaza(nume) {
+  try { return 'data:image/jpeg;base64,' + readFileSync(CALE_IL + nume).toString('base64') }
+  catch { return '' }
+}
 function figuraIlustratie(m) {
   const n = ++nrIl
-  const lat = LATIMI.filter((x) => !m.latime || x <= Math.max(m.latime, 500))
-  const set = (lat.length ? lat : [500]).map((x) => `${adresaCommons(m.fisier, x)} ${x}w`).join(', ')
+  const nume = incorporeaza(m.local.split('/').pop())
+  if (!nume) return ''
   const credit = [m.autor, m.data, m.sursa, /domeniu public/i.test(m.tipLicenta) ? 'domeniu public' : m.licenta]
     .filter(Boolean).join(' · ')
   return `<figure class="ilustratie" id="il-${n}">
 <a href="${esc(m.pagina)}" target="_blank" rel="noopener"><img loading="lazy" decoding="async"
- src="${esc(adresaCommons(m.fisier, 960))}" srcset="${esc(set)}"
- sizes="(max-width: 700px) 92vw, 640px" alt="${esc(m.legenda)}"/></a>
+ src="${nume}" alt="${esc(m.legenda)}"/></a>
 <figcaption><b>Ilustrația ${n}.</b> ${esc(m.legenda)}<small>${esc(credit)}</small></figcaption>
 </figure>`
 }
@@ -253,11 +257,12 @@ ${atlas.map(figuraIlustratie).join('')}</div>
       <div>
         <div class="rubrica">Volum enciclopedic ilustrat</div>
         <h1 class="fr-titlu">Istoria<br>României<br><em>în 3.026 de ani</em></h1>
-        <p class="fr-sub">De la depozitele de bronzuri ale primei epoci a fierului până la alegerile din 2025: o istorie a spațiului carpato-danubiano-pontic, cu hărțile desenate din coordonate reale și cu paginile ei dificile lăsate la vedere.</p>
+        <p class="fr-sub">De la primele comunități neolitice până la alegerile din 2025: o istorie a spațiului carpato-danubiano-pontic, cu hărțile desenate din coordonate reale, cu peste trei sute de ilustrații de arhivă și cu paginile ei dificile lăsate la vedere.</p>
         <div class="fr-date">
           <div><b>${cap.length}</b><span>capitole</span></div>
-          <div><b>${teme.length}</b><span>secțiuni tematice</span></div>
+          <div><b>${teme.length}</b><span>priviri transversale</span></div>
           <div><b>${nrHarti}</b><span>hărți originale</span></div>
+          <div><b>${nrIl}</b><span>ilustrații de arhivă</span></div>
           <div><b>${(Math.round(cuvinte / 500) / 2).toLocaleString('ro-RO')}k</b><span>cuvinte</span></div>
         </div>
       </div>

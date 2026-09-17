@@ -70,8 +70,8 @@ ${stil('Aparat', 'Aparat critic', '<w:pPr><w:ind w:firstLine="0" w:left="283" w:
 
 /* --- ilustratia, cu legenda si creditul ei -------------------------------- */
 function pune(m, stare) {
-  /* varianta redusa pentru tipar, daca exista: altfel .docx ajunge la sute de MB */
-  const redus = RAD + 'ilustratii/tipar/' + m.local.split('/').pop()
+  /* varianta de ecran: un manuscris de sute de megaocteti nu se deschide */
+  const redus = RAD + 'ilustratii/ecran/' + m.local.split('/').pop()
   const src = existsSync(redus) ? redus : RAD + m.local
   if (!existsSync(src) || statSync(src).size < 40000) return ''
   const id = ++stare.id

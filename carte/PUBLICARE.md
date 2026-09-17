@@ -83,20 +83,23 @@ Numărul maxim de pagini la 6 × 9 inch depinde de cerneală și de hârtie:
 | **Color standard, hârtie albă** | **72 – 600** |
 | Color premium, hârtie albă | 24 – 828 |
 
-Asta e constrângerea reală a volumului. Cu peste două sute de ilustrații, ediția
-depășește 600 de pagini, deci **color standard nu mai e disponibil**. Rămân trei
-variante, în ordinea în care le-aș încerca:
+Asta a decis structura cărții. Cu 147.479 de cuvinte și 331 de ilustrații, într-un
+singur volum macheta dă **1.022 de pagini** — peste plafonul de 828, indiferent de
+hârtie și cerneală. De aceea cartea apare **în două volume**, tăiate acolo unde o
+cere și structura ei:
 
-1. **Color premium** — merge până la 828 de pagini, redă cel mai bine hărțile vechi
-   și fotografia de epocă, dar costul pe exemplar e de câteva ori mai mare, iar
-   prețul de vânzare trebuie să-l acopere.
-2. **Două volume** — se taie între Partea întâi (cronologia) și Partea a doua
-   (privirile transversale), fiecare volum sub 600 de pagini, ambele în color
-   standard. E soluția care iese cel mai ieftin la tiraj mare.
-3. **Ediția alb-negru** — 828 de pagini disponibile, cel mai mic cost. Machetele
-   sunt deja identice ca paginație, așa că ambele ediții pot merge în paralel.
+| | Pagini | Cotor (crem) | Intră la |
+|---|---|---|---|
+| **Volumul I — Cronologia** (23 de capitole) | 540 | 34,3 mm | toate variantele, inclusiv color standard |
+| **Volumul II — Priviri transversale** (17 teme + atlasul) | 494 | 31,4 mm | toate variantele, inclusiv color standard |
 
-Paginile exacte, calculate după machetare, sunt în secțiunea de la sfârșit.
+Amândouă stau sub 600, deci **color standard e disponibil pentru amândouă** — varianta
+cea mai ieftină la culoare. Color premium și alb-negru rămân și ele posibile; macheta
+alb-negru are exact aceeași paginație, așa că cele două ediții pot merge în paralel,
+cu aceeași copertă și același cotor.
+
+PDF-ul într-un singur volum, de 1.022 de pagini, rămâne pentru citit pe ecran și
+pentru tipografii fără plafonul KDP.
 
 ### Coperta
 
@@ -104,7 +107,10 @@ Paginile exacte, calculate după machetare, sunt în secțiunea de la sfârșit.
 - Înălțime totală = 0,125″ + 9″ + 0,125″ = **9,25″**
 - Cotor = număr de pagini × **0,002252″** (hârtie albă) sau × **0,0025″** (crem)
 
-La ~380 de pagini pe hârtie crem: cotor ≈ 0,95″ ≈ 24 mm. Calculez exact după ce se fixează paginația.
+Calculat pe hârtie crem: **volumul I, 540 de pagini → cotor 34,3 mm**; **volumul II,
+494 de pagini → cotor 31,4 mm**. Copertele sunt deja generate la aceste dimensiuni
+(`Istoria-Romaniei-coperta-vol1.pdf`, 345,4 × 235,0 mm, și `-vol2.pdf`, 342,5 × 235,0 mm),
+cu bleed de 3,2 mm și cu dreptunghiul alb de 48 × 26 mm rezervat codului de bare.
 
 ### ISBN la KDP
 
@@ -140,3 +146,46 @@ Sunt generate din coordonate geografice, nu copiate. Nu reproduc nicio hartă pu
 - [Legea 111/1995 privind Depozitul legal de documente](https://legislatie.just.ro/Public/DetaliiDocument/6288)
 - [KDP — mărimi de pagină și hârtie](https://kdp.amazon.com/en_US/help/topic/G201834180)
 - [KDP — trim size, bleed și margini](https://kdp.amazon.com/en_US/help/topic/GVBQ3CMEQW3W2VL6)
+
+---
+
+## 9. Ce s-a livrat, fișier cu fișier
+
+| Fișier | Ce e | Dimensiune |
+|---|---|---|
+| `Istoria-Romaniei-interior-vol1-color.pdf` | interiorul volumului I, color | 540 pag. · 59 MB |
+| `Istoria-Romaniei-interior-vol1-alb-negru.pdf` | idem, alb-negru, aceeași paginație | 540 pag. · 59 MB |
+| `Istoria-Romaniei-interior-vol2-color.pdf` | interiorul volumului II, color | 494 pag. · 82 MB |
+| `Istoria-Romaniei-interior-vol2-alb-negru.pdf` | idem, alb-negru | 494 pag. · 82 MB |
+| `Istoria-Romaniei-coperta-vol1.pdf` | copertă completă, față–cotor–spate, cu bleed | 345,4 × 235,0 mm |
+| `Istoria-Romaniei-coperta-vol2.pdf` | idem, volumul II | 342,5 × 235,0 mm |
+| `Istoria-Romaniei.epub` | ediția digitală, cu hărțile ca SVG | 36 MB |
+| `Istoria-Romaniei-manuscris.docx` | manuscrisul pentru editură, cu stiluri numite | 36 MB |
+| `Istoria-Romaniei-interior-color.pdf` | volumul întreg, pentru citit pe ecran | 1.022 pag. · 141 MB |
+| `coperta-ebook-vol1.png`, `-vol2.png` | coperta de ebook, 1600 × 2560 px | — |
+
+### Costul de livrare al EPUB-ului, la KDP
+
+La royalty de 70%, Amazon scade o taxă de livrare calculată pe megaoctet — în jur de
+0,15 USD/MB în Statele Unite. Un EPUB de 36 MB înseamnă circa 5 dolari din fiecare
+exemplar vândut. Trei ieșiri:
+
+1. **Royalty de 35%** — nu se percepe taxă de livrare. Pentru o carte ilustrată groasă
+   iese adesea mai bine decât 70% minus livrarea.
+2. **Ediție compactă** — `node optim-web.mjs 520 58` reface ilustrațiile la 520 px, iar
+   EPUB-ul scade sub 13 MB, cu circa 2 dolari taxă.
+3. **Altă platformă** — Kobo, Google Play Books și Apple Books nu percep taxă pe
+   megaoctet.
+
+### Ce mai trebuie completat înainte de tipar
+
+- **ISBN** — unul pentru fiecare volum **și** pentru fiecare suport (tipar și digital):
+  patru coduri în total, plus încă două dacă apar și în alb-negru ca ediție distinctă.
+- **Descrierea CIP** — se cere de la Biblioteca Națională și se tipărește pe versoul
+  paginii de titlu, în forma exactă primită. Locul e pregătit în machetă.
+- **Numele autorului** — apare ca `[numele autorului]` pe copertă, pe pagina de titlu
+  și în metadatele EPUB.
+- **Codul de bare** — dreptunghiul alb de 48 × 26 mm din colțul din stânga-jos al
+  copertei din spate.
+- **Lectura unui istoric.** Rămâne recomandarea de la punctul 1 și e singura care nu
+  se poate automatiza.

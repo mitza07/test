@@ -115,7 +115,9 @@ function figDiagrama(cheie) {
 const ILUSTRATII = {}
 if (existsSync(RAD + 'ilustratii/manifest.json'))
   for (const m of JSON.parse(readFileSync(RAD + 'ilustratii/manifest.json', 'utf8'))) {
-    const redus = RAD + 'ilustratii/tipar/' + m.local.split('/').pop()
+    /* varianta de ecran, nu cea de tipar: un EPUB de 136 MB s-ar plati la
+       livrare, pe megaoctet, la fiecare exemplar vandut */
+    const redus = RAD + 'ilustratii/ecran/' + m.local.split('/').pop()
     if (!existsSync(redus)) continue
     ;(ILUSTRATII[m.cap] = ILUSTRATII[m.cap] || []).push({ ...m, redus })
   }
