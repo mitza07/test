@@ -1,13 +1,14 @@
-/* Reduce ilustratiile la rezolutia utila de tipar. La 6x9 inch, o imagine pe
-   latimea oglinzii (117 mm = 4,61 inch) are nevoie de 1383 px pentru 300 dpi;
-   una pe toata inaltimea (158 mm) de 1866 px. 1900 px acopera ambele cazuri cu
-   marja, iar fisierul scade de trei ori. */
+/* Reduce ilustratiile la rezolutia utila de tipar si scrie inapoi in manifest
+   dimensiunea reala a fisierului obtinut. La 6x9 inch, oglinda are 117 mm; la
+   260 de puncte pe tol, asta inseamna 1.198 px. 1.700 px acopera si cazul
+   imaginii asezate pe toata inaltimea paginii. Ce vine mai mic de atat nu se
+   mareste: se aseaza in pagina pe latimea pe care o merita. */
 import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from 'fs'
 import sharp from 'sharp'
 const RAD = new URL('./', import.meta.url).pathname
 const man = JSON.parse(readFileSync(RAD + 'ilustratii/manifest.json', 'utf8'))
 mkdirSync(RAD + 'ilustratii/tipar', { recursive: true })
-let inainte = 0, dupa = 0, n = 0
+let inainte = 0, dupa = 0, n = 0, subtiri = 0
 for (const m of man) {
   const src = RAD + m.local
   if (!existsSync(src) || statSync(src).size < 40000) continue
@@ -17,6 +18,11 @@ for (const m of man) {
     await sharp(src).rotate().resize({ width: 1700, height: 2150, fit: 'inside', withoutEnlargement: true })
       .jpeg({ quality: 82, mozjpeg: true, chromaSubsampling: '4:4:4' }).toFile(dest)
   }
+  const md = await sharp(dest).metadata()
+  m.pxLatime = md.width; m.pxInaltime = md.height
+  if (md.width < 1198) subtiri++
   dupa += statSync(dest).size; n++
 }
-console.log(`${n} imagini: ${(inainte/1048576).toFixed(0)} MB → ${(dupa/1048576).toFixed(0)} MB`)
+writeFileSync(RAD + 'ilustratii/manifest.json', JSON.stringify(man, null, 1))
+console.log(`${n} imagini: ${(inainte / 1048576).toFixed(0)} MB → ${(dupa / 1048576).toFixed(0)} MB` +
+  `; ${subtiri} sub 1.198 px, asezate mai mic in pagină`)

@@ -198,7 +198,7 @@ writeFileSync(OUT + '/OEBPS/titlu.xhtml', pag('Pagina de titlu',
 <p class="fara-alineat" style="margin-top:2em">${esc(AUTOR)}</p>
 <div class="caseta" style="margin-top:3em"><p class="eticheta">Notă asupra redactării</p>
 <p>Textul acestui volum a fost redactat cu ajutorul unui model de limbaj și trecut printr-o
-a doua verificare, tot automată, care a corectat 568 de erori de date, nume și cifre.
+a doua verificare, tot automată, care a corectat 818 de erori de date, nume și cifre.
 Verificarea automată nu înlocuiește lectura unui istoric asupra izvoarelor. Volumul se
 citește ca sinteză, nu ca lucrare de referință.</p>
 <p style="margin-top:.7em">Hărțile și diagramele sunt originale, generate din contururi în
@@ -239,7 +239,7 @@ ${ILUSTRATII.atlas.map(figIlustratie).join('')}`))
 
 writeFileSync(OUT + '/OEBPS/nota.xhtml', pag('Notă asupra metodei',
   `<h1>Notă asupra metodei</h1>
-<p class="prim">Volumul a fost redactat capitol cu capitol și trecut apoi printr-o verificare factuală separată, care a urmărit datele, numele proprii, cifrele și atribuirea citatelor. Au rezultat 568 de corecții. Acolo unde o cifră este disputată în literatura de specialitate — numărul victimelor răscoalei din 1907, bilanțul Holocaustului din România, numărul morților din decembrie 1989 — ea este dată ca interval, cu menționarea disputei.</p>
+<p class="prim">Volumul a fost redactat capitol cu capitol și trecut apoi printr-o verificare factuală separată, care a urmărit datele, numele proprii, cifrele și atribuirea citatelor. Au rezultat 818 de corecții. Acolo unde o cifră este disputată în literatura de specialitate — numărul victimelor răscoalei din 1907, bilanțul Holocaustului din România, numărul morților din decembrie 1989 — ea este dată ca interval, cu menționarea disputei.</p>
 <h2>Despre hărți</h2>
 <p class="prim">Cele douăsprezece hărți sunt desenate din coordonate geografice reale. Fiecare hotar istoric este definit o singură dată și reutilizat, astfel încât suprafețele să se îmbine exact. Ariile calculate se abat cu mai puțin de un procent de la cele reale: România Mare 296.108 km² față de 295.049, România de azi 237.307 față de 238.397, Dobrogea 15.519 față de 15.485.</p>
 <h2>Ce lipsește</h2>

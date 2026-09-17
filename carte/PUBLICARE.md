@@ -12,7 +12,7 @@ Textul a fost scris de un model de limbaj, iar verificarea factuală a fost tot 
 
 **b) O editură românească va presupune un autor uman.** Nu există obligație legală de declarare, dar a nu spune e o problemă de contract, nu de lege.
 
-**c) Riscul factual e al tău, nu al meu.** Pe web, o eroare se corectează în cinci minute. Tipărită în 500 de exemplare, rămâne acolo. Cele 568 de corecții pe care le-a găsit a doua trecere arată exact cât de multe greșeli produce prima. Nimic nu garantează că a treia trecere n-ar mai găsi 200.
+**c) Riscul factual e al tău, nu al meu.** Pe web, o eroare se corectează în cinci minute. Tipărită în 500 de exemplare, rămâne acolo. Cele 818 de corecții pe care le-a găsit a doua trecere arată exact cât de multe greșeli produce prima. Nimic nu garantează că a treia trecere n-ar mai găsi 200.
 
 **Recomandarea mea:** înainte de tipar, textul trece pe la un istoric. Nu pentru stil — pentru date, atribuiri și cifre. Un absolvent de istorie plătit pentru două săptămâni de lectură costă mult mai puțin decât un tiraj retras.
 

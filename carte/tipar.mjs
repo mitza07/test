@@ -39,12 +39,15 @@ function figuraIlustratie(m) {
   const n = ++nrIl
   const id = 'il' + n
   ilustratiiFolosite.push({ ...m, n, id })
-  /* imaginile late umplu oglinda; cele inalte sunt limitate pe inaltime */
+  /* Latimea din pagina se calculeaza din pixelii pe care ii avem cu adevarat:
+     nicio ilustratie nu se intinde mai mult decat ii permit 260 de puncte pe
+     tol. O gravura de 900 px ocupa 88 mm, nu toata oglinda de 117. */
+  const OGLINDA = 117
+  const px = m.pxLatime || m.latime || 0
+  const latMm = px ? Math.min(OGLINDA, Math.round(px / 260 * 25.4)) : OGLINDA
   const lata = m.latime && m.inaltime && m.latime / m.inaltime > 1.28
-  /* un izvor de sub 1.100 px n-ar da decat 200 dpi pe toata latimea oglinzii;
-     asezat mai mic, ajunge la o densitate onesta */
-  const mica = m.latime > 0 && m.latime < 1100
-  return `<figure class="ilustratie${lata ? ' lata' : ''}${mica ? ' mica' : ''}" id="${id}">
+  const stil = latMm < OGLINDA ? ` style="width:${latMm}mm"` : ''
+  return `<figure class="ilustratie${lata ? ' lata' : ''}${latMm < OGLINDA ? ' ingusta' : ''}" id="${id}"${stil}>
 <img src="ilustratii/tipar/${m.local.split('/').pop()}" alt="${esc(m.legenda)}"/>
 <figcaption><span class="fig-nr">Ilustrația ${n}</span>${esc(m.legenda)}
 <span class="credit">${esc(creditScurt(m))}</span></figcaption>
@@ -307,7 +310,7 @@ ${aparat(c, termeni)}
   <div class="avertisment">
     <p><b>Notă asupra redactării.</b> Textul acestui volum a fost redactat cu ajutorul
     unui model de limbaj și trecut printr-o a doua verificare, tot automată, care a
-    corectat 568 de erori de date, nume și cifre. Verificarea automată nu înlocuiește
+    corectat 818 de erori de date, nume și cifre. Verificarea automată nu înlocuiește
     lectura unui istoric asupra izvoarelor. Cititorul este avertizat că, în absența
     unei verificări de specialitate, volumul trebuie citit ca sinteză, nu ca lucrare
     de referință, iar afirmațiile importante merită confruntate cu bibliografia
@@ -348,7 +351,7 @@ ${ilustratiile('atlas')}
   <h2>Notă asupra metodei</h2>
   <p>Volumul a fost redactat capitol cu capitol și trecut apoi printr-o verificare
   factuală separată, care a urmărit datele, numele proprii, cifrele și atribuirea
-  citatelor. Au rezultat 568 de corecții, consemnate în aparatul de lucru al ediției.
+  citatelor. Au rezultat 818 de corecții, consemnate în aparatul de lucru al ediției.
   Acolo unde o cifră este disputată în literatura de specialitate — numărul victimelor
   răscoalei din 1907, bilanțul Holocaustului din România, numărul morților din
   decembrie 1989 — ea este dată ca interval, cu menționarea disputei, nu ca valoare

@@ -55,8 +55,9 @@ const desen = `<svg viewBox="${vb}" preserveAspectRatio="xMidYMid meet"
   </g>
 </svg>`
 
-const blurb = `Trei mii de ani de istorie a spațiului dintre Carpați, Dunăre și Marea Neagră,
-de la depozitele de bronzuri ale primei epoci a fierului până la alegerile din 2025.`
+const blurb = `Opt mii de ani de istorie a spațiului dintre Carpați, Dunăre și Marea Neagră,
+de la primele comunități neolitice până la alegerile din 2025, cu trei mii de ani
+documentați an cu an.`
 
 const html = `<!DOCTYPE html><html lang="ro"><head><meta charset="utf-8"><style>
 @font-face { font-family: Spectral; font-weight: 300; src: url("fonturi/Spectral-300.ttf") format("truetype"); }
@@ -125,12 +126,12 @@ body { width: ${W.toFixed(2)}mm; height: ${H.toFixed(2)}mm; background: #0c1620;
   <p>${VOL ? VOL.desc : 'Douăzeci și trei de capitole cronologice și șaptesprezece priviri transversale — limba, credința, minoritățile, cultura, economia, pământul. Fiecare capitol se încheie cu principala dispută a epocii, cu ambele poziții expuse corect.'}</p>
   <p>Cele douăsprezece hărți sunt desenate din coordonate geografice reale: fiecare hotar istoric e definit o singură dată și reutilizat, astfel încât suprafețele să rămână comparabile de la o epocă la alta.</p>
   <div class="date">
-    <div><b>3.026</b><span>ani acoperiți</span></div>
-    <div><b>12</b><span>hărți originale</span></div>
+    <div><b>3.026</b><span>ani în cronologie</span></div>
+    <div><b>331</b><span>ilustrații de arhivă</span></div>
     <div><b>40</b><span>dispute istoriografice</span></div>
-    <div><b>238</b><span>ilustrații de arhivă</span></div>
+    <div><b>666</b><span>repere cronologice</span></div>
   </div>
-  <div class="nota">Textul a fost redactat cu ajutorul unui model de limbaj și trecut printr-o verificare factuală automată, care a corectat 568 de erori. Volumul se citește ca sinteză, nu ca lucrare de referință.</div>
+  <div class="nota">Textul a fost redactat cu ajutorul unui model de limbaj și trecut printr-o verificare factuală automată, care a corectat 818 de erori. Volumul se citește ca sinteză, nu ca lucrare de referință.</div>
   <div class="cod">cod de bare ISBN<br>48 × 26 mm</div>
 </div>
 
@@ -140,7 +141,7 @@ body { width: ${W.toFixed(2)}mm; height: ${H.toFixed(2)}mm; background: #0c1620;
   <div class="harta">${desen}</div>
   <div class="supra">${VOL ? VOL.nr + ' din două' : 'Volum enciclopedic ilustrat'}</div>
   <div class="titlu">Istoria<br>României</div>
-  <div class="sub">${VOL ? VOL.tit + ' — ' + VOL.sub : 'în 3.026 de ani'}</div>
+  <div class="sub">${VOL ? VOL.tit : 'în 3.026 de ani'}</div>
   <div class="legenda-ani">
     ${STRATURI.map((s) => `<div><i style="background:${s.cul}"></i>${s.an === 'azi' ? '<b>azi</b>' : s.an}</div>`).join('')}
   </div>
@@ -156,7 +157,7 @@ console.log(`copertă${VOLUM ? ' vol. ' + VOLUM : ''} ${W.toFixed(1)} × ${H.toF
 const { chromium } = await import('/opt/node22/lib/node_modules/playwright/index.mjs')
 const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' })
 const p = await b.newPage()
-await p.goto('file://' + RAD + '.coperta.html', { waitUntil: 'load' })
+await p.goto(`file://${RAD}.coperta${VOLUM ? '-v' + VOLUM : ''}.html`, { waitUntil: 'load' })
 await p.waitForTimeout(1500)
 const sufix = VOLUM ? `-vol${VOLUM}` : ''
 await p.pdf({ path: RAD + `Istoria-Romaniei-coperta${sufix}.pdf`, printBackground: true, preferCSSPageSize: true,

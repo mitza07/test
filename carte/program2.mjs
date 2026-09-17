@@ -20,6 +20,7 @@ const UA = 'IstoriaRomaniei-carte/1.0 (contact: mitza0704@gmail.com)'
    latimile din afara listei. 1920 e prima treapta peste cei 1700 px de care
    are nevoie tiparul la 6x9 inch. */
 const LAT = 1920
+const TREPTE = [250, 330, 500, 960, 1280, 1920]
 
 const liste = {}
 const lista = (g) => (liste[g] ||= JSON.parse(readFileSync(`${RAD}ilustratii/lista-${g}.json`, 'utf8')))
@@ -101,11 +102,11 @@ if (process.argv[1]?.endsWith('program2.mjs')) {
       dormi(pauza)
       let cod = '000', dim = 0
       try {
-        /* se cere cea mai mare treapta standard care nu depaseste originalul;
-           sub 1.280 px se cere 960, fiindca MediaWiki nu mareste, ci serveste
-           originalul asa cum e */
+        /* Se cere cea mai mare treapta standard STRICT sub latimea originalului.
+           Daca treapta ceruta ar depasi originalul, MediaWiki nu mareste: serveste
+           originalul — adica exact cererea pe care o refuza cu 429. */
         const w = m.latime || 0
-        const lat = (!w || w >= LAT) ? LAT : w >= 1280 ? 1280 : 960
+        const lat = (!w || w > LAT) ? LAT : TREPTE.filter((t) => t < w).pop() || 500
         cod = execFileSync('curl', ['-sSL', '--max-time', '180', '-A', UA, '-w', '%{http_code}',
           '-o', dest, adresaFisier(m.fisier, lat)], { stdio: ['pipe', 'pipe', 'pipe'] }).toString().trim()
         dim = existsSync(dest) ? statSync(dest).size : 0

@@ -13,7 +13,9 @@
   "latime": 3888,
   "inaltime": 5184,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1613,
+  "pxInaltime": 2150
  },
  {
   "n": 2,
@@ -29,7 +31,9 @@
   "latime": 3888,
   "inaltime": 5184,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1613,
+  "pxInaltime": 2150
  },
  {
   "n": 3,
@@ -45,7 +49,9 @@
   "latime": 5184,
   "inaltime": 3888,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1275
  },
  {
   "n": 4,
@@ -61,7 +67,9 @@
   "latime": 3648,
   "inaltime": 2736,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1275
  },
  {
   "n": 5,
@@ -77,7 +85,9 @@
   "latime": 3779,
   "inaltime": 3225,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1451
  },
  {
   "n": 6,
@@ -93,7 +103,9 @@
   "latime": 3779,
   "inaltime": 3225,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1451
  },
  {
   "n": 7,
@@ -109,7 +121,9 @@
   "latime": 5184,
   "inaltime": 3888,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1275
  },
  {
   "n": 8,
@@ -125,7 +139,9 @@
   "latime": 4671,
   "inaltime": 3473,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1264
  },
  {
   "n": 9,
@@ -141,7 +157,9 @@
   "latime": 2987,
   "inaltime": 4341,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1479,
+  "pxInaltime": 2150
  },
  {
   "n": 10,
@@ -157,7 +175,9 @@
   "latime": 1536,
   "inaltime": 2048,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1536,
+  "pxInaltime": 2048
  },
  {
   "n": 11,
@@ -173,7 +193,9 @@
   "latime": 2512,
   "inaltime": 2330,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1577
  },
  {
   "n": 12,
@@ -189,7 +211,9 @@
   "latime": 2000,
   "inaltime": 2000,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1700
  },
  {
   "n": 13,
@@ -205,7 +229,9 @@
   "latime": 4032,
   "inaltime": 3024,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1275
  },
  {
   "n": 14,
@@ -221,7 +247,9 @@
   "latime": 5729,
   "inaltime": 3192,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 947
  },
  {
   "n": 15,
@@ -237,7 +265,9 @@
   "latime": 4100,
   "inaltime": 6130,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1438,
+  "pxInaltime": 2150
  },
  {
   "n": 16,
@@ -253,7 +283,9 @@
   "latime": 1500,
   "inaltime": 2534,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1273,
+  "pxInaltime": 2150
  },
  {
   "n": 17,
@@ -269,7 +301,9 @@
   "latime": 3120,
   "inaltime": 4160,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1613,
+  "pxInaltime": 2150
  },
  {
   "n": 18,
@@ -285,7 +319,9 @@
   "latime": 6272,
   "inaltime": 4704,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1275
  },
  {
   "n": 19,
@@ -301,7 +337,9 @@
   "latime": 3712,
   "inaltime": 5760,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1386,
+  "pxInaltime": 2150
  },
  {
   "n": 20,
@@ -317,7 +355,9 @@
   "latime": 5230,
   "inaltime": 3706,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1205
  },
  {
   "n": 21,
@@ -333,7 +373,9 @@
   "latime": 4000,
   "inaltime": 6000,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1433,
+  "pxInaltime": 2150
  },
  {
   "n": 22,
@@ -349,7 +391,9 @@
   "latime": 5041,
   "inaltime": 3628,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1224
  },
  {
   "n": 23,
@@ -365,7 +409,9 @@
   "latime": 6226,
   "inaltime": 8515,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1572,
+  "pxInaltime": 2150
  },
  {
   "n": 24,
@@ -381,7 +427,9 @@
   "latime": 5146,
   "inaltime": 2574,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 850
  },
  {
   "n": 25,
@@ -397,7 +445,9 @@
   "latime": 1802,
   "inaltime": 1266,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1194
  },
  {
   "n": 26,
@@ -413,7 +463,9 @@
   "latime": 2973,
   "inaltime": 2221,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1270
  },
  {
   "n": 27,
@@ -429,7 +481,9 @@
   "latime": 2304,
   "inaltime": 3072,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1613,
+  "pxInaltime": 2150
  },
  {
   "n": 28,
@@ -445,7 +499,9 @@
   "latime": 8860,
   "inaltime": 12529,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1520,
+  "pxInaltime": 2150
  },
  {
   "n": 29,
@@ -461,7 +517,9 @@
   "latime": 13536,
   "inaltime": 11788,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1480
  },
  {
   "n": 30,
@@ -477,7 +535,9 @@
   "latime": 12754,
   "inaltime": 9534,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1271
  },
  {
   "n": 31,
@@ -493,7 +553,9 @@
   "latime": 5577,
   "inaltime": 4716,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1438
  },
  {
   "n": 32,
@@ -509,7 +571,9 @@
   "latime": 14619,
   "inaltime": 10712,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1246
  },
  {
   "n": 33,
@@ -525,7 +589,9 @@
   "latime": 11802,
   "inaltime": 9526,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1372
  },
  {
   "n": 34,
@@ -541,7 +607,9 @@
   "latime": 7607,
   "inaltime": 5300,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1185
  },
  {
   "n": 35,
@@ -557,7 +625,9 @@
   "latime": 6913,
   "inaltime": 8478,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 2085
  },
  {
   "n": 36,
@@ -573,7 +643,9 @@
   "latime": 7323,
   "inaltime": 6231,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1447
  },
  {
   "n": 37,
@@ -587,7 +659,9 @@
   "licenta": "domeniu public",
   "tipLicenta": "domeniu public",
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1544,
+  "pxInaltime": 2150
  },
  {
   "n": 38,
@@ -601,7 +675,9 @@
   "licenta": "domeniu public",
   "tipLicenta": "domeniu public",
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1117
  },
  {
   "n": 39,
@@ -615,7 +691,9 @@
   "licenta": "domeniu public",
   "tipLicenta": "domeniu public",
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1351
  },
  {
   "n": 40,
@@ -629,7 +707,9 @@
   "licenta": "domeniu public",
   "tipLicenta": "domeniu public",
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1355
  },
  {
   "n": 41,
@@ -643,7 +723,9 @@
   "licenta": "CC BY",
   "tipLicenta": "CC BY",
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1142
  },
  {
   "n": 42,
@@ -657,7 +739,9 @@
   "licenta": "domeniu public",
   "tipLicenta": "domeniu public",
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1020
  },
  {
   "n": 43,
@@ -671,7 +755,9 @@
   "licenta": "CC BY",
   "tipLicenta": "CC BY",
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1129
  },
  {
   "n": 44,
@@ -687,7 +773,9 @@
   "latime": 6048,
   "inaltime": 4032,
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1133
  },
  {
   "n": 45,
@@ -701,7 +789,9 @@
   "licenta": "domeniu public",
   "tipLicenta": "domeniu public",
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1381
  },
  {
   "n": 46,
@@ -715,7 +805,9 @@
   "licenta": "domeniu public",
   "tipLicenta": "domeniu public",
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1303
  },
  {
   "n": 47,
@@ -729,7 +821,9 @@
   "licenta": "domeniu public",
   "tipLicenta": "domeniu public",
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 1681
  },
  {
   "n": 48,
@@ -743,7 +837,9 @@
   "licenta": "CC BY",
   "tipLicenta": "CC BY",
   "sursa": "Wikimedia Commons",
-  "val": 1
+  "val": 1,
+  "pxLatime": 1700,
+  "pxInaltime": 956
  },
  {
   "cap": "burebista",
@@ -761,7 +857,9 @@
   "val": 2,
   "grup": "antichitate",
   "n": 49,
-  "local": "ilustratii/mari/burebista-d41eb50bd3.jpg"
+  "local": "ilustratii/mari/burebista-d41eb50bd3.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1171
  },
  {
   "cap": "dacia-romana",
@@ -779,7 +877,9 @@
   "val": 2,
   "grup": "antichitate",
   "n": 50,
-  "local": "ilustratii/mari/dacia-romana-e34e63cf8d.jpg"
+  "local": "ilustratii/mari/dacia-romana-e34e63cf8d.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1317
  },
  {
   "cap": "decebal",
@@ -797,7 +897,9 @@
   "val": 2,
   "grup": "antichitate",
   "n": 51,
-  "local": "ilustratii/mari/decebal-ad2d30eb6a.jpg"
+  "local": "ilustratii/mari/decebal-ad2d30eb6a.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 853
  },
  {
   "cap": "decebal",
@@ -815,7 +917,9 @@
   "val": 2,
   "grup": "antichitate",
   "n": 52,
-  "local": "ilustratii/mari/decebal-1dbb7b218f.jpg"
+  "local": "ilustratii/mari/decebal-1dbb7b218f.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1007
  },
  {
   "cap": "decebal",
@@ -833,7 +937,9 @@
   "val": 2,
   "grup": "antichitate",
   "n": 53,
-  "local": "ilustratii/mari/decebal-3406fd0751.jpg"
+  "local": "ilustratii/mari/decebal-3406fd0751.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 859
  },
  {
   "cap": "decebal",
@@ -851,7 +957,9 @@
   "val": 2,
   "grup": "antichitate",
   "n": 54,
-  "local": "ilustratii/mari/decebal-2a9b444a82.jpg"
+  "local": "ilustratii/mari/decebal-2a9b444a82.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1066
  },
  {
   "cap": "dacia-romana",
@@ -869,7 +977,9 @@
   "val": 2,
   "grup": "antichitate",
   "n": 55,
-  "local": "ilustratii/mari/dacia-romana-69cbcfb933.jpg"
+  "local": "ilustratii/mari/dacia-romana-69cbcfb933.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1683
  },
  {
   "cap": "burebista",
@@ -887,7 +997,9 @@
   "val": 2,
   "grup": "antichitate",
   "n": 56,
-  "local": "ilustratii/mari/burebista-27c41b3a36.jpg"
+  "local": "ilustratii/mari/burebista-27c41b3a36.jpg",
+  "pxLatime": 500,
+  "pxInaltime": 775
  },
  {
   "cap": "preistorie",
@@ -905,7 +1017,9 @@
   "val": 2,
   "grup": "antichitate",
   "n": 57,
-  "local": "ilustratii/mari/preistorie-ce7dc47d8d.jpg"
+  "local": "ilustratii/mari/preistorie-ce7dc47d8d.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 547
  },
  {
   "cap": "dacia-romana",
@@ -923,7 +1037,9 @@
   "val": 2,
   "grup": "antichitate",
   "n": 58,
-  "local": "ilustratii/mari/dacia-romana-bea46811c0.jpg"
+  "local": "ilustratii/mari/dacia-romana-bea46811c0.jpg",
+  "pxLatime": 1613,
+  "pxInaltime": 2150
  },
  {
   "cap": "atlas",
@@ -941,7 +1057,9 @@
   "val": 2,
   "grup": "antichitate",
   "n": 59,
-  "local": "ilustratii/mari/atlas-d3f913645c.jpg"
+  "local": "ilustratii/mari/atlas-d3f913645c.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1351
  },
  {
   "cap": "atlas",
@@ -959,7 +1077,9 @@
   "val": 2,
   "grup": "antichitate",
   "n": 60,
-  "local": "ilustratii/mari/atlas-5b22590dbc.jpg"
+  "local": "ilustratii/mari/atlas-5b22590dbc.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1379
  },
  {
   "cap": "intemeiere",
@@ -977,7 +1097,9 @@
   "val": 2,
   "grup": "medieval",
   "n": 61,
-  "local": "ilustratii/mari/intemeiere-3d589f387a.jpg"
+  "local": "ilustratii/mari/intemeiere-3d589f387a.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1920
  },
  {
   "cap": "intemeiere",
@@ -995,7 +1117,9 @@
   "val": 2,
   "grup": "medieval",
   "n": 62,
-  "local": "ilustratii/mari/intemeiere-5cc69fa3b9.jpg"
+  "local": "ilustratii/mari/intemeiere-5cc69fa3b9.jpg",
+  "pxLatime": 1133,
+  "pxInaltime": 819
  },
  {
   "cap": "intemeiere",
@@ -1013,7 +1137,9 @@
   "val": 2,
   "grup": "medieval",
   "n": 63,
-  "local": "ilustratii/mari/intemeiere-be588ce646.jpg"
+  "local": "ilustratii/mari/intemeiere-be588ce646.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1493
  },
  {
   "cap": "voievodate",
@@ -1031,7 +1157,9 @@
   "val": 2,
   "grup": "medieval",
   "n": 64,
-  "local": "ilustratii/mari/voievodate-7d20eee01d.jpg"
+  "local": "ilustratii/mari/voievodate-7d20eee01d.jpg",
+  "pxLatime": 1222,
+  "pxInaltime": 753
  },
  {
   "cap": "voievodate",
@@ -1049,7 +1177,9 @@
   "val": 2,
   "grup": "medieval",
   "n": 65,
-  "local": "ilustratii/mari/voievodate-04ba16e9ca.jpg"
+  "local": "ilustratii/mari/voievodate-04ba16e9ca.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1676
  },
  {
   "cap": "voievodate",
@@ -1067,7 +1197,9 @@
   "val": 2,
   "grup": "medieval",
   "n": 66,
-  "local": "ilustratii/mari/voievodate-04231308ca.jpg"
+  "local": "ilustratii/mari/voievodate-04231308ca.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1693
  },
  {
   "cap": "intemeiere",
@@ -1085,7 +1217,9 @@
   "val": 2,
   "grup": "medieval",
   "n": 67,
-  "local": "ilustratii/mari/intemeiere-079034aabf.jpg"
+  "local": "ilustratii/mari/intemeiere-079034aabf.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1141
  },
  {
   "cap": "intemeiere",
@@ -1103,7 +1237,9 @@
   "val": 2,
   "grup": "medieval",
   "n": 68,
-  "local": "ilustratii/mari/intemeiere-d51f7ce322.jpg"
+  "local": "ilustratii/mari/intemeiere-d51f7ce322.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 818
  },
  {
   "cap": "cruciada",
@@ -1121,7 +1257,9 @@
   "val": 2,
   "grup": "medieval",
   "n": 69,
-  "local": "ilustratii/mari/cruciada-540775f4a0.jpg"
+  "local": "ilustratii/mari/cruciada-540775f4a0.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 718
  },
  {
   "cap": "otoman",
@@ -1139,7 +1277,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 70,
-  "local": "ilustratii/mari/otoman-8a57764ff1.jpg"
+  "local": "ilustratii/mari/otoman-8a57764ff1.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1319
  },
  {
   "cap": "otoman",
@@ -1157,7 +1297,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 71,
-  "local": "ilustratii/mari/otoman-5d30caf37d.jpg"
+  "local": "ilustratii/mari/otoman-5d30caf37d.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 746
  },
  {
   "cap": "otoman",
@@ -1175,7 +1317,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 72,
-  "local": "ilustratii/mari/otoman-f33d6433e7.jpg"
+  "local": "ilustratii/mari/otoman-f33d6433e7.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1033
  },
  {
   "cap": "otoman",
@@ -1193,7 +1337,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 73,
-  "local": "ilustratii/mari/otoman-64601ad9c6.jpg"
+  "local": "ilustratii/mari/otoman-64601ad9c6.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 779
  },
  {
   "cap": "cruciada",
@@ -1211,7 +1357,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 74,
-  "local": "ilustratii/mari/cruciada-95b24f0ec6.jpg"
+  "local": "ilustratii/mari/cruciada-95b24f0ec6.jpg",
+  "pxLatime": 500,
+  "pxInaltime": 359
  },
  {
   "cap": "cruciada",
@@ -1229,7 +1377,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 75,
-  "local": "ilustratii/mari/cruciada-4c417c023d.jpg"
+  "local": "ilustratii/mari/cruciada-4c417c023d.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1130
  },
  {
   "cap": "cruciada",
@@ -1247,7 +1397,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 76,
-  "local": "ilustratii/mari/cruciada-108f5a21f4.jpg"
+  "local": "ilustratii/mari/cruciada-108f5a21f4.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 939
  },
  {
   "cap": "brancoveanu",
@@ -1265,7 +1417,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 77,
-  "local": "ilustratii/mari/brancoveanu-4224462aba.jpg"
+  "local": "ilustratii/mari/brancoveanu-4224462aba.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 868
  },
  {
   "cap": "brancoveanu",
@@ -1283,7 +1437,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 78,
-  "local": "ilustratii/mari/brancoveanu-42be9842d2.jpg"
+  "local": "ilustratii/mari/brancoveanu-42be9842d2.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 889
  },
  {
   "cap": "otoman",
@@ -1301,7 +1457,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 79,
-  "local": "ilustratii/mari/otoman-512943ed73.jpg"
+  "local": "ilustratii/mari/otoman-512943ed73.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 844
  },
  {
   "cap": "otoman",
@@ -1319,7 +1477,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 80,
-  "local": "ilustratii/mari/otoman-7cd9b31dbd.jpg"
+  "local": "ilustratii/mari/otoman-7cd9b31dbd.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 643
  },
  {
   "cap": "brancoveanu",
@@ -1337,7 +1497,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 81,
-  "local": "ilustratii/mari/brancoveanu-0f3c4ecf47.jpg"
+  "local": "ilustratii/mari/brancoveanu-0f3c4ecf47.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1143
  },
  {
   "cap": "brancoveanu",
@@ -1355,7 +1517,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 82,
-  "local": "ilustratii/mari/brancoveanu-2bcc8898e6.jpg"
+  "local": "ilustratii/mari/brancoveanu-2bcc8898e6.jpg",
+  "pxLatime": 1498,
+  "pxInaltime": 2150
  },
  {
   "cap": "brancoveanu",
@@ -1373,7 +1537,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 83,
-  "local": "ilustratii/mari/brancoveanu-9e8d115585.jpg"
+  "local": "ilustratii/mari/brancoveanu-9e8d115585.jpg",
+  "pxLatime": 1659,
+  "pxInaltime": 2150
  },
  {
   "cap": "brancoveanu",
@@ -1391,7 +1557,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 84,
-  "local": "ilustratii/mari/brancoveanu-42b661b9c9.jpg"
+  "local": "ilustratii/mari/brancoveanu-42b661b9c9.jpg",
+  "pxLatime": 1319,
+  "pxInaltime": 2150
  },
  {
   "cap": "brancoveanu",
@@ -1409,7 +1577,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 85,
-  "local": "ilustratii/mari/brancoveanu-62d0291026.jpg"
+  "local": "ilustratii/mari/brancoveanu-62d0291026.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1360
  },
  {
   "cap": "brancoveanu",
@@ -1427,7 +1597,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 86,
-  "local": "ilustratii/mari/brancoveanu-a3fb125bc5.jpg"
+  "local": "ilustratii/mari/brancoveanu-a3fb125bc5.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 2119
  },
  {
   "cap": "fanarioti",
@@ -1445,7 +1617,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 87,
-  "local": "ilustratii/mari/fanarioti-7eddd03c02.jpg"
+  "local": "ilustratii/mari/fanarioti-7eddd03c02.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 781
  },
  {
   "cap": "otoman",
@@ -1463,7 +1637,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 88,
-  "local": "ilustratii/mari/otoman-8882b7a273.jpg"
+  "local": "ilustratii/mari/otoman-8882b7a273.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1352
  },
  {
   "cap": "renastere",
@@ -1481,7 +1657,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 89,
-  "local": "ilustratii/mari/renastere-1a78bec6cb.jpg"
+  "local": "ilustratii/mari/renastere-1a78bec6cb.jpg",
+  "pxLatime": 1396,
+  "pxInaltime": 2150
  },
  {
   "cap": "renastere",
@@ -1499,7 +1677,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 90,
-  "local": "ilustratii/mari/renastere-e7aa84f8dc.jpg"
+  "local": "ilustratii/mari/renastere-e7aa84f8dc.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1492
  },
  {
   "cap": "renastere",
@@ -1517,7 +1697,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 91,
-  "local": "ilustratii/mari/renastere-642b8d6636.jpg"
+  "local": "ilustratii/mari/renastere-642b8d6636.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1387
  },
  {
   "cap": "renastere",
@@ -1535,7 +1717,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 92,
-  "local": "ilustratii/mari/renastere-dacd6036e1.jpg"
+  "local": "ilustratii/mari/renastere-dacd6036e1.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1084
  },
  {
   "cap": "regat",
@@ -1553,7 +1737,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 93,
-  "local": "ilustratii/mari/regat-bc834e718a.jpg"
+  "local": "ilustratii/mari/regat-bc834e718a.jpg",
+  "pxLatime": 1551,
+  "pxInaltime": 2150
  },
  {
   "cap": "regat",
@@ -1571,7 +1757,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 94,
-  "local": "ilustratii/mari/regat-e9935105d8.jpg"
+  "local": "ilustratii/mari/regat-e9935105d8.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 777
  },
  {
   "cap": "regat",
@@ -1589,7 +1777,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 95,
-  "local": "ilustratii/mari/regat-7de07f5091.jpg"
+  "local": "ilustratii/mari/regat-7de07f5091.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1069
  },
  {
   "cap": "mare-razboi",
@@ -1607,7 +1797,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 96,
-  "local": "ilustratii/mari/mare-razboi-3d65d54598.jpg"
+  "local": "ilustratii/mari/mare-razboi-3d65d54598.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 693
  },
  {
   "cap": "interbelic",
@@ -1625,7 +1817,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 97,
-  "local": "ilustratii/mari/interbelic-a46ca6489b.jpg"
+  "local": "ilustratii/mari/interbelic-a46ca6489b.jpg",
+  "pxLatime": 1518,
+  "pxInaltime": 2150
  },
  {
   "cap": "regat",
@@ -1643,7 +1837,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 98,
-  "local": "ilustratii/mari/regat-61dc79f62c.jpg"
+  "local": "ilustratii/mari/regat-61dc79f62c.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1681
  },
  {
   "cap": "regat",
@@ -1661,7 +1857,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 99,
-  "local": "ilustratii/mari/regat-e3a18d5cf0.jpg"
+  "local": "ilustratii/mari/regat-e3a18d5cf0.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 2016
  },
  {
   "cap": "renastere",
@@ -1679,7 +1877,9 @@
   "val": 2,
   "grup": "portrete",
   "n": 100,
-  "local": "ilustratii/mari/renastere-e8c0b78a72.jpg"
+  "local": "ilustratii/mari/renastere-e8c0b78a72.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1591
  },
  {
   "cap": "brancoveanu",
@@ -1697,7 +1897,9 @@
   "val": 2,
   "grup": "tiparituri",
   "n": 101,
-  "local": "ilustratii/mari/brancoveanu-c5957fe233.jpg"
+  "local": "ilustratii/mari/brancoveanu-c5957fe233.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1677
  },
  {
   "cap": "brancoveanu",
@@ -1715,7 +1917,9 @@
   "val": 2,
   "grup": "tiparituri",
   "n": 102,
-  "local": "ilustratii/mari/brancoveanu-ada6844f8c.jpg"
+  "local": "ilustratii/mari/brancoveanu-ada6844f8c.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1701
  },
  {
   "cap": "brancoveanu",
@@ -1733,7 +1937,9 @@
   "val": 2,
   "grup": "tiparituri",
   "n": 103,
-  "local": "ilustratii/mari/brancoveanu-ec9d31146e.jpg"
+  "local": "ilustratii/mari/brancoveanu-ec9d31146e.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1740
  },
  {
   "cap": "religie",
@@ -1751,7 +1957,9 @@
   "val": 2,
   "grup": "tiparituri",
   "n": 104,
-  "local": "ilustratii/mari/religie-376e2bc319.jpg"
+  "local": "ilustratii/mari/religie-376e2bc319.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1702
  },
  {
   "cap": "religie",
@@ -1769,7 +1977,9 @@
   "val": 2,
   "grup": "tiparituri",
   "n": 105,
-  "local": "ilustratii/mari/religie-9bd926b4d8.jpg"
+  "local": "ilustratii/mari/religie-9bd926b4d8.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1457
  },
  {
   "cap": "limba",
@@ -1787,7 +1997,9 @@
   "val": 2,
   "grup": "tiparituri",
   "n": 106,
-  "local": "ilustratii/mari/limba-71e2dc16db.jpg"
+  "local": "ilustratii/mari/limba-71e2dc16db.jpg",
+  "pxLatime": 1398,
+  "pxInaltime": 2150
  },
  {
   "cap": "renastere",
@@ -1805,7 +2017,9 @@
   "val": 2,
   "grup": "tiparituri",
   "n": 107,
-  "local": "ilustratii/mari/renastere-0260f8e3ec.jpg"
+  "local": "ilustratii/mari/renastere-0260f8e3ec.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1929
  },
  {
   "cap": "renastere",
@@ -1823,7 +2037,9 @@
   "val": 2,
   "grup": "tiparituri",
   "n": 108,
-  "local": "ilustratii/mari/renastere-01bcb85884.jpg"
+  "local": "ilustratii/mari/renastere-01bcb85884.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1948
  },
  {
   "cap": "orase",
@@ -1841,7 +2057,9 @@
   "val": 2,
   "grup": "tiparituri",
   "n": 109,
-  "local": "ilustratii/mari/orase-fffbd9d468.jpg"
+  "local": "ilustratii/mari/orase-fffbd9d468.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1166
  },
  {
   "cap": "regat",
@@ -1859,7 +2077,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 110,
-  "local": "ilustratii/mari/regat-82957c10c2.jpg"
+  "local": "ilustratii/mari/regat-82957c10c2.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 926
  },
  {
   "cap": "regat",
@@ -1877,7 +2097,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 111,
-  "local": "ilustratii/mari/regat-06a47b73c2.jpg"
+  "local": "ilustratii/mari/regat-06a47b73c2.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 998
  },
  {
   "cap": "regat",
@@ -1895,7 +2117,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 112,
-  "local": "ilustratii/mari/regat-5543bb6b33.jpg"
+  "local": "ilustratii/mari/regat-5543bb6b33.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 894
  },
  {
   "cap": "regat",
@@ -1913,7 +2137,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 113,
-  "local": "ilustratii/mari/regat-8b2afd3aa3.jpg"
+  "local": "ilustratii/mari/regat-8b2afd3aa3.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1260
  },
  {
   "cap": "regat",
@@ -1931,7 +2157,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 114,
-  "local": "ilustratii/mari/regat-29f068fe76.jpg"
+  "local": "ilustratii/mari/regat-29f068fe76.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1655
  },
  {
   "cap": "regat",
@@ -1949,7 +2177,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 115,
-  "local": "ilustratii/mari/regat-42c8e94140.jpg"
+  "local": "ilustratii/mari/regat-42c8e94140.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 885
  },
  {
   "cap": "regat",
@@ -1967,7 +2197,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 116,
-  "local": "ilustratii/mari/regat-53bbda2274.jpg"
+  "local": "ilustratii/mari/regat-53bbda2274.jpg",
+  "pxLatime": 1697,
+  "pxInaltime": 2150
  },
  {
   "cap": "regat",
@@ -1985,7 +2217,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 117,
-  "local": "ilustratii/mari/regat-1753d632f1.jpg"
+  "local": "ilustratii/mari/regat-1753d632f1.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1643
  },
  {
   "cap": "regat",
@@ -2003,7 +2237,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 118,
-  "local": "ilustratii/mari/regat-e0f1db1ec7.jpg"
+  "local": "ilustratii/mari/regat-e0f1db1ec7.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1376
  },
  {
   "cap": "regat",
@@ -2021,7 +2257,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 119,
-  "local": "ilustratii/mari/regat-1a87be28ea.jpg"
+  "local": "ilustratii/mari/regat-1a87be28ea.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 820
  },
  {
   "cap": "regat",
@@ -2039,7 +2277,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 120,
-  "local": "ilustratii/mari/regat-601534b3c5.jpg"
+  "local": "ilustratii/mari/regat-601534b3c5.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1162
  },
  {
   "cap": "regat",
@@ -2057,7 +2297,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 121,
-  "local": "ilustratii/mari/regat-d40d89e11c.jpg"
+  "local": "ilustratii/mari/regat-d40d89e11c.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 754
  },
  {
   "cap": "regat",
@@ -2075,7 +2317,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 122,
-  "local": "ilustratii/mari/regat-fe8cf2d049.jpg"
+  "local": "ilustratii/mari/regat-fe8cf2d049.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 622
  },
  {
   "cap": "regat",
@@ -2093,7 +2337,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 123,
-  "local": "ilustratii/mari/regat-2f54b40e04.jpg"
+  "local": "ilustratii/mari/regat-2f54b40e04.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1162
  },
  {
   "cap": "regat",
@@ -2111,7 +2357,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 124,
-  "local": "ilustratii/mari/regat-e12330bd29.jpg"
+  "local": "ilustratii/mari/regat-e12330bd29.jpg",
+  "pxLatime": 1539,
+  "pxInaltime": 2150
  },
  {
   "cap": "regat",
@@ -2129,7 +2377,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 125,
-  "local": "ilustratii/mari/regat-3660fbb5d9.jpg"
+  "local": "ilustratii/mari/regat-3660fbb5d9.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1162
  },
  {
   "cap": "regat",
@@ -2147,7 +2397,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 126,
-  "local": "ilustratii/mari/regat-85cfeaf526.jpg"
+  "local": "ilustratii/mari/regat-85cfeaf526.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1000
  },
  {
   "cap": "atlas",
@@ -2165,7 +2417,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 127,
-  "local": "ilustratii/mari/atlas-54cfd480fc.jpg"
+  "local": "ilustratii/mari/atlas-54cfd480fc.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 2006
  },
  {
   "cap": "minoritati",
@@ -2183,7 +2437,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 128,
-  "local": "ilustratii/mari/minoritati-32e2985880.jpg"
+  "local": "ilustratii/mari/minoritati-32e2985880.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 954
  },
  {
   "cap": "mare-razboi",
@@ -2201,7 +2457,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 129,
-  "local": "ilustratii/mari/mare-razboi-4ec797f6c3.jpg"
+  "local": "ilustratii/mari/mare-razboi-4ec797f6c3.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 929
  },
  {
   "cap": "regat",
@@ -2219,7 +2477,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 130,
-  "local": "ilustratii/mari/regat-04a734838f.jpg"
+  "local": "ilustratii/mari/regat-04a734838f.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1243
  },
  {
   "cap": "orase",
@@ -2237,7 +2497,9 @@
   "val": 2,
   "grup": "sec19",
   "n": 131,
-  "local": "ilustratii/mari/orase-ae84cdf4c2.jpg"
+  "local": "ilustratii/mari/orase-ae84cdf4c2.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1172
  },
  {
   "cap": "romi",
@@ -2255,7 +2517,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 132,
-  "local": "ilustratii/mari/romi-479b6daa0c.jpg"
+  "local": "ilustratii/mari/romi-479b6daa0c.jpg",
+  "pxLatime": 500,
+  "pxInaltime": 917
  },
  {
   "cap": "orase",
@@ -2273,7 +2537,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 133,
-  "local": "ilustratii/mari/orase-57f01f695a.jpg"
+  "local": "ilustratii/mari/orase-57f01f695a.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 916
  },
  {
   "cap": "orase",
@@ -2291,7 +2557,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 134,
-  "local": "ilustratii/mari/orase-cdb317d1b0.jpg"
+  "local": "ilustratii/mari/orase-cdb317d1b0.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 720
  },
  {
   "cap": "orase",
@@ -2309,7 +2577,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 135,
-  "local": "ilustratii/mari/orase-2615cee36f.jpg"
+  "local": "ilustratii/mari/orase-2615cee36f.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 564
  },
  {
   "cap": "orase",
@@ -2327,7 +2597,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 136,
-  "local": "ilustratii/mari/orase-48d869efc2.jpg"
+  "local": "ilustratii/mari/orase-48d869efc2.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 940
  },
  {
   "cap": "orase",
@@ -2345,7 +2617,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 137,
-  "local": "ilustratii/mari/orase-b50942986d.jpg"
+  "local": "ilustratii/mari/orase-b50942986d.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 785
  },
  {
   "cap": "orase",
@@ -2363,7 +2637,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 138,
-  "local": "ilustratii/mari/orase-1877422674.jpg"
+  "local": "ilustratii/mari/orase-1877422674.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 703
  },
  {
   "cap": "orase",
@@ -2381,7 +2657,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 139,
-  "local": "ilustratii/mari/orase-9f0bd754c4.jpg"
+  "local": "ilustratii/mari/orase-9f0bd754c4.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1123
  },
  {
   "cap": "orase",
@@ -2399,7 +2677,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 140,
-  "local": "ilustratii/mari/orase-878b2f828e.jpg"
+  "local": "ilustratii/mari/orase-878b2f828e.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1257
  },
  {
   "cap": "orase",
@@ -2417,7 +2697,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 141,
-  "local": "ilustratii/mari/orase-dcbcc1d9a6.jpg"
+  "local": "ilustratii/mari/orase-dcbcc1d9a6.jpg",
+  "pxLatime": 1457,
+  "pxInaltime": 2150
  },
  {
   "cap": "orase",
@@ -2435,7 +2717,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 142,
-  "local": "ilustratii/mari/orase-c82b63f6b3.jpg"
+  "local": "ilustratii/mari/orase-c82b63f6b3.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 570
  },
  {
   "cap": "orase",
@@ -2453,7 +2737,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 143,
-  "local": "ilustratii/mari/orase-06e290366a.jpg"
+  "local": "ilustratii/mari/orase-06e290366a.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 572
  },
  {
   "cap": "orase",
@@ -2471,7 +2757,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 144,
-  "local": "ilustratii/mari/orase-2f8c206fdb.jpg"
+  "local": "ilustratii/mari/orase-2f8c206fdb.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 841
  },
  {
   "cap": "renastere",
@@ -2489,7 +2777,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 145,
-  "local": "ilustratii/mari/renastere-671c277cba.jpg"
+  "local": "ilustratii/mari/renastere-671c277cba.jpg",
+  "pxLatime": 500,
+  "pxInaltime": 671
  },
  {
   "cap": "cultura",
@@ -2507,7 +2797,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 146,
-  "local": "ilustratii/mari/cultura-8a4e10d067.jpg"
+  "local": "ilustratii/mari/cultura-8a4e10d067.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1545
  },
  {
   "cap": "mare-razboi",
@@ -2525,7 +2817,9 @@
   "val": 2,
   "grup": "orase-vechi",
   "n": 147,
-  "local": "ilustratii/mari/mare-razboi-2f5a76c950.jpg"
+  "local": "ilustratii/mari/mare-razboi-2f5a76c950.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1098
  },
  {
   "cap": "mare-razboi",
@@ -2543,7 +2837,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 148,
-  "local": "ilustratii/mari/mare-razboi-d39820fc4f.jpg"
+  "local": "ilustratii/mari/mare-razboi-d39820fc4f.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1291
  },
  {
   "cap": "mare-razboi",
@@ -2561,7 +2857,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 149,
-  "local": "ilustratii/mari/mare-razboi-c10062a488.jpg"
+  "local": "ilustratii/mari/mare-razboi-c10062a488.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1283
  },
  {
   "cap": "mare-razboi",
@@ -2579,7 +2877,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 150,
-  "local": "ilustratii/mari/mare-razboi-f2cacc1954.jpg"
+  "local": "ilustratii/mari/mare-razboi-f2cacc1954.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1012
  },
  {
   "cap": "mare-razboi",
@@ -2597,7 +2897,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 151,
-  "local": "ilustratii/mari/mare-razboi-b2c36f3471.jpg"
+  "local": "ilustratii/mari/mare-razboi-b2c36f3471.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1169
  },
  {
   "cap": "mare-razboi",
@@ -2615,7 +2917,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 152,
-  "local": "ilustratii/mari/mare-razboi-c5a2eb91c3.jpg"
+  "local": "ilustratii/mari/mare-razboi-c5a2eb91c3.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1313
  },
  {
   "cap": "mare-razboi",
@@ -2633,7 +2937,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 153,
-  "local": "ilustratii/mari/mare-razboi-c413eced2f.jpg"
+  "local": "ilustratii/mari/mare-razboi-c413eced2f.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 601
  },
  {
   "cap": "mare-razboi",
@@ -2651,7 +2957,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 154,
-  "local": "ilustratii/mari/mare-razboi-3c1b25fbcf.jpg"
+  "local": "ilustratii/mari/mare-razboi-3c1b25fbcf.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 627
  },
  {
   "cap": "mare-razboi",
@@ -2669,7 +2977,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 155,
-  "local": "ilustratii/mari/mare-razboi-17e5dfaf79.jpg"
+  "local": "ilustratii/mari/mare-razboi-17e5dfaf79.jpg",
+  "pxLatime": 500,
+  "pxInaltime": 722
  },
  {
   "cap": "mare-razboi",
@@ -2687,7 +2997,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 156,
-  "local": "ilustratii/mari/mare-razboi-e7a446d5a3.jpg"
+  "local": "ilustratii/mari/mare-razboi-e7a446d5a3.jpg",
+  "pxLatime": 500,
+  "pxInaltime": 568
  },
  {
   "cap": "mare-razboi",
@@ -2705,7 +3017,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 157,
-  "local": "ilustratii/mari/mare-razboi-0d501d2e67.jpg"
+  "local": "ilustratii/mari/mare-razboi-0d501d2e67.jpg",
+  "pxLatime": 985,
+  "pxInaltime": 447
  },
  {
   "cap": "mare-razboi",
@@ -2723,7 +3037,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 158,
-  "local": "ilustratii/mari/mare-razboi-2729303a54.jpg"
+  "local": "ilustratii/mari/mare-razboi-2729303a54.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 846
  },
  {
   "cap": "mare-razboi",
@@ -2741,7 +3057,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 159,
-  "local": "ilustratii/mari/mare-razboi-3669733087.jpg"
+  "local": "ilustratii/mari/mare-razboi-3669733087.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 769
  },
  {
   "cap": "razboi2",
@@ -2759,7 +3077,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 160,
-  "local": "ilustratii/mari/razboi2-70bbea7389.jpg"
+  "local": "ilustratii/mari/razboi2-70bbea7389.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1119
  },
  {
   "cap": "razboi2",
@@ -2777,7 +3097,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 161,
-  "local": "ilustratii/mari/razboi2-00a4f5cac4.jpg"
+  "local": "ilustratii/mari/razboi2-00a4f5cac4.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1123
  },
  {
   "cap": "razboi2",
@@ -2795,7 +3117,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 162,
-  "local": "ilustratii/mari/razboi2-7795dcc78a.jpg"
+  "local": "ilustratii/mari/razboi2-7795dcc78a.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1131
  },
  {
   "cap": "razboi2",
@@ -2813,7 +3137,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 163,
-  "local": "ilustratii/mari/razboi2-88cb8e7f5a.jpg"
+  "local": "ilustratii/mari/razboi2-88cb8e7f5a.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1104
  },
  {
   "cap": "razboi2",
@@ -2831,7 +3157,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 164,
-  "local": "ilustratii/mari/razboi2-61bdc34a35.jpg"
+  "local": "ilustratii/mari/razboi2-61bdc34a35.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1117
  },
  {
   "cap": "razboi2",
@@ -2849,7 +3177,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 165,
-  "local": "ilustratii/mari/razboi2-025dc6f668.jpg"
+  "local": "ilustratii/mari/razboi2-025dc6f668.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1095
  },
  {
   "cap": "razboi2",
@@ -2867,7 +3197,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 166,
-  "local": "ilustratii/mari/razboi2-24047e594d.jpg"
+  "local": "ilustratii/mari/razboi2-24047e594d.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1099
  },
  {
   "cap": "razboi2",
@@ -2885,7 +3217,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 167,
-  "local": "ilustratii/mari/razboi2-67a9ea6d57.jpg"
+  "local": "ilustratii/mari/razboi2-67a9ea6d57.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1314
  },
  {
   "cap": "razboi2",
@@ -2903,7 +3237,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 168,
-  "local": "ilustratii/mari/razboi2-8d87e48bcd.jpg"
+  "local": "ilustratii/mari/razboi2-8d87e48bcd.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1219
  },
  {
   "cap": "evrei",
@@ -2921,7 +3257,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 169,
-  "local": "ilustratii/mari/evrei-db798db4a8.jpg"
+  "local": "ilustratii/mari/evrei-db798db4a8.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1939
  },
  {
   "cap": "evrei",
@@ -2939,7 +3277,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 170,
-  "local": "ilustratii/mari/evrei-494bf1f963.jpg"
+  "local": "ilustratii/mari/evrei-494bf1f963.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1046
  },
  {
   "cap": "evrei",
@@ -2957,7 +3297,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 171,
-  "local": "ilustratii/mari/evrei-2811d0e027.jpg"
+  "local": "ilustratii/mari/evrei-2811d0e027.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1116
  },
  {
   "cap": "evrei",
@@ -2975,7 +3317,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 172,
-  "local": "ilustratii/mari/evrei-8501e5e216.jpg"
+  "local": "ilustratii/mari/evrei-8501e5e216.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1236
  },
  {
   "cap": "evrei",
@@ -2993,7 +3337,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 173,
-  "local": "ilustratii/mari/evrei-b5a1b96242.jpg"
+  "local": "ilustratii/mari/evrei-b5a1b96242.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 625
  },
  {
   "cap": "evrei",
@@ -3011,7 +3357,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 174,
-  "local": "ilustratii/mari/evrei-235d020f13.jpg"
+  "local": "ilustratii/mari/evrei-235d020f13.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 644
  },
  {
   "cap": "evrei",
@@ -3029,7 +3377,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 175,
-  "local": "ilustratii/mari/evrei-8adb9ef13d.jpg"
+  "local": "ilustratii/mari/evrei-8adb9ef13d.jpg",
+  "pxLatime": 1683,
+  "pxInaltime": 2150
  },
  {
   "cap": "evrei",
@@ -3047,7 +3397,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 176,
-  "local": "ilustratii/mari/evrei-f7cf6fa3f8.jpg"
+  "local": "ilustratii/mari/evrei-f7cf6fa3f8.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 715
  },
  {
   "cap": "razboi2",
@@ -3065,7 +3417,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 177,
-  "local": "ilustratii/mari/razboi2-097f64538c.jpg"
+  "local": "ilustratii/mari/razboi2-097f64538c.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1006
  },
  {
   "cap": "evrei",
@@ -3083,7 +3437,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 178,
-  "local": "ilustratii/mari/evrei-1f6b1d90d8.jpg"
+  "local": "ilustratii/mari/evrei-1f6b1d90d8.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 653
  },
  {
   "cap": "razboi2",
@@ -3101,7 +3457,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 179,
-  "local": "ilustratii/mari/razboi2-4732448035.jpg"
+  "local": "ilustratii/mari/razboi2-4732448035.jpg",
+  "pxLatime": 950,
+  "pxInaltime": 617
  },
  {
   "cap": "razboi2",
@@ -3119,7 +3477,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 180,
-  "local": "ilustratii/mari/razboi2-764292728f.jpg"
+  "local": "ilustratii/mari/razboi2-764292728f.jpg",
+  "pxLatime": 500,
+  "pxInaltime": 317
  },
  {
   "cap": "razboi2",
@@ -3137,7 +3497,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 181,
-  "local": "ilustratii/mari/razboi2-8c44b0de12.jpg"
+  "local": "ilustratii/mari/razboi2-8c44b0de12.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 648
  },
  {
   "cap": "razboi2",
@@ -3155,7 +3517,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 182,
-  "local": "ilustratii/mari/razboi2-60740f1144.jpg"
+  "local": "ilustratii/mari/razboi2-60740f1144.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1476
  },
  {
   "cap": "romi",
@@ -3173,7 +3537,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 183,
-  "local": "ilustratii/mari/romi-bb938cad2c.jpg"
+  "local": "ilustratii/mari/romi-bb938cad2c.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 515
  },
  {
   "cap": "interbelic",
@@ -3191,7 +3557,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 184,
-  "local": "ilustratii/mari/interbelic-bad39fef36.jpg"
+  "local": "ilustratii/mari/interbelic-bad39fef36.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1163
  },
  {
   "cap": "interbelic",
@@ -3209,7 +3577,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 185,
-  "local": "ilustratii/mari/interbelic-f4eccc0a48.jpg"
+  "local": "ilustratii/mari/interbelic-f4eccc0a48.jpg",
+  "pxLatime": 500,
+  "pxInaltime": 641
  },
  {
   "cap": "interbelic",
@@ -3227,7 +3597,9 @@
   "val": 2,
   "grup": "sec20",
   "n": 186,
-  "local": "ilustratii/mari/interbelic-3528bd0cff.jpg"
+  "local": "ilustratii/mari/interbelic-3528bd0cff.jpg",
+  "pxLatime": 915,
+  "pxInaltime": 541
  },
  {
   "cap": "atlas",
@@ -3245,7 +3617,9 @@
   "val": 2,
   "grup": "harti",
   "n": 187,
-  "local": "ilustratii/mari/atlas-f321143fce.jpg"
+  "local": "ilustratii/mari/atlas-f321143fce.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1043
  },
  {
   "cap": "atlas",
@@ -3263,7 +3637,9 @@
   "val": 2,
   "grup": "harti",
   "n": 188,
-  "local": "ilustratii/mari/atlas-e147214c60.jpg"
+  "local": "ilustratii/mari/atlas-e147214c60.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 701
  },
  {
   "cap": "atlas",
@@ -3281,7 +3657,9 @@
   "val": 2,
   "grup": "harti",
   "n": 189,
-  "local": "ilustratii/mari/atlas-a322b65afb.jpg"
+  "local": "ilustratii/mari/atlas-a322b65afb.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1445
  },
  {
   "cap": "atlas",
@@ -3299,7 +3677,9 @@
   "val": 2,
   "grup": "harti",
   "n": 190,
-  "local": "ilustratii/mari/atlas-343a2ddc15.jpg"
+  "local": "ilustratii/mari/atlas-343a2ddc15.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1200
  },
  {
   "cap": "atlas",
@@ -3317,7 +3697,9 @@
   "val": 2,
   "grup": "harti",
   "n": 191,
-  "local": "ilustratii/mari/atlas-2a1aa77e03.jpg"
+  "local": "ilustratii/mari/atlas-2a1aa77e03.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1295
  },
  {
   "cap": "atlas",
@@ -3335,7 +3717,9 @@
   "val": 2,
   "grup": "harti",
   "n": 192,
-  "local": "ilustratii/mari/atlas-b72fe25784.jpg"
+  "local": "ilustratii/mari/atlas-b72fe25784.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1310
  },
  {
   "cap": "atlas",
@@ -3353,7 +3737,9 @@
   "val": 2,
   "grup": "harti",
   "n": 193,
-  "local": "ilustratii/mari/atlas-770e05bf58.jpg"
+  "local": "ilustratii/mari/atlas-770e05bf58.jpg",
+  "pxLatime": 1522,
+  "pxInaltime": 2150
  },
  {
   "cap": "atlas",
@@ -3371,7 +3757,9 @@
   "val": 2,
   "grup": "harti",
   "n": 194,
-  "local": "ilustratii/mari/atlas-70bcb94f83.jpg"
+  "local": "ilustratii/mari/atlas-70bcb94f83.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1379
  },
  {
   "cap": "atlas",
@@ -3389,7 +3777,9 @@
   "val": 2,
   "grup": "harti",
   "n": 195,
-  "local": "ilustratii/mari/atlas-3affff00a1.jpg"
+  "local": "ilustratii/mari/atlas-3affff00a1.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1256
  },
  {
   "cap": "atlas",
@@ -3407,7 +3797,9 @@
   "val": 2,
   "grup": "harti",
   "n": 196,
-  "local": "ilustratii/mari/atlas-ac29b5e3bc.jpg"
+  "local": "ilustratii/mari/atlas-ac29b5e3bc.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 982
  },
  {
   "cap": "atlas",
@@ -3425,7 +3817,9 @@
   "val": 2,
   "grup": "harti",
   "n": 197,
-  "local": "ilustratii/mari/atlas-a242d4662b.jpg"
+  "local": "ilustratii/mari/atlas-a242d4662b.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1300
  },
  {
   "cap": "atlas",
@@ -3443,7 +3837,9 @@
   "val": 2,
   "grup": "harti",
   "n": 198,
-  "local": "ilustratii/mari/atlas-91dbf1e28f.jpg"
+  "local": "ilustratii/mari/atlas-91dbf1e28f.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1332
  },
  {
   "cap": "atlas",
@@ -3461,7 +3857,9 @@
   "val": 2,
   "grup": "harti",
   "n": 199,
-  "local": "ilustratii/mari/atlas-fcee7c823a.jpg"
+  "local": "ilustratii/mari/atlas-fcee7c823a.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1357
  },
  {
   "cap": "atlas",
@@ -3479,7 +3877,9 @@
   "val": 2,
   "grup": "harti",
   "n": 200,
-  "local": "ilustratii/mari/atlas-a12fae2bf7.jpg"
+  "local": "ilustratii/mari/atlas-a12fae2bf7.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1279
  },
  {
   "cap": "atlas",
@@ -3497,7 +3897,9 @@
   "val": 2,
   "grup": "harti",
   "n": 201,
-  "local": "ilustratii/mari/atlas-9d1360976e.jpg"
+  "local": "ilustratii/mari/atlas-9d1360976e.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1296
  },
  {
   "cap": "atlas",
@@ -3515,7 +3917,9 @@
   "val": 2,
   "grup": "harti",
   "n": 202,
-  "local": "ilustratii/mari/atlas-a7e6f2f855.jpg"
+  "local": "ilustratii/mari/atlas-a7e6f2f855.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 735
  },
  {
   "cap": "atlas",
@@ -3533,7 +3937,9 @@
   "val": 2,
   "grup": "harti",
   "n": 203,
-  "local": "ilustratii/mari/atlas-a31ab77a90.jpg"
+  "local": "ilustratii/mari/atlas-a31ab77a90.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1427
  },
  {
   "cap": "atlas",
@@ -3551,7 +3957,9 @@
   "val": 2,
   "grup": "harti",
   "n": 204,
-  "local": "ilustratii/mari/atlas-e2ee05aac4.jpg"
+  "local": "ilustratii/mari/atlas-e2ee05aac4.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1153
  },
  {
   "cap": "atlas",
@@ -3569,7 +3977,9 @@
   "val": 2,
   "grup": "harti",
   "n": 205,
-  "local": "ilustratii/mari/atlas-c64f3ce627.jpg"
+  "local": "ilustratii/mari/atlas-c64f3ce627.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1578
  },
  {
   "cap": "atlas",
@@ -3587,7 +3997,9 @@
   "val": 2,
   "grup": "harti",
   "n": 206,
-  "local": "ilustratii/mari/atlas-c50a674ba1.jpg"
+  "local": "ilustratii/mari/atlas-c50a674ba1.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 2110
  },
  {
   "cap": "atlas",
@@ -3605,7 +4017,9 @@
   "val": 2,
   "grup": "harti",
   "n": 207,
-  "local": "ilustratii/mari/atlas-c3f405702c.jpg"
+  "local": "ilustratii/mari/atlas-c3f405702c.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1311
  },
  {
   "cap": "atlas",
@@ -3623,7 +4037,9 @@
   "val": 2,
   "grup": "harti",
   "n": 208,
-  "local": "ilustratii/mari/atlas-1c242cb5b2.jpg"
+  "local": "ilustratii/mari/atlas-1c242cb5b2.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1306
  },
  {
   "cap": "atlas",
@@ -3641,7 +4057,9 @@
   "val": 2,
   "grup": "harti",
   "n": 209,
-  "local": "ilustratii/mari/atlas-340b0740e0.jpg"
+  "local": "ilustratii/mari/atlas-340b0740e0.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1402
  },
  {
   "cap": "atlas",
@@ -3659,7 +4077,9 @@
   "val": 2,
   "grup": "harti",
   "n": 210,
-  "local": "ilustratii/mari/atlas-62f262dd24.jpg"
+  "local": "ilustratii/mari/atlas-62f262dd24.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1146
  },
  {
   "cap": "atlas",
@@ -3677,7 +4097,9 @@
   "val": 2,
   "grup": "harti",
   "n": 211,
-  "local": "ilustratii/mari/atlas-22acedf9b7.jpg"
+  "local": "ilustratii/mari/atlas-22acedf9b7.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1266
  },
  {
   "cap": "atlas",
@@ -3695,7 +4117,9 @@
   "val": 2,
   "grup": "harti",
   "n": 212,
-  "local": "ilustratii/mari/atlas-c45d61719c.jpg"
+  "local": "ilustratii/mari/atlas-c45d61719c.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1409
  },
  {
   "cap": "atlas",
@@ -3713,7 +4137,9 @@
   "val": 2,
   "grup": "harti",
   "n": 213,
-  "local": "ilustratii/mari/atlas-d36d02c35b.jpg"
+  "local": "ilustratii/mari/atlas-d36d02c35b.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1558
  },
  {
   "cap": "atlas",
@@ -3731,7 +4157,9 @@
   "val": 2,
   "grup": "harti",
   "n": 214,
-  "local": "ilustratii/mari/atlas-d642cecc80.jpg"
+  "local": "ilustratii/mari/atlas-d642cecc80.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 541
  },
  {
   "cap": "atlas",
@@ -3749,7 +4177,9 @@
   "val": 2,
   "grup": "harti",
   "n": 215,
-  "local": "ilustratii/mari/atlas-1e5671298a.jpg"
+  "local": "ilustratii/mari/atlas-1e5671298a.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1187
  },
  {
   "cap": "atlas",
@@ -3767,7 +4197,9 @@
   "val": 2,
   "grup": "harti",
   "n": 216,
-  "local": "ilustratii/mari/atlas-53dc3e8aad.jpg"
+  "local": "ilustratii/mari/atlas-53dc3e8aad.jpg",
+  "pxLatime": 1023,
+  "pxInaltime": 710
  },
  {
   "cap": "atlas",
@@ -3785,7 +4217,9 @@
   "val": 2,
   "grup": "harti",
   "n": 217,
-  "local": "ilustratii/mari/atlas-3d3fc3f520.jpg"
+  "local": "ilustratii/mari/atlas-3d3fc3f520.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1556
  },
  {
   "cap": "atlas",
@@ -3803,7 +4237,9 @@
   "val": 2,
   "grup": "harti",
   "n": 218,
-  "local": "ilustratii/mari/atlas-189f6e65de.jpg"
+  "local": "ilustratii/mari/atlas-189f6e65de.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1475
  },
  {
   "cap": "atlas",
@@ -3821,7 +4257,9 @@
   "val": 2,
   "grup": "harti",
   "n": 219,
-  "local": "ilustratii/mari/atlas-75bd5a7770.jpg"
+  "local": "ilustratii/mari/atlas-75bd5a7770.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1479
  },
  {
   "cap": "atlas",
@@ -3839,7 +4277,9 @@
   "val": 2,
   "grup": "harti",
   "n": 220,
-  "local": "ilustratii/mari/atlas-80040252d7.jpg"
+  "local": "ilustratii/mari/atlas-80040252d7.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1574
  },
  {
   "cap": "atlas",
@@ -3857,7 +4297,9 @@
   "val": 2,
   "grup": "harti",
   "n": 221,
-  "local": "ilustratii/mari/atlas-967b767875.jpg"
+  "local": "ilustratii/mari/atlas-967b767875.jpg",
+  "pxLatime": 1595,
+  "pxInaltime": 2150
  },
  {
   "cap": "atlas",
@@ -3875,7 +4317,9 @@
   "val": 2,
   "grup": "harti",
   "n": 222,
-  "local": "ilustratii/mari/atlas-f67aa8eac8.jpg"
+  "local": "ilustratii/mari/atlas-f67aa8eac8.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1503
  },
  {
   "cap": "atlas",
@@ -3893,7 +4337,9 @@
   "val": 2,
   "grup": "harti",
   "n": 223,
-  "local": "ilustratii/mari/atlas-2205b73a34.jpg"
+  "local": "ilustratii/mari/atlas-2205b73a34.jpg",
+  "pxLatime": 1162,
+  "pxInaltime": 919
  },
  {
   "cap": "atlas",
@@ -3911,7 +4357,9 @@
   "val": 2,
   "grup": "harti",
   "n": 224,
-  "local": "ilustratii/mari/atlas-02249c36be.jpg"
+  "local": "ilustratii/mari/atlas-02249c36be.jpg",
+  "pxLatime": 1428,
+  "pxInaltime": 2150
  },
  {
   "cap": "atlas",
@@ -3929,7 +4377,9 @@
   "val": 2,
   "grup": "harti",
   "n": 225,
-  "local": "ilustratii/mari/atlas-a81739d237.jpg"
+  "local": "ilustratii/mari/atlas-a81739d237.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1238
  },
  {
   "cap": "atlas",
@@ -3947,7 +4397,9 @@
   "val": 2,
   "grup": "harti",
   "n": 226,
-  "local": "ilustratii/mari/atlas-bb768035da.jpg"
+  "local": "ilustratii/mari/atlas-bb768035da.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1075
  },
  {
   "cap": "atlas",
@@ -3965,7 +4417,9 @@
   "val": 2,
   "grup": "harti",
   "n": 227,
-  "local": "ilustratii/mari/atlas-1c82b154f4.jpg"
+  "local": "ilustratii/mari/atlas-1c82b154f4.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1395
  },
  {
   "cap": "atlas",
@@ -3983,7 +4437,9 @@
   "val": 2,
   "grup": "harti",
   "n": 228,
-  "local": "ilustratii/mari/atlas-90deeac31e.jpg"
+  "local": "ilustratii/mari/atlas-90deeac31e.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1227
  },
  {
   "cap": "atlas",
@@ -4001,7 +4457,9 @@
   "val": 2,
   "grup": "harti",
   "n": 229,
-  "local": "ilustratii/mari/atlas-49b3e018b6.jpg"
+  "local": "ilustratii/mari/atlas-49b3e018b6.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1739
  },
  {
   "cap": "atlas",
@@ -4019,7 +4477,9 @@
   "val": 2,
   "grup": "harti",
   "n": 230,
-  "local": "ilustratii/mari/atlas-ec35120e0d.jpg"
+  "local": "ilustratii/mari/atlas-ec35120e0d.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1418
  },
  {
   "cap": "atlas",
@@ -4037,7 +4497,9 @@
   "val": 2,
   "grup": "harti",
   "n": 231,
-  "local": "ilustratii/mari/atlas-27adf1d7a3.jpg"
+  "local": "ilustratii/mari/atlas-27adf1d7a3.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1170
  },
  {
   "cap": "atlas",
@@ -4055,7 +4517,9 @@
   "val": 2,
   "grup": "harti",
   "n": 232,
-  "local": "ilustratii/mari/atlas-eb090ccf46.jpg"
+  "local": "ilustratii/mari/atlas-eb090ccf46.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1296
  },
  {
   "cap": "atlas",
@@ -4073,7 +4537,9 @@
   "val": 2,
   "grup": "harti",
   "n": 233,
-  "local": "ilustratii/mari/atlas-54d5b473af.jpg"
+  "local": "ilustratii/mari/atlas-54d5b473af.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1199
  },
  {
   "cap": "atlas",
@@ -4091,7 +4557,9 @@
   "val": 2,
   "grup": "harti",
   "n": 234,
-  "local": "ilustratii/mari/atlas-7702c57849.jpg"
+  "local": "ilustratii/mari/atlas-7702c57849.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1499
  },
  {
   "cap": "atlas",
@@ -4109,7 +4577,9 @@
   "val": 2,
   "grup": "harti",
   "n": 235,
-  "local": "ilustratii/mari/atlas-45efce3230.jpg"
+  "local": "ilustratii/mari/atlas-45efce3230.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1244
  },
  {
   "cap": "atlas",
@@ -4127,7 +4597,9 @@
   "val": 2,
   "grup": "harti",
   "n": 236,
-  "local": "ilustratii/mari/atlas-160037c94d.jpg"
+  "local": "ilustratii/mari/atlas-160037c94d.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 812
  },
  {
   "cap": "atlas",
@@ -4145,7 +4617,9 @@
   "val": 2,
   "grup": "harti",
   "n": 237,
-  "local": "ilustratii/mari/atlas-959582d50a.jpg"
+  "local": "ilustratii/mari/atlas-959582d50a.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 577
  },
  {
   "cap": "atlas",
@@ -4163,7 +4637,9 @@
   "val": 2,
   "grup": "harti",
   "n": 238,
-  "local": "ilustratii/mari/atlas-cbbef9edfb.jpg"
+  "local": "ilustratii/mari/atlas-cbbef9edfb.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 971
  },
  {
   "cap": "mancare",
@@ -4181,7 +4657,9 @@
   "val": 2,
   "grup": "hrana",
   "n": 239,
-  "local": "ilustratii/mari/mancare-f61218a14d.jpg"
+  "local": "ilustratii/mari/mancare-f61218a14d.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1345
  },
  {
   "cap": "mancare",
@@ -4199,7 +4677,9 @@
   "val": 2,
   "grup": "hrana",
   "n": 240,
-  "local": "ilustratii/mari/mancare-dd6204c235.jpg"
+  "local": "ilustratii/mari/mancare-dd6204c235.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1132
  },
  {
   "cap": "economie",
@@ -4217,7 +4697,9 @@
   "val": 2,
   "grup": "hrana",
   "n": 241,
-  "local": "ilustratii/mari/economie-0ea0268bcc.jpg"
+  "local": "ilustratii/mari/economie-0ea0268bcc.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1394
  },
  {
   "cap": "economie",
@@ -4235,7 +4717,9 @@
   "val": 2,
   "grup": "hrana",
   "n": 242,
-  "local": "ilustratii/mari/economie-d6722beae1.jpg"
+  "local": "ilustratii/mari/economie-d6722beae1.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1222
  },
  {
   "cap": "mancare",
@@ -4253,7 +4737,9 @@
   "val": 2,
   "grup": "hrana",
   "n": 243,
-  "local": "ilustratii/mari/mancare-ff8af23fa2.jpg"
+  "local": "ilustratii/mari/mancare-ff8af23fa2.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1037
  },
  {
   "cap": "romi",
@@ -4271,7 +4757,9 @@
   "val": 2,
   "grup": "hrana",
   "n": 244,
-  "local": "ilustratii/mari/romi-bfa4d774a0.jpg"
+  "local": "ilustratii/mari/romi-bfa4d774a0.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1030
  },
  {
   "cap": "mancare",
@@ -4289,7 +4777,9 @@
   "val": 2,
   "grup": "hrana",
   "n": 245,
-  "local": "ilustratii/mari/mancare-c66cb78b4c.jpg"
+  "local": "ilustratii/mari/mancare-c66cb78b4c.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 924
  },
  {
   "cap": "evrei",
@@ -4307,7 +4797,9 @@
   "val": 2,
   "grup": "hrana",
   "n": 246,
-  "local": "ilustratii/mari/evrei-191e6088b9.jpg"
+  "local": "ilustratii/mari/evrei-191e6088b9.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 795
  },
  {
   "cap": "economie",
@@ -4325,7 +4817,9 @@
   "val": 2,
   "grup": "hrana",
   "n": 247,
-  "local": "ilustratii/mari/economie-981f208dbb.jpg"
+  "local": "ilustratii/mari/economie-981f208dbb.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 700
  },
  {
   "cap": "minoritati",
@@ -4343,7 +4837,9 @@
   "val": 2,
   "grup": "hrana",
   "n": 248,
-  "local": "ilustratii/mari/minoritati-4f9c2847a8.jpg"
+  "local": "ilustratii/mari/minoritati-4f9c2847a8.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 911
  },
  {
   "cap": "femei",
@@ -4361,7 +4857,9 @@
   "val": 2,
   "grup": "femei",
   "n": 249,
-  "local": "ilustratii/mari/femei-7b587f3921.jpg"
+  "local": "ilustratii/mari/femei-7b587f3921.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1535
  },
  {
   "cap": "femei",
@@ -4379,7 +4877,9 @@
   "val": 2,
   "grup": "femei",
   "n": 250,
-  "local": "ilustratii/mari/femei-564369d458.jpg"
+  "local": "ilustratii/mari/femei-564369d458.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1717
  },
  {
   "cap": "femei",
@@ -4397,7 +4897,9 @@
   "val": 2,
   "grup": "femei",
   "n": 251,
-  "local": "ilustratii/mari/femei-dee891e297.jpg"
+  "local": "ilustratii/mari/femei-dee891e297.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1100
  },
  {
   "cap": "femei",
@@ -4415,7 +4917,9 @@
   "val": 2,
   "grup": "femei",
   "n": 252,
-  "local": "ilustratii/mari/femei-20d83436ea.jpg"
+  "local": "ilustratii/mari/femei-20d83436ea.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 2095
  },
  {
   "cap": "femei",
@@ -4433,7 +4937,9 @@
   "val": 2,
   "grup": "femei",
   "n": 253,
-  "local": "ilustratii/mari/femei-310e16e45f.jpg"
+  "local": "ilustratii/mari/femei-310e16e45f.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 754
  },
  {
   "cap": "femei",
@@ -4451,7 +4957,9 @@
   "val": 2,
   "grup": "femei",
   "n": 254,
-  "local": "ilustratii/mari/femei-4300fe3a56.jpg"
+  "local": "ilustratii/mari/femei-4300fe3a56.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 926
  },
  {
   "cap": "femei",
@@ -4469,7 +4977,9 @@
   "val": 2,
   "grup": "femei",
   "n": 255,
-  "local": "ilustratii/mari/femei-f79a304fd1.jpg"
+  "local": "ilustratii/mari/femei-f79a304fd1.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1277
  },
  {
   "cap": "mare-razboi",
@@ -4487,7 +4997,9 @@
   "val": 2,
   "grup": "femei",
   "n": 256,
-  "local": "ilustratii/mari/mare-razboi-d067476aa5.jpg"
+  "local": "ilustratii/mari/mare-razboi-d067476aa5.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1998
  },
  {
   "cap": "cultura",
@@ -4505,7 +5017,9 @@
   "val": 2,
   "grup": "femei",
   "n": 257,
-  "local": "ilustratii/mari/cultura-cdc04f35a6.jpg"
+  "local": "ilustratii/mari/cultura-cdc04f35a6.jpg",
+  "pxLatime": 1176,
+  "pxInaltime": 2150
  },
  {
   "cap": "minoritati",
@@ -4523,7 +5037,9 @@
   "val": 2,
   "grup": "femei",
   "n": 258,
-  "local": "ilustratii/mari/minoritati-0dada5f66e.jpg"
+  "local": "ilustratii/mari/minoritati-0dada5f66e.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1775
  },
  {
   "cap": "minoritati",
@@ -4541,7 +5057,9 @@
   "val": 2,
   "grup": "femei",
   "n": 259,
-  "local": "ilustratii/mari/minoritati-ae09382221.jpg"
+  "local": "ilustratii/mari/minoritati-ae09382221.jpg",
+  "pxLatime": 500,
+  "pxInaltime": 979
  },
  {
   "cap": "minoritati",
@@ -4559,7 +5077,9 @@
   "val": 2,
   "grup": "femei",
   "n": 260,
-  "local": "ilustratii/mari/minoritati-aaeb971406.jpg"
+  "local": "ilustratii/mari/minoritati-aaeb971406.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1972
  },
  {
   "cap": "minoritati",
@@ -4577,7 +5097,9 @@
   "val": 2,
   "grup": "femei",
   "n": 261,
-  "local": "ilustratii/mari/minoritati-3bf65fb40a.jpg"
+  "local": "ilustratii/mari/minoritati-3bf65fb40a.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 988
  },
  {
   "cap": "minoritati",
@@ -4595,7 +5117,9 @@
   "val": 2,
   "grup": "femei",
   "n": 262,
-  "local": "ilustratii/mari/minoritati-6d2709bdb0.jpg"
+  "local": "ilustratii/mari/minoritati-6d2709bdb0.jpg",
+  "pxLatime": 500,
+  "pxInaltime": 371
  },
  {
   "cap": "femei",
@@ -4613,7 +5137,9 @@
   "val": 2,
   "grup": "femei",
   "n": 263,
-  "local": "ilustratii/mari/femei-877582723c.jpg"
+  "local": "ilustratii/mari/femei-877582723c.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 623
  },
  {
   "cap": "economie",
@@ -4631,7 +5157,9 @@
   "val": 2,
   "grup": "femei",
   "n": 264,
-  "local": "ilustratii/mari/economie-85c1db122b.jpg"
+  "local": "ilustratii/mari/economie-85c1db122b.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 865
  },
  {
   "cap": "atlas",
@@ -4649,7 +5177,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 265,
-  "local": "ilustratii/mari/atlas-d58231e12a.jpg"
+  "local": "ilustratii/mari/atlas-d58231e12a.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1070
  },
  {
   "cap": "atlas",
@@ -4667,7 +5197,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 266,
-  "local": "ilustratii/mari/atlas-86d264220e.jpg"
+  "local": "ilustratii/mari/atlas-86d264220e.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1404
  },
  {
   "cap": "moldova-rep",
@@ -4685,7 +5217,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 267,
-  "local": "ilustratii/mari/moldova-rep-c171238304.jpg"
+  "local": "ilustratii/mari/moldova-rep-c171238304.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1435
  },
  {
   "cap": "moldova-rep",
@@ -4703,7 +5237,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 268,
-  "local": "ilustratii/mari/moldova-rep-cff9845f47.jpg"
+  "local": "ilustratii/mari/moldova-rep-cff9845f47.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 849
  },
  {
   "cap": "moldova-rep",
@@ -4721,7 +5257,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 269,
-  "local": "ilustratii/mari/moldova-rep-b2935e0b9f.jpg"
+  "local": "ilustratii/mari/moldova-rep-b2935e0b9f.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 892
  },
  {
   "cap": "moldova-rep",
@@ -4739,7 +5277,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 270,
-  "local": "ilustratii/mari/moldova-rep-a70f4c0dd5.jpg"
+  "local": "ilustratii/mari/moldova-rep-a70f4c0dd5.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 892
  },
  {
   "cap": "moldova-rep",
@@ -4757,7 +5297,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 271,
-  "local": "ilustratii/mari/moldova-rep-6633929b36.jpg"
+  "local": "ilustratii/mari/moldova-rep-6633929b36.jpg",
+  "pxLatime": 1683,
+  "pxInaltime": 2150
  },
  {
   "cap": "moldova-rep",
@@ -4775,7 +5317,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 272,
-  "local": "ilustratii/mari/moldova-rep-86f0b26ef5.jpg"
+  "local": "ilustratii/mari/moldova-rep-86f0b26ef5.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 699
  },
  {
   "cap": "atlas",
@@ -4793,7 +5337,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 273,
-  "local": "ilustratii/mari/atlas-76587e3383.jpg"
+  "local": "ilustratii/mari/atlas-76587e3383.jpg",
+  "pxLatime": 1437,
+  "pxInaltime": 2150
  },
  {
   "cap": "atlas",
@@ -4811,7 +5357,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 274,
-  "local": "ilustratii/mari/atlas-6273f1fee0.jpg"
+  "local": "ilustratii/mari/atlas-6273f1fee0.jpg",
+  "pxLatime": 1697,
+  "pxInaltime": 2150
  },
  {
   "cap": "moldova-rep",
@@ -4829,7 +5377,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 275,
-  "local": "ilustratii/mari/moldova-rep-ae194ef9c2.jpg"
+  "local": "ilustratii/mari/moldova-rep-ae194ef9c2.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1019
  },
  {
   "cap": "moldova-rep",
@@ -4847,7 +5397,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 276,
-  "local": "ilustratii/mari/moldova-rep-bf1f58faac.jpg"
+  "local": "ilustratii/mari/moldova-rep-bf1f58faac.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 2022
  },
  {
   "cap": "atlas",
@@ -4865,7 +5417,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 277,
-  "local": "ilustratii/mari/atlas-022f661588.jpg"
+  "local": "ilustratii/mari/atlas-022f661588.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 2028
  },
  {
   "cap": "atlas",
@@ -4883,7 +5437,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 278,
-  "local": "ilustratii/mari/atlas-e9b99ec941.jpg"
+  "local": "ilustratii/mari/atlas-e9b99ec941.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 2059
  },
  {
   "cap": "atlas",
@@ -4901,7 +5457,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 279,
-  "local": "ilustratii/mari/atlas-4195e22d0e.jpg"
+  "local": "ilustratii/mari/atlas-4195e22d0e.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 749
  },
  {
   "cap": "moldova-rep",
@@ -4919,7 +5477,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 280,
-  "local": "ilustratii/mari/moldova-rep-95707c8e5a.jpg"
+  "local": "ilustratii/mari/moldova-rep-95707c8e5a.jpg",
+  "pxLatime": 1306,
+  "pxInaltime": 2150
  },
  {
   "cap": "moldova-rep",
@@ -4937,7 +5497,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 281,
-  "local": "ilustratii/mari/moldova-rep-1ea647fb93.jpg"
+  "local": "ilustratii/mari/moldova-rep-1ea647fb93.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 416
  },
  {
   "cap": "interbelic",
@@ -4955,7 +5517,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 282,
-  "local": "ilustratii/mari/interbelic-2fab78cb9f.jpg"
+  "local": "ilustratii/mari/interbelic-2fab78cb9f.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1070
  },
  {
   "cap": "evrei",
@@ -4973,7 +5537,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 283,
-  "local": "ilustratii/mari/evrei-d8f6e39eb7.jpg"
+  "local": "ilustratii/mari/evrei-d8f6e39eb7.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 859
  },
  {
   "cap": "minoritati",
@@ -4991,7 +5557,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 284,
-  "local": "ilustratii/mari/minoritati-770b0e92a8.jpg"
+  "local": "ilustratii/mari/minoritati-770b0e92a8.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1326
  },
  {
   "cap": "orase",
@@ -5009,7 +5577,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 285,
-  "local": "ilustratii/mari/orase-e574c05704.jpg"
+  "local": "ilustratii/mari/orase-e574c05704.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 639
  },
  {
   "cap": "moldova-rep",
@@ -5027,7 +5597,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 286,
-  "local": "ilustratii/mari/moldova-rep-4bf047bd86.jpg"
+  "local": "ilustratii/mari/moldova-rep-4bf047bd86.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 632
  },
  {
   "cap": "geografie",
@@ -5045,7 +5617,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 287,
-  "local": "ilustratii/mari/geografie-5529e55bd8.jpg"
+  "local": "ilustratii/mari/geografie-5529e55bd8.jpg",
+  "pxLatime": 500,
+  "pxInaltime": 371
  },
  {
   "cap": "minoritati",
@@ -5063,7 +5637,9 @@
   "val": 2,
   "grup": "basarabia",
   "n": 288,
-  "local": "ilustratii/mari/minoritati-4abcc2858d.jpg"
+  "local": "ilustratii/mari/minoritati-4abcc2858d.jpg",
+  "pxLatime": 500,
+  "pxInaltime": 370
  },
  {
   "cap": "boli",
@@ -5081,7 +5657,9 @@
   "val": 2,
   "grup": "medicina",
   "n": 289,
-  "local": "ilustratii/mari/boli-313fd65946.jpg"
+  "local": "ilustratii/mari/boli-313fd65946.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1155
  },
  {
   "cap": "boli",
@@ -5099,7 +5677,9 @@
   "val": 2,
   "grup": "medicina",
   "n": 290,
-  "local": "ilustratii/mari/boli-09073d638a.jpg"
+  "local": "ilustratii/mari/boli-09073d638a.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1271
  },
  {
   "cap": "neolitic",
@@ -5117,7 +5697,9 @@
   "val": 2,
   "grup": "preistorie",
   "n": 291,
-  "local": "ilustratii/mari/neolitic-e501020dbc.jpg"
+  "local": "ilustratii/mari/neolitic-e501020dbc.jpg",
+  "pxLatime": 1555,
+  "pxInaltime": 2150
  },
  {
   "cap": "neolitic",
@@ -5135,7 +5717,9 @@
   "val": 2,
   "grup": "preistorie",
   "n": 292,
-  "local": "ilustratii/mari/neolitic-6d015e5e82.jpg"
+  "local": "ilustratii/mari/neolitic-6d015e5e82.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1701
  },
  {
   "cap": "neolitic",
@@ -5153,7 +5737,9 @@
   "val": 2,
   "grup": "preistorie",
   "n": 293,
-  "local": "ilustratii/mari/neolitic-415b70abda.jpg"
+  "local": "ilustratii/mari/neolitic-415b70abda.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1611
  },
  {
   "cap": "neolitic",
@@ -5171,7 +5757,9 @@
   "val": 2,
   "grup": "preistorie",
   "n": 294,
-  "local": "ilustratii/mari/neolitic-83825462f3.jpg"
+  "local": "ilustratii/mari/neolitic-83825462f3.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 679
  },
  {
   "cap": "neolitic",
@@ -5189,7 +5777,9 @@
   "val": 2,
   "grup": "preistorie",
   "n": 295,
-  "local": "ilustratii/mari/neolitic-8fe6301c7f.jpg"
+  "local": "ilustratii/mari/neolitic-8fe6301c7f.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 846
  },
  {
   "cap": "neolitic",
@@ -5207,7 +5797,9 @@
   "val": 2,
   "grup": "preistorie",
   "n": 296,
-  "local": "ilustratii/mari/neolitic-3963f2488f.jpg"
+  "local": "ilustratii/mari/neolitic-3963f2488f.jpg",
+  "pxLatime": 1613,
+  "pxInaltime": 2150
  },
  {
   "cap": "neolitic",
@@ -5225,7 +5817,9 @@
   "val": 2,
   "grup": "preistorie",
   "n": 297,
-  "local": "ilustratii/mari/neolitic-826b54d22f.jpg"
+  "local": "ilustratii/mari/neolitic-826b54d22f.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1275
  },
  {
   "cap": "neolitic",
@@ -5243,7 +5837,9 @@
   "val": 2,
   "grup": "preistorie",
   "n": 298,
-  "local": "ilustratii/mari/neolitic-667f33e8f4.jpg"
+  "local": "ilustratii/mari/neolitic-667f33e8f4.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 723
  },
  {
   "cap": "aromani",
@@ -5261,7 +5857,9 @@
   "val": 2,
   "grup": "aromani",
   "n": 299,
-  "local": "ilustratii/mari/aromani-fa4979f212.jpg"
+  "local": "ilustratii/mari/aromani-fa4979f212.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1294
  },
  {
   "cap": "aromani",
@@ -5279,7 +5877,9 @@
   "val": 2,
   "grup": "aromani",
   "n": 300,
-  "local": "ilustratii/mari/aromani-13ff67f0fe.jpg"
+  "local": "ilustratii/mari/aromani-13ff67f0fe.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1924
  },
  {
   "cap": "aromani",
@@ -5297,7 +5897,9 @@
   "val": 2,
   "grup": "aromani",
   "n": 301,
-  "local": "ilustratii/mari/aromani-ab8e412ba9.jpg"
+  "local": "ilustratii/mari/aromani-ab8e412ba9.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1170
  },
  {
   "cap": "aromani",
@@ -5315,7 +5917,9 @@
   "val": 2,
   "grup": "aromani",
   "n": 302,
-  "local": "ilustratii/mari/aromani-373dd39413.jpg"
+  "local": "ilustratii/mari/aromani-373dd39413.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1338
  },
  {
   "cap": "aromani",
@@ -5333,7 +5937,9 @@
   "val": 2,
   "grup": "aromani",
   "n": 303,
-  "local": "ilustratii/mari/aromani-dbaf1868c9.jpg"
+  "local": "ilustratii/mari/aromani-dbaf1868c9.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1815
  },
  {
   "cap": "aromani",
@@ -5351,7 +5957,9 @@
   "val": 2,
   "grup": "aromani",
   "n": 304,
-  "local": "ilustratii/mari/aromani-66f2fdc053.jpg"
+  "local": "ilustratii/mari/aromani-66f2fdc053.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 930
  },
  {
   "cap": "aromani",
@@ -5369,7 +5977,9 @@
   "val": 2,
   "grup": "aromani",
   "n": 305,
-  "local": "ilustratii/mari/aromani-2957142202.jpg"
+  "local": "ilustratii/mari/aromani-2957142202.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 855
  },
  {
   "cap": "aromani",
@@ -5387,7 +5997,9 @@
   "val": 2,
   "grup": "aromani",
   "n": 306,
-  "local": "ilustratii/mari/aromani-c7bf45b931.jpg"
+  "local": "ilustratii/mari/aromani-c7bf45b931.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 647
  },
  {
   "cap": "aromani",
@@ -5405,7 +6017,9 @@
   "val": 2,
   "grup": "aromani",
   "n": 307,
-  "local": "ilustratii/mari/aromani-db8bfcd159.jpg"
+  "local": "ilustratii/mari/aromani-db8bfcd159.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 637
  },
  {
   "cap": "religie",
@@ -5423,7 +6037,9 @@
   "val": 2,
   "grup": "brancovenesc",
   "n": 308,
-  "local": "ilustratii/mari/religie-286e77aff7.jpg"
+  "local": "ilustratii/mari/religie-286e77aff7.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1885
  },
  {
   "cap": "religie",
@@ -5441,7 +6057,9 @@
   "val": 2,
   "grup": "brancovenesc",
   "n": 309,
-  "local": "ilustratii/mari/religie-bb03529cab.jpg"
+  "local": "ilustratii/mari/religie-bb03529cab.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1927
  },
  {
   "cap": "religie",
@@ -5459,7 +6077,9 @@
   "val": 2,
   "grup": "brancovenesc",
   "n": 310,
-  "local": "ilustratii/mari/religie-d316abdac0.jpg"
+  "local": "ilustratii/mari/religie-d316abdac0.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 954
  },
  {
   "cap": "religie",
@@ -5477,7 +6097,9 @@
   "val": 2,
   "grup": "brancovenesc",
   "n": 311,
-  "local": "ilustratii/mari/religie-e780b0f793.jpg"
+  "local": "ilustratii/mari/religie-e780b0f793.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 811
  },
  {
   "cap": "fanarioti",
@@ -5495,7 +6117,9 @@
   "val": 2,
   "grup": "vederi",
   "n": 312,
-  "local": "ilustratii/mari/fanarioti-87a253c3db.jpg"
+  "local": "ilustratii/mari/fanarioti-87a253c3db.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1234
  },
  {
   "cap": "renastere",
@@ -5513,7 +6137,9 @@
   "val": 2,
   "grup": "vederi",
   "n": 313,
-  "local": "ilustratii/mari/renastere-2957f11229.jpg"
+  "local": "ilustratii/mari/renastere-2957f11229.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 516
  },
  {
   "cap": "religie",
@@ -5531,7 +6157,9 @@
   "val": 2,
   "grup": "vederi",
   "n": 314,
-  "local": "ilustratii/mari/religie-f3a912744c.jpg"
+  "local": "ilustratii/mari/religie-f3a912744c.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1049
  },
  {
   "cap": "intemeiere",
@@ -5549,7 +6177,9 @@
   "val": 2,
   "grup": "vederi",
   "n": 315,
-  "local": "ilustratii/mari/intemeiere-cc6c333651.jpg"
+  "local": "ilustratii/mari/intemeiere-cc6c333651.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 909
  },
  {
   "cap": "geografie",
@@ -5567,7 +6197,9 @@
   "val": 2,
   "grup": "vederi",
   "n": 316,
-  "local": "ilustratii/mari/geografie-f36726d802.jpg"
+  "local": "ilustratii/mari/geografie-f36726d802.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 693
  },
  {
   "cap": "geografie",
@@ -5585,7 +6217,9 @@
   "val": 2,
   "grup": "vederi",
   "n": 317,
-  "local": "ilustratii/mari/geografie-dc69605dc5.jpg"
+  "local": "ilustratii/mari/geografie-dc69605dc5.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 698
  },
  {
   "cap": "religie",
@@ -5603,7 +6237,9 @@
   "val": 2,
   "grup": "vederi",
   "n": 318,
-  "local": "ilustratii/mari/religie-28fee9c97d.jpg"
+  "local": "ilustratii/mari/religie-28fee9c97d.jpg",
+  "pxLatime": 500,
+  "pxInaltime": 385
  },
  {
   "cap": "geografie",
@@ -5621,7 +6257,9 @@
   "val": 2,
   "grup": "vederi",
   "n": 319,
-  "local": "ilustratii/mari/geografie-c5f7ce4d89.jpg"
+  "local": "ilustratii/mari/geografie-c5f7ce4d89.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 816
  },
  {
   "cap": "religie",
@@ -5639,7 +6277,9 @@
   "val": 2,
   "grup": "vederi",
   "n": 320,
-  "local": "ilustratii/mari/religie-9446dc3c89.jpg"
+  "local": "ilustratii/mari/religie-9446dc3c89.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 689
  },
  {
   "cap": "regat",
@@ -5657,7 +6297,9 @@
   "val": 2,
   "grup": "vederi",
   "n": 321,
-  "local": "ilustratii/mari/regat-975071f062.jpg"
+  "local": "ilustratii/mari/regat-975071f062.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 724
  },
  {
   "cap": "fanarioti",
@@ -5675,7 +6317,9 @@
   "val": 2,
   "grup": "vederi",
   "n": 322,
-  "local": "ilustratii/mari/fanarioti-d2e06427b0.jpg"
+  "local": "ilustratii/mari/fanarioti-d2e06427b0.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 724
  },
  {
   "cap": "mediu",
@@ -5693,7 +6337,9 @@
   "val": 2,
   "grup": "mediu",
   "n": 323,
-  "local": "ilustratii/mari/mediu-6b1685889f.jpg"
+  "local": "ilustratii/mari/mediu-6b1685889f.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 788
  },
  {
   "cap": "mediu",
@@ -5711,7 +6357,9 @@
   "val": 2,
   "grup": "mediu",
   "n": 324,
-  "local": "ilustratii/mari/mediu-764853171c.jpg"
+  "local": "ilustratii/mari/mediu-764853171c.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 596
  },
  {
   "cap": "mediu",
@@ -5729,7 +6377,9 @@
   "val": 2,
   "grup": "mediu",
   "n": 325,
-  "local": "ilustratii/mari/mediu-11d78879c4.jpg"
+  "local": "ilustratii/mari/mediu-11d78879c4.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1216
  },
  {
   "cap": "mediu",
@@ -5747,7 +6397,9 @@
   "val": 2,
   "grup": "mediu",
   "n": 326,
-  "local": "ilustratii/mari/mediu-cd792b75d3.jpg"
+  "local": "ilustratii/mari/mediu-cd792b75d3.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 656
  },
  {
   "cap": "sport",
@@ -5765,7 +6417,9 @@
   "val": 2,
   "grup": "sport",
   "n": 327,
-  "local": "ilustratii/mari/sport-67307290d8.jpg"
+  "local": "ilustratii/mari/sport-67307290d8.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 886
  },
  {
   "cap": "sport",
@@ -5783,7 +6437,9 @@
   "val": 2,
   "grup": "sport",
   "n": 328,
-  "local": "ilustratii/mari/sport-c1057c0bae.jpg"
+  "local": "ilustratii/mari/sport-c1057c0bae.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1445
  },
  {
   "cap": "sport",
@@ -5801,7 +6457,9 @@
   "val": 2,
   "grup": "sport",
   "n": 329,
-  "local": "ilustratii/mari/sport-e5124b11a9.jpg"
+  "local": "ilustratii/mari/sport-e5124b11a9.jpg",
+  "pxLatime": 1280,
+  "pxInaltime": 1255
  },
  {
   "cap": "comunism1",
@@ -5819,7 +6477,9 @@
   "val": 2,
   "grup": "comunism",
   "n": 330,
-  "local": "ilustratii/mari/comunism1-e5a999b2f5.jpg"
+  "local": "ilustratii/mari/comunism1-e5a999b2f5.jpg",
+  "pxLatime": 960,
+  "pxInaltime": 1263
  },
  {
   "cap": "comunism1",
@@ -5837,6 +6497,8 @@
   "val": 2,
   "grup": "comunism",
   "n": 331,
-  "local": "ilustratii/mari/comunism1-d9eed43ba6.jpg"
+  "local": "ilustratii/mari/comunism1-d9eed43ba6.jpg",
+  "pxLatime": 1700,
+  "pxInaltime": 1586
  }
 ]
