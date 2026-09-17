@@ -272,9 +272,11 @@ ${dia}
 </script>`
 }
 
-/* --- rulare -------------------------------------------------------------- */
+/* --- rulare: doar cand fisierul este pornit direct, nu la import ---------- */
+if (process.argv[1] && process.argv[1].endsWith('build.mjs')) {
 const caleContinut = new URL('./continut.json', import.meta.url)
 const continut = existsSync(caleContinut) ? JSON.parse(readFileSync(caleContinut, 'utf8')) : { capitole: [], teme: [] }
 const html = construieste(continut)
 writeFileSync(new URL('../istoria-romaniei.html', import.meta.url), html)
 console.log(`scris: ${(html.length / 1024).toFixed(0)} KB · ${continut.capitole?.length || 0} capitole · ${continut.teme?.length || 0} teme`)
+}

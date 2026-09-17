@@ -1,0 +1,317 @@
+/* ===========================================================================
+   MACHETA DE TIPAR — 6 × 9 inch (152,4 × 228,6 mm), interior alb-negru
+   ---------------------------------------------------------------------------
+   Marginea interioară de 19 mm respectă cerința Amazon KDP pentru volume de
+   301–500 de pagini (minimum 15,9 mm) și lasă loc cotorului să nu înghită
+   textul. Hărțile sunt redesenate în tonuri de gri cu hașuri, fiindcă un
+   interior color ar cvadrupla costul de producție.
+   =========================================================================== */
+
+@font-face { font-family: Literata; font-weight: 400; font-style: normal;
+  src: url("fonturi/Literata-400.ttf") format("truetype"); }
+@font-face { font-family: Literata; font-weight: 400; font-style: italic;
+  src: url("fonturi/Literata-400i.ttf") format("truetype"); }
+@font-face { font-family: Literata; font-weight: 600; font-style: normal;
+  src: url("fonturi/Literata-600.ttf") format("truetype"); }
+@font-face { font-family: Spectral; font-weight: 300; font-style: normal;
+  src: url("fonturi/Spectral-300.ttf") format("truetype"); }
+@font-face { font-family: Spectral; font-weight: 400; font-style: normal;
+  src: url("fonturi/Spectral-400.ttf") format("truetype"); }
+@font-face { font-family: Spectral; font-weight: 400; font-style: italic;
+  src: url("fonturi/Spectral-400i.ttf") format("truetype"); }
+@font-face { font-family: Spectral; font-weight: 600; font-style: normal;
+  src: url("fonturi/Spectral-600.ttf") format("truetype"); }
+@font-face { font-family: "Plex Cond"; font-weight: 400; font-style: normal;
+  src: url("fonturi/IBMPlexSansCondensed-400.ttf") format("truetype"); }
+@font-face { font-family: "Plex Cond"; font-weight: 500; font-style: normal;
+  src: url("fonturi/IBMPlexSansCondensed-500.ttf") format("truetype"); }
+@font-face { font-family: "Plex Cond"; font-weight: 600; font-style: normal;
+  src: url("fonturi/IBMPlexSansCondensed-600.ttf") format("truetype"); }
+
+:root {
+  --serif: Literata, Georgia, serif;
+  --display: Spectral, Georgia, serif;
+  --sans: "Plex Cond", Arial, sans-serif;
+  --negru: #000;
+  --gri-70: #4d4d4d;
+  --gri-45: #808080;
+  --gri-25: #b3b3b3;
+  --rigla: #999;
+}
+
+/* ------------------------------- pagina ---------------------------------- */
+@page {
+  size: 152.4mm 228.6mm;
+  margin: 18mm 16mm 20mm 19mm;   /* sus, exterior, jos, interior */
+
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+/* paginile pare sunt pe stânga: marginea mare trece la dreapta (spre cotor) */
+@page :left {
+  margin-left: 16mm; margin-right: 19mm;
+  @top-left {
+    content: "Istoria României";
+    font-family: var(--sans); font-size: 7.6pt; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--gri-70);
+    vertical-align: bottom; padding-bottom: 5mm;
+  }
+  @bottom-left {
+    content: counter(page);
+    font-family: var(--sans); font-size: 9pt; font-variant-numeric: tabular-nums;
+    color: var(--negru); vertical-align: top; padding-top: 6mm;
+  }
+}
+@page :right {
+  @top-right {
+    content: string(titlu-capitol);
+    font-family: var(--sans); font-size: 7.6pt; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--gri-70);
+    vertical-align: bottom; padding-bottom: 5mm; text-align: right;
+  }
+  @bottom-right {
+    content: counter(page);
+    font-family: var(--sans); font-size: 9pt; font-variant-numeric: tabular-nums;
+    color: var(--negru); vertical-align: top; padding-top: 6mm; text-align: right;
+  }
+}
+
+/* prima pagină a capitolului: fără cap de pagină, doar folio */
+@page capitol:first { @top-left { content: none; } @top-right { content: none; } }
+@page liminar { @top-left { content: none; } @top-right { content: none; }
+  @bottom-left { content: none; } @bottom-right { content: none; } }
+@page alba { @top-left { content: none; } @top-right { content: none; }
+  @bottom-left { content: none; } @bottom-right { content: none; } }
+
+/* ------------------------------ corpul ----------------------------------- */
+* { box-sizing: border-box; }
+html { font-size: 10.2pt; }
+body {
+  margin: 0; font-family: var(--serif); font-size: 10.2pt; line-height: 14.3pt;
+  color: var(--negru); text-align: justify; text-align-last: left; hyphens: auto;
+  -webkit-hyphens: auto; hyphenate-limit-chars: 6 3 3;
+  orphans: 2; widows: 2;
+}
+h1, h2, h3, h4 { font-family: var(--display); margin: 0; line-height: 1.16;
+  text-align: left; hyphens: none; break-after: avoid; }
+p { margin: 0; }
+a { color: inherit; text-decoration: none; }
+
+/* --------------------------- material liminar ---------------------------- */
+.liminar { page: liminar; break-before: recto; }
+.alba { page: alba; break-before: page; height: 1px; }
+
+.semititlu { page: liminar; break-before: recto; padding-top: 62mm; text-align: center; }
+.semititlu h1 { font-family: var(--display); font-weight: 300; font-size: 19pt;
+  letter-spacing: .01em; text-align: center; }
+
+.foaie-titlu { page: liminar; break-before: recto; padding-top: 44mm; text-align: center; }
+.foaie-titlu .supra { font-family: var(--sans); font-size: 8pt; font-weight: 500;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--gri-70); margin-bottom: 9mm; }
+.foaie-titlu h1 { font-family: var(--display); font-weight: 300; font-size: 33pt;
+  line-height: 1.04; letter-spacing: -.01em; text-align: center; }
+.foaie-titlu .subtitlu { font-family: var(--display); font-weight: 300; font-size: 15pt;
+  font-style: italic; color: var(--gri-70); margin-top: 5mm; }
+.foaie-titlu .rigla-titlu { width: 26mm; height: .6pt; background: var(--negru);
+  margin: 12mm auto; }
+.foaie-titlu .jos { font-family: var(--sans); font-size: 9pt; letter-spacing: .06em;
+  color: var(--gri-70); margin-top: 52mm; }
+
+.caseta { page: liminar; break-before: page; font-size: 7.8pt; line-height: 11.4pt;
+  text-align: left; hyphens: none; padding-top: 74mm; }
+.caseta p { margin-bottom: 3.4mm; }
+.caseta .cip { border: .5pt solid var(--rigla); padding: 3mm 3.5mm; margin-bottom: 4mm;
+  font-family: var(--sans); font-size: 7.4pt; line-height: 10.6pt; }
+.caseta .cip b { display: block; font-size: 6.6pt; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--gri-45); margin-bottom: 1.6mm; }
+.caseta .avertisment { border-left: 1.2pt solid var(--negru); padding-left: 3mm; }
+
+/* --------------------------------- cuprins -------------------------------- */
+.cuprins { page: liminar; break-before: recto; }
+.cuprins > h2 { font-family: var(--display); font-weight: 300; font-size: 20pt;
+  margin-bottom: 9mm; }
+.cuprins ol { list-style: none; margin: 0; padding: 0; }
+.cuprins li { display: flex; align-items: baseline; gap: 1.5mm; margin-bottom: 2.6mm;
+  font-size: 9.4pt; line-height: 12.6pt; text-align: left; }
+.cuprins .nr { font-family: var(--sans); font-size: 8pt; color: var(--gri-45);
+  min-width: 7mm; font-variant-numeric: tabular-nums; }
+.cuprins .tit { font-family: var(--display); }
+.cuprins .per { font-family: var(--sans); font-size: 7.6pt; color: var(--gri-45);
+  white-space: nowrap; }
+.cuprins .pct { flex: 1; border-bottom: .4pt dotted var(--gri-45); margin-bottom: 1.1mm; min-width: 6mm; }
+.cuprins .pg::after { content: target-counter(attr(href url), page);
+  font-family: var(--sans); font-size: 8.6pt; font-variant-numeric: tabular-nums; }
+.cuprins .grup { font-family: var(--sans); font-size: 7.4pt; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--gri-45);
+  margin: 7mm 0 3.5mm; text-align: left; text-align-last: left;
+  border-bottom: .4pt solid var(--rigla); padding-bottom: 1.6mm; }
+.cuprins li.fara-nr .nr { visibility: hidden; }
+
+/* -------------------------------- capitole ------------------------------- */
+.capitol { page: capitol; break-before: recto; }
+.capitol h2 { string-set: titlu-capitol content(text); }
+.cap-cap { padding-top: 30mm; margin-bottom: 11mm; }
+.cap-nr { font-family: var(--sans); font-size: 8pt; font-weight: 600;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--gri-45); }
+.cap-titlu { font-family: var(--display); font-weight: 300; font-size: 23pt;
+  line-height: 1.1; letter-spacing: -.008em; margin: 3.5mm 0 4mm; }
+.cap-per { font-family: var(--sans); font-size: 8.6pt; letter-spacing: .08em;
+  color: var(--negru); border-top: .6pt solid var(--negru); padding-top: 2.4mm;
+  display: inline-block; }
+.cap-rezumat { font-family: var(--display); font-style: italic; font-size: 10.6pt;
+  line-height: 15pt; color: var(--gri-70); margin-bottom: 7mm; text-align: justify; }
+
+.sectiune { margin-top: 6.5mm; }
+.sectiune > h3 { font-family: var(--display); font-weight: 600; font-size: 10.8pt;
+  margin-bottom: 2.6mm; break-after: avoid; }
+.proza p { text-indent: 4.6mm; }
+.proza p:first-child { text-indent: 0; }
+
+/* inițiala primului paragraf */
+.capitol .sectiune:first-of-type .proza p:first-child::first-letter {
+  font-family: var(--display); font-weight: 600; font-size: 3.1em; line-height: .82;
+  float: left; padding: .04em .1em 0 0;
+}
+
+/* ---------------------------------- figuri -------------------------------- */
+figure { margin: 6mm 0; break-inside: avoid; page-break-inside: avoid; }
+figure svg { display: block; width: 100%; height: auto; }
+figcaption { font-family: var(--sans); font-size: 7.6pt; line-height: 10.4pt;
+  color: var(--gri-70); text-align: left; hyphens: none; margin-top: 2.2mm;
+  padding-top: 1.8mm; border-top: .5pt solid var(--rigla); }
+figcaption b { color: var(--negru); font-weight: 600; }
+.fig-nr { font-family: var(--sans); font-size: 7pt; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--gri-45);
+  display: block; margin-bottom: 1.4mm; }
+.legenda { display: flex; flex-wrap: wrap; gap: 1mm 4mm; margin-top: 2mm;
+  font-family: var(--sans); font-size: 7.2pt; }
+.legenda span { display: inline-flex; align-items: center; gap: 1.4mm; }
+.legenda i { width: 4.2mm; height: 2.6mm; display: inline-block; border: .4pt solid var(--negru); }
+
+/* ---------------------- hărțile, în tonuri de gri ------------------------- */
+/* Valorile sunt alese ca să rămână distincte la tipar alb-negru: 8, 22, 38,
+   55, 72 și 88 la sută negru, plus hașuri pentru suprafețele care trebuie
+   deosebite fără să depindă de ton.                                          */
+.m-uscat { fill: #f2f2f2; }
+.m-mare  { fill: #e2e2e2; }
+.m-vecin { fill: none; stroke: #999; stroke-width: 1.1; stroke-dasharray: 5 3.5; }
+.m-reg   { stroke: none; }
+.m-ta { fill: #c9c9c9; } .m-tb { fill: #a0a0a0; } .m-tc { fill: #808080; }
+.m-td { fill: #5e5e5e; } .m-te { fill: #3d3d3d; } .m-tf { fill: #767676; }
+.m-tg { fill: #f2f2f2; }
+.m-lim  { fill: none; stroke: #fff; stroke-width: 1.1; opacity: .75; }
+.m-has  { color: #000; }
+.m-rau  { fill: none; stroke: #fff; stroke-width: 1.9; stroke-linejoin: round;
+          stroke-linecap: round; opacity: .85; }
+.m-stat { fill: none; stroke: #000; stroke-width: 3; stroke-linejoin: round; }
+.m-rama { fill: none; stroke: #000; stroke-width: 1.2; }
+.m-linie { fill: none; stroke-width: 2.6; stroke-linejoin: round; }
+.m-l-frontiera { stroke: #000; stroke-dasharray: 7 3.5; }
+.m-l-ceda      { stroke: #000; stroke-width: 3.4; stroke-dasharray: 9 4; }
+.m-l-campanie  { stroke: #000; stroke-width: 2.8; }
+.m-l-fina      { stroke: #000; stroke-width: 1.4; stroke-dasharray: 3.5 3; }
+
+/* etichetele hărții, mărite pentru scara tiparului: harta are circa 940 de
+   unități de viewBox pe 117 mm de hârtie, deci o unitate este 0,35 pt        */
+.m-et { font-family: var(--sans); fill: #000; }
+.m-et-reg { font-size: 21px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.m-et-mic { font-size: 17px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; fill: #333; }
+.m-et-loc { font-size: 16px; }
+.m-et-apa { font-size: 16px; font-style: italic; fill: #555; letter-spacing: .05em; }
+.m-et-scara { font-size: 15px; fill: #555; }
+.m-loc, .m-oras { fill: #000; }
+.m-oras { r: 4; }
+.m-batalie { fill: none; stroke: #000; stroke-width: 3.4; stroke-linecap: round; }
+.m-sit path { fill: #000; }
+.m-capitala circle { fill: #000; }
+.m-capitala .m-in { fill: #fff; }
+.m-scara line { stroke: #000; stroke-width: 1.6; }
+
+/* diagramele */
+.diagrama { font-family: var(--sans); }
+.d-ax   { stroke: #000; stroke-width: 1.4; }
+.d-grid { stroke: #c4c4c4; stroke-width: 1; }
+.d-et   { font-size: 15px; fill: #444; }
+.d-et-b { font-size: 16px; fill: #000; font-weight: 600; }
+.d-linie { fill: none; stroke: #000; stroke-width: 2.6; stroke-linejoin: round; }
+.d-arie { fill: #000; opacity: .12; }
+.d-pct  { fill: #000; }
+.d-marc { stroke: #000; stroke-width: 1.6; stroke-dasharray: 4 3; }
+.d-et-marc { font-size: 15px; fill: #000; }
+
+/* ------------------------------ aparatul ---------------------------------- */
+.citat { margin: 6mm 0; padding-left: 5mm; border-left: 1.2pt solid var(--negru);
+  break-inside: avoid; }
+.citat blockquote { margin: 0; font-family: var(--display); font-style: italic;
+  font-size: 10.4pt; line-height: 14.6pt; }
+.citat .sursa { font-family: var(--sans); font-size: 7.8pt; line-height: 10.6pt;
+  color: var(--gri-70); margin-top: 2.4mm; text-align: left; hyphens: none; }
+.citat .sursa b { color: var(--negru); letter-spacing: .05em; }
+
+.cifre { margin: 6mm 0; break-inside: avoid; }
+.cifre .cap-mic { font-family: var(--sans); font-size: 7pt; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--gri-45);
+  border-bottom: .5pt solid var(--rigla); padding-bottom: 1.4mm; margin-bottom: 2.6mm; }
+.cifra { display: grid; grid-template-columns: 34mm 1fr; gap: 0 3.5mm;
+  margin-bottom: 2.6mm; font-size: 8.4pt; line-height: 11.4pt; text-align: left; }
+.cifra b { font-family: var(--sans); font-weight: 600; font-size: 9.2pt;
+  font-variant-numeric: tabular-nums; text-align: right; }
+.cifra span { display: block; font-family: var(--sans); font-weight: 500; }
+.cifra small { display: block; color: var(--gri-70); font-size: 8pt; line-height: 11pt; }
+
+.figuri { margin: 6mm 0; }
+.pers { margin-bottom: 4mm; break-inside: avoid; font-size: 8.6pt; line-height: 11.8pt; }
+.pers-cap { font-family: var(--display); font-weight: 600; font-size: 9.6pt; }
+.pers-ani { font-family: var(--sans); font-weight: 400; font-size: 8pt; color: var(--gri-45); }
+.pers-rol { font-family: var(--display); font-style: italic; color: var(--gri-70);
+  font-size: 8.8pt; margin-bottom: .8mm; }
+
+.cronologie { margin: 6mm 0; }
+.cron-lista { display: grid; grid-template-columns: 26mm 1fr; gap: 0 3.5mm; margin: 0; }
+.cron-lista dt { font-family: var(--sans); font-size: 8.2pt; font-weight: 600;
+  font-variant-numeric: tabular-nums; padding: 1.5mm 0; border-top: .4pt solid #ddd;
+  text-align: right; }
+.cron-lista dd { margin: 0; padding: 1.5mm 0; border-top: .4pt solid #ddd;
+  font-size: 8.6pt; line-height: 11.6pt; text-align: left; }
+.cron-lista dt:first-of-type, .cron-lista dd:first-of-type { border-top: .6pt solid var(--negru); }
+
+.controversa { margin: 6mm 0; padding: 3.4mm 4mm; border: .5pt solid var(--rigla);
+  break-inside: avoid; font-size: 8.8pt; line-height: 12pt; }
+.controversa .cap-mic { font-family: var(--sans); font-size: 7pt; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--gri-45); margin-bottom: 1.8mm; }
+
+.cap-mic { font-family: var(--sans); font-size: 7pt; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--gri-45); }
+
+/* ------------------------------- material final --------------------------- */
+.anexa { page: capitol; break-before: recto; }
+.anexa h2 { string-set: titlu-capitol content(text); font-family: var(--display);
+  font-weight: 300; font-size: 20pt; padding-top: 30mm; margin-bottom: 8mm; }
+.anexa h3 { font-family: var(--display); font-weight: 600; font-size: 10.8pt;
+  margin: 6mm 0 2.6mm; }
+.anexa p { margin-bottom: 3mm; }
+
+.lista-figuri { font-size: 8.6pt; line-height: 11.8pt; }
+.lista-figuri li { display: flex; align-items: baseline; gap: 1.5mm; margin-bottom: 2mm;
+  text-align: left; }
+.lista-figuri .nr { font-family: var(--sans); font-size: 7.8pt; color: var(--gri-45);
+  min-width: 9mm; }
+.lista-figuri .pct { flex: 1; border-bottom: .4pt dotted var(--gri-45); margin-bottom: 1mm; }
+.lista-figuri .pg::after { content: target-counter(attr(href url), page);
+  font-family: var(--sans); font-size: 8pt; font-variant-numeric: tabular-nums; }
+.lista-figuri ol { list-style: none; margin: 0; padding: 0; }
+
+.indice { column-count: 2; column-gap: 6mm; font-size: 8pt; line-height: 10.8pt;
+  text-align: left; hyphens: none; }
+.indice div { break-inside: avoid; margin-bottom: 1.2mm; }
+.indice .nume { font-weight: 400; }
+.indice .pagini { font-family: var(--sans); font-variant-numeric: tabular-nums;
+  color: var(--gri-70); }
+.indice .litera { font-family: var(--sans); font-size: 8.4pt; font-weight: 600;
+  letter-spacing: .14em; color: var(--negru); margin: 3.4mm 0 1.6mm;
+  border-bottom: .5pt solid var(--rigla); padding-bottom: .8mm; break-after: avoid; }
+.indice div:first-child .litera { margin-top: 0; }
+
+/* ancorele de indice nu trebuie să schimbe nimic în pagină */
+.ix { font: inherit; color: inherit; }
