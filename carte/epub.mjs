@@ -58,51 +58,55 @@ p { margin: 0; text-indent: 1.3em; }
 p.prim, p.rezumat, p.fara-alineat { text-indent: 0; }
 p + p { margin-top: 0; }
 .eticheta { font-size: 0.72em; letter-spacing: 0.14em; text-transform: uppercase;
-  color: #666; text-align: left; text-indent: 0; margin-bottom: 0.4em; }
-.perioada { font-size: 0.82em; color: #555; text-align: left; text-indent: 0;
-  border-top: 1px solid #999; padding-top: 0.4em; margin: 0.6em 0 1.4em; }
-.rezumat { font-family: "Spectral", Georgia, serif; font-style: italic; color: #333;
+  opacity: 0.62; text-align: left; text-indent: 0; margin-bottom: 0.4em; }
+.perioada { font-size: 0.82em; opacity: 0.68; text-align: left; text-indent: 0;
+  border-top: 1px solid currentColor; padding-top: 0.4em; margin: 0.6em 0 1.4em; }
+.rezumat { font-family: "Spectral", Georgia, serif; font-style: italic; opacity: 0.86;
   margin-bottom: 1.4em; }
 figure { margin: 1.6em 0; page-break-inside: avoid; text-align: center; }
 figure svg { max-width: 100%; height: auto; }
 figure.ilustratie img { max-width: 100%; max-height: 88vh; height: auto; }
 figure.ilustratie figcaption .sursa { display: block; margin-top: .35em;
-  font-size: .88em; color: #777; font-style: italic; }
-figcaption { font-size: 0.76em; line-height: 1.45; color: #444; text-align: left;
-  margin-top: 0.5em; padding-top: 0.4em; border-top: 1px solid #bbb; hyphens: none; }
-blockquote { margin: 1.4em 0; padding-left: 1em; border-left: 2px solid #333;
+  font-size: .88em; opacity: .82; font-style: italic; }
+figcaption { font-size: 0.76em; line-height: 1.45; opacity: 0.78; text-align: left;
+  margin-top: 0.5em; padding-top: 0.4em; border-top: 1px solid currentColor; hyphens: none; }
+blockquote { margin: 1.4em 0; padding-left: 1em; border-left: 2px solid currentColor;
   font-family: "Spectral", Georgia, serif; font-style: italic; }
 blockquote p { text-indent: 0; }
-.sursa { font-size: 0.78em; color: #555; text-align: left; text-indent: 0; margin-top: 0.5em; }
+.sursa { font-size: 0.78em; opacity: 0.7; text-align: left; text-indent: 0; margin-top: 0.5em; }
 .cifra { margin-bottom: 0.7em; text-indent: 0; text-align: left; }
 .cifra b { font-size: 1.05em; }
-.cifra em { display: block; font-size: 0.85em; color: #555; font-style: normal; }
+.cifra em { display: block; font-size: 0.85em; opacity: 0.7; font-style: normal; }
 .pers { margin-bottom: 1em; text-indent: 0; text-align: left; }
 .pers .nume { font-family: "Spectral", Georgia, serif; font-weight: bold; }
-.pers .ani { font-size: 0.85em; color: #666; }
-.pers .rol { font-style: italic; color: #444; display: block; font-size: 0.9em; }
+.pers .ani { font-size: 0.85em; opacity: 0.68; }
+.pers .rol { font-style: italic; opacity: 0.8; display: block; font-size: 0.9em; }
 dl { margin: 1em 0; }
 dt { font-weight: bold; font-size: 0.86em; margin-top: 0.7em; }
 dd { margin: 0.1em 0 0 0; font-size: 0.92em; text-align: left; }
-.caseta { border: 1px solid #999; padding: 0.8em; margin: 1.5em 0; font-size: 0.92em;
+.caseta { border: 1px solid currentColor; padding: 0.8em; margin: 1.5em 0; font-size: 0.92em;
   text-align: left; }
 .caseta p { text-indent: 0; }
 .coperta { text-align: center; margin: 0; padding: 0; }
-.coperta img { max-width: 100%; height: auto; }
+/* Fara plafon de inaltime, coperta de 1600x2560 se taie jos intr-un cititor
+   paginat — si acolo sta numele autorului. */
+.coperta img { max-width: 100%; max-height: 96vh; width: auto; height: auto; }
 table { border-collapse: collapse; width: 100%; font-size: 0.78em; }
 th, td { text-align: left; vertical-align: top; padding: 0.3em 0.5em 0.3em 0;
-  border-bottom: 1px solid #ddd; hyphens: none; }
-th { font-size: 0.86em; letter-spacing: 0.07em; text-transform: uppercase; color: #555;
-  border-bottom: 1px solid #999; }
+  border-bottom: 1px solid currentColor; hyphens: none; }
+td, th { border-bottom-color: currentColor; }
+tbody td { opacity: 0.92; }
+th { font-size: 0.86em; letter-spacing: 0.07em; text-transform: uppercase; opacity: 0.66;
+  border-bottom: 1px solid currentColor; }
 td.num, th.num { white-space: nowrap; }
-.tabel-intro { text-indent: 0; font-size: 0.85em; color: #555; margin-bottom: 0.8em; }
+.tabel-intro { text-indent: 0; font-size: 0.85em; opacity: 0.72; margin-bottom: 0.8em; }
 figure.banda-timp { margin: 1.1em 0; page-break-inside: avoid; }
 figure.banda-timp svg { width: 100%; height: auto; display: block; }
 .legenda-harta { text-indent: 0; text-align: left; font-size: 0.72em; line-height: 1.7;
-  color: #444; margin: 0.4em 0 0; }
+  opacity: 0.82; margin: 0.4em 0 0; }
 .legenda-harta span { margin-right: 1.1em; white-space: nowrap; }
 .legenda-harta i { display: inline-block; width: 1.5em; height: 0.72em; margin-right: 0.35em;
-  vertical-align: -0.08em; border: 1px solid #999; font-style: normal; }
+  vertical-align: -0.08em; border: 1px solid currentColor; font-style: normal; }
 .legenda-harta i.simb { border: 0; width: auto; height: auto; }
 .legenda-harta i.lin { border: 0; border-top: 2px solid #a6321c; height: 0; vertical-align: 0.2em; }
 .legenda-harta i.lin-punct { border: 0; border-top: 2px dashed #a6321c; height: 0; vertical-align: 0.2em; }
@@ -127,49 +131,59 @@ function strangeClase(svg) {
 }
 
 function stilulFigurilor(caleCss, folosite) {
-  let css = readFileSync(caleCss, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
-  /* intai se scot blocurile @media: ele poarta varianta intunecata */
-  let curat = '', adanc = 0
-  for (let i = 0; i < css.length; i++) {
-    if (css.startsWith('@media', i)) {
-      let j = css.indexOf('{', i), n = 0
-      do { if (css[j] === '{') n++; if (css[j] === '}') n--; j++ } while (n > 0 && j < css.length)
-      i = j - 1
-      continue
-    }
-    curat += css[i]
+  const css = readFileSync(caleCss, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
+
+  /* Blocurile de variabile: cel luminos si cel intunecat. Se duc asa cum sunt
+     in foaia EPUB-ului, nu se rezolva pe loc. Diagramele au culorile scrise in
+     atribut — fill="var(--m-a)" — si o regula copiata nu le ajuta cu nimic:
+     fara variabile, cititorul umple bara cu negru. Asa se pastreaza si
+     varianta de noapte, pe care majoritatea cititoarelor o au. */
+  const bloc = (dela) => {
+    const k = css.indexOf('{', dela)
+    return css.slice(k + 1, css.indexOf('}', k))
   }
-  /* variabilele, din primul :root */
-  const rad = curat.slice(curat.indexOf(':root'), curat.indexOf('}', curat.indexOf(':root')))
-  const vari = {}
-  for (const m of rad.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) vari[m[1]] = m[2].trim()
-  const rezolva = (v) => {
-    for (let i = 0; i < 5 && v.includes('var('); i++) {
-      v = v.replace(/var\(\s*(--[\w-]+)\s*(?:,\s*([^()]*))?\)/g, (_, k, alt) => vari[k] || alt || 'inherit')
-    }
-    return v
-  }
-  /* o regula intra daca vreo clasa din selectorul ei chiar e folosita in SVG */
+  const variabile = (text) => [...text.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)]
+    .map((m) => `  ${m[1]}: ${m[2].trim()};`).join('\n')
+
+  const zi = variabile(bloc(css.indexOf(':root')))
+  const iNoapte = css.indexOf(':root[data-theme="dark"]')
+  const noapte = iNoapte > 0 ? variabile(bloc(iNoapte)) : ''
+
   const vrem = (sel) => {
     const clase = [...sel.matchAll(/\.([\w-]+)/g)].map((m) => m[1])
     return clase.length > 0 && clase.some((c) => folosite.has(c))
   }
+  /* blocurile @media poarta varianta intunecata a regulilor; se scot, fiindca
+     variabilele de mai sus fac aceeasi treaba, o singura data */
+  let curat = '', ii = 0
+  for (; ii < css.length; ii++) {
+    if (css.startsWith('@media', ii)) {
+      let k = css.indexOf('{', ii), m = 0
+      do { if (css[k] === '{') m++; if (css[k] === '}') m--; k++ } while (m > 0 && k < css.length)
+      ii = k - 1
+      continue
+    }
+    curat += css[ii]
+  }
+
   const out = [], petice = []
-  for (const bloc of curat.split('}')) {
-    const k = bloc.indexOf('{')
+  for (const b of curat.split('}')) {
+    const k = b.indexOf('{')
     if (k < 0) continue
-    const sel = bloc.slice(0, k).trim(), corp = rezolva(bloc.slice(k + 1).trim())
+    const sel = b.slice(0, k).trim(), corp = b.slice(k + 1).trim()
     if (!vrem(sel) || !corp) continue
     out.push(`${sel} { ${corp} }`)
     /* petecul din legenda e un <i> de HTML: "fill" nu-l coloreaza, ii trebuie
-       fundal. Se ia culoarea chiar din regula tonului, ca sa nu se desparta */
+       fundal. Se ia chiar valoarea din regula tonului, ca sa nu se desparta. */
     const t = sel.match(/^\.(m-t[a-g])$/)
     const f = corp.match(/fill:\s*([^;]+)/)
     if (t && f) petice.push(`.legenda-harta i.${t[1]} { background: ${f[1].trim()}; }`)
     const h = sel.match(/^\.(leg-h[0-4])$/)
     if (h) petice.push(`.legenda-harta i.${h[1]} { ${corp} }`)
   }
-  return out.concat(petice).join('\n')
+  return `:root {\n${zi}\n}\n` +
+    (noapte ? `@media (prefers-color-scheme: dark) {\n:root {\n${noapte}\n}\n}\n` : '') +
+    out.concat(petice).join('\n')
 }
 
 /* ---- continut ------------------------------------------------------------ */
@@ -296,8 +310,14 @@ writeFileSync(OUT + '/META-INF/container.xml', `<?xml version="1.0" encoding="UT
 for (const f of ['Literata-400.ttf','Literata-400i.ttf','Literata-600.ttf','Spectral-300.ttf','Spectral-600.ttf'])
   cpSync(RAD + 'fonturi/' + f, OUT + '/OEBPS/fonturi/' + f)
 
-const areCoperta = existsSync(RAD + 'coperta-ebook.png')
-if (areCoperta) cpSync(RAD + 'coperta-ebook.png', OUT + '/OEBPS/coperta.png')
+/* Coperta de carte electronica: cea a volumului intreg. Daca lipseste — se
+   face cu "node coperta.mjs <pagini>", fara --volum — se ia a volumului intai,
+   dar se spune, ca sa nu plece la vanzare o coperta veche fara sa stie nimeni. */
+const caleCop = [RAD + 'coperta-ebook.png', RAD + 'coperta-ebook-vol1.png'].find((f) => existsSync(f))
+const areCoperta = Boolean(caleCop)
+if (caleCop && !caleCop.endsWith('coperta-ebook.png'))
+  console.warn('ATENȚIE: lipsește coperta-ebook.png; se folosește ' + caleCop.split('/').pop())
+if (areCoperta) cpSync(caleCop, OUT + '/OEBPS/coperta.png')
 
 const fisiere = []
 if (areCoperta) {

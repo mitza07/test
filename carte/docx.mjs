@@ -77,14 +77,26 @@ ${stil('Aparat', 'Aparat critic', '<w:pPr><w:ind w:firstLine="0" w:left="283" w:
 function pune(m, stare) {
   /* varianta de ecran: un manuscris de sute de megaocteti nu se deschide */
   const redus = RAD + 'ilustratii/ecran/' + m.local.split('/').pop()
-  const src = existsSync(redus) ? redus : RAD + m.local
-  if (!existsSync(src) || statSync(src).size < 40000) return ''
+  const mare = RAD + m.local
+  const src = existsSync(redus) ? redus : mare
+  /* Pragul de 40 KB e pentru descarcari stricate si se masoara pe original.
+     Aplicat pe copia deja comprimata pentru ecran, taia opt ilustratii bune. */
+  if (!existsSync(src)) return ''
+  if (!existsSync(mare) || statSync(mare).size < 40000) return ''
   const id = ++stare.id
   copyFileSync(src, `${OUT}/word/media/il${id}.jpg`)
   stare.rels.push(`<Relationship Id="rId${id}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/il${id}.jpg"/>`)
   const nr = ++stare.nr
-  const raport = (m.inaltime && m.latime) ? m.inaltime / m.latime : 0.7
-  let cx = LAT_TEXT, cy = Math.round(cx * raport)
+  /* Raportul se ia din pixelii pe care ii avem cu adevarat. Unsprezece intrari
+     din manifest n-au latime/inaltime, dar le au pe pxLatime/pxInaltime, pe
+     care macheta de tipar le foloseste; fara ele, poza iesea turtita la 0,7. */
+  const lat = m.pxLatime || m.latime || 0
+  const inalt = m.pxInaltime || m.inaltime || 0
+  const raport = (lat && inalt) ? inalt / lat : 0.7
+  /* Nici o poza nu se intinde peste ce-i dau pixelii ei: la 200 de puncte pe
+     tol, o gravura de 900 px tine 4,5 toli, nu sase. */
+  let cx = lat ? Math.min(LAT_TEXT, Math.round((lat / 200) * EMU)) : LAT_TEXT
+  let cy = Math.round(cx * raport)
   if (cy > INALT_MAX) { cy = INALT_MAX; cx = Math.round(cy / raport) }
   const credit = [m.autor, m.data, m.sursa, /domeniu public/i.test(m.tipLicenta) ? 'domeniu public' : m.licenta]
     .filter(Boolean).join(' · ')
@@ -123,13 +135,28 @@ function puneFigura(cheie, stare) {
   const id = ++stare.id
   copyFileSync(src, `${OUT}/word/media/fig${id}.png`)
   stare.rels.push(`<Relationship Id="rId${id}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/fig${id}.png"/>`)
-  const nr = ++stare.nrFig
+  /* Fiecare fel de figura isi are sirul lui: altfel hartile ieseau numerotate
+     1, 8, 13, 16 … 58, fiindca benzile foloseau acelasi contor. */
+  const fel0 = h ? 'harta' : banda ? 'banda' : 'diagrama'
+  stare.nrPe = stare.nrPe || {}
+  const nr = stare.nrPe[fel0] = (stare.nrPe[fel0] || 0) + 1
+  stare.nrFig = (stare.nrFig || 0) + 1
   const raport = f.inaltime / f.latime
   let cx = LAT_TEXT, cy = Math.round(cx * raport)
   if (cy > INALT_MAX) { cy = INALT_MAX; cx = Math.round(cy / raport) }
-  const leg = (h?.legenda || []).map(([, t]) => t).join('; ')
+  /* Cheia legendei nu se arunca: un sir de cuvinte fara semnul lor nu spune
+     ce ton sau ce linie inseamna fiecare. */
+  const NUME_SEMN = { ceda: 'linie roșie întreruptă', campanie: 'linie roșie',
+    hasu: 'hașură', batalie: 'cruce', sit: 'triunghi', oras: 'cerc plin',
+    capitala: 'cerc dublu', h0: 'ton', h1: 'ton', h2: 'ton', h3: 'ton', h4: 'ton' }
+  const leg = (h?.legenda || []).map(([k, t]) => `${t} (${NUME_SEMN[k] || 'ton ' + k})`).join('; ')
   const fel = h ? 'Harta' : banda ? 'Banda' : 'Diagrama'
-  const cap = `${fel} ${nr}. ${titlu}. ${jos}` + (leg ? ` Legendă: ${leg}.` : '')
+  /* Explicatia benzii se da o data, la prima; pe urma numai titlul — altfel
+     acelasi paragraf de doua sute treizeci de semne s-ar repeta de patruzeci. */
+  stare.spus = stare.spus || new Set()
+  let text = jos
+  if (banda) { text = stare.spus.has(fel0) ? '' : jos; stare.spus.add(fel0) }
+  const cap = `${fel} ${nr}. ${titlu}${text ? '. ' + text : '.'}` + (leg ? ` Legendă: ${leg}.` : '')
   return imagine(id, cx, cy, titlu, nr, `fig${id}.png`) + p(cap, 'Legenda')
 }
 

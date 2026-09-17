@@ -339,10 +339,15 @@ figcaption { break-inside: avoid; page-break-inside: avoid; }
 /* în plansa cartografică imaginile primesc toată înălțimea paginii */
 #atlas-vechi .ilustratie img { max-height: 158mm; width: auto; max-width: 100%; margin: 0 auto; }
 
-/* O imagine mai inalta decat lata nu are voie sa umple pagina pe latime:
-   la 117 mm oglinda, un portret in picioare ar depasi inaltimea utila si
-   ar arunca legenda pe pagina urmatoare. */
-.ilustratie img { max-height: 150mm; width: auto; max-width: 100%; margin: 0 auto; }
+/* O imagine mai inalta decat lata nu are voie sa umple pagina pe latime: la
+   117 mm oglinda, un portret in picioare ar depasi inaltimea utila.
+   Plafonul nu e ales dupa cat de frumos ar arata cat mai mare, ci dupa ce
+   incape alaturi de el. Oglinda are 190,6 mm. La 150 mm, imaginea plus legenda
+   plus marginile tineau 183 mm — 96 la suta din pagina — asa ca nicio imagine
+   nalta nu putea imparti pagina cu text: cand textul sectiunii se termina
+   inaintea ei, ramanea o pagina cu trei randuri si restul alb. La 128 mm tin
+   161 mm, si raman treizeci de milimetri, adica vreo paisprezece randuri. */
+.ilustratie img { max-height: 128mm; width: auto; max-width: 100%; margin: 0 auto; }
 .ilustratie.lata img { width: 100%; max-height: none; }
 
 /* numele volumului pe semititlu, cand cartea apare in doua tomuri */

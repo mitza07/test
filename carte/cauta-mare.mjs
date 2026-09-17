@@ -169,6 +169,64 @@ const FONDURI = [
     'Cozia Monastery', 'Stavropoleos Monastery', 'Antim Monastery',
     'Romanian Orthodox icons', 'Icons of Romania', 'Byzantine art in Romania',
   ] },
+  /* ---- valul al treilea: capitolele care au ramas fara nicio ilustratie ----
+     Masurat pe paginile tiparite, doua capitole n-aveau nicio figura si sase
+     aveau una singura la peste doua mii de cuvinte. Fondurile de mai jos merg
+     tocmai dupa ele. Secolul XX romanesc e greu: fotografia de dupa 1945 e
+     aproape toata sub drept de autor, iar ce trece de poarta de licenta vine
+     mai ales din arhive publice straine si din fotografii de monumente. */
+  { grup: 'revolutie', adanc: 2, cat: [
+    'Romanian Revolution of 1989', 'Romanian Revolution of 1989 in Bucharest',
+    'Romanian Revolution of 1989 in Timișoara', 'Trial of Nicolae and Elena Ceaușescu',
+    'Revolution Square, Bucharest', 'Monuments to the Romanian Revolution of 1989',
+    'Memorials of the Romanian Revolution of 1989', 'Piața Victoriei, Timișoara',
+  ] },
+  { grup: 'tranzitie', adanc: 2, cat: [
+    'Mineriad', 'Ion Iliescu', 'Emil Constantinescu', 'Traian Băsescu',
+    '1990s in Romania', '2000s in Romania', 'University Square, Bucharest',
+    'Romania and the European Union', 'Romania and NATO', 'Accession of Romania to the European Union',
+  ] },
+  { grup: 'comunism2', adanc: 2, cat: [
+    'Socialist Republic of Romania', 'Gheorghe Gheorghiu-Dej', 'Danube–Black Sea Canal',
+    'Sighet Memorial', 'Securitate', 'Collectivization in Romania',
+    'Systematization (Romania)', 'Pitești Prison', 'Propaganda of the Socialist Republic of Romania',
+    'Nicolae Ceaușescu', 'Elena Ceaușescu', 'Palace of the Parliament',
+  ] },
+  { grup: 'antic2', adanc: 2, cat: [
+    'Getae', 'Thracian treasures', 'Histria (Romania)', 'Callatis', 'Tomis',
+    'Scythian art', 'Pietroasele Treasure', 'Nagyszentmiklós Treasure',
+    'Migration Period', 'Gepids', 'Ancient Greek coins of Thrace', 'Dacian coins',
+    'Apahida necropolis', 'Sânnicolau Mare',
+  ] },
+  { grup: 'stiinta2', adanc: 2, cat: [
+    'Henri Coandă', 'Traian Vuia', 'Aurel Vlaicu', 'Nicolae Paulescu',
+    'George Emil Palade', 'Anghel Saligny', 'Cernavodă Bridge', 'Romanian Academy',
+    'Romanian inventors', 'Spiru Haret', 'Emil Racoviță',
+  ] },
+  { grup: 'limba2', adanc: 2, cat: [
+    'Romanian Cyrillic alphabet', 'Old Romanian books', 'Coresi',
+    'Biblia de la București', 'Cazania lui Varlaam', 'Psaltirea Scheiană',
+    'Manuscripts in Romanian', 'Romanian language',
+  ] },
+  { grup: 'cultura2', adanc: 2, cat: [
+    'Constantin Brâncuși', 'George Enescu', 'Romanian Athenaeum', 'Mihai Eminescu',
+    'Ion Luca Caragiale', 'Nicolae Tonitza', 'Theodor Pallady', 'Ion Creangă',
+    'Romanian National Theatre', 'Romanian sculpture', 'Romanian literature',
+  ] },
+  { grup: 'medicina2', adanc: 2, cat: [
+    'Victor Babeș', 'Ion Cantacuzino', 'Hospitals in Romania', 'Medicine in Romania',
+    'Colțea Hospital', 'Pharmacies in Romania', 'Nurses of Romania',
+  ] },
+  { grup: 'sport2', adanc: 2, cat: [
+    'Nadia Comăneci', 'Gymnastics in Romania', 'Football in Romania',
+    'Romania at the Summer Olympics', 'Iolanda Balaș', 'Athletics in Romania',
+    'Romanian sportspeople',
+  ] },
+  { grup: 'romi2', adanc: 2, cat: [
+    'Romani people in Romania', 'Romani slavery', 'Romani people in art',
+    'Romani people in the Holocaust', 'Romani people in Europe',
+  ] },
+
   { grup: 'vederi', adanc: 2, cat: [
     'Historical images of Bucharest', 'Engravings of Romania',
     'Lithographs of Romania', 'Drawings of Romania', 'Watercolors of Romania',

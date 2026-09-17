@@ -36,6 +36,12 @@ export function tipografic(text) {
   /* interval de numere, fara spatii: 1867-1944 → 1867–1944 */
   s = s.replace(/(\d)\s?-\s?(?=\d)/g, '$1–')
 
+  /* Doi ani goi despartiti de linie cu spatii — "1893 – 1960" — se string:
+     asa se scrie un interval de ani. Cand de-o parte sau de alta e altceva
+     decat un an gol ("23 august – 2 decembrie 1944", "300 î.Hr. – 87 d.Hr.")
+     spatiile raman, fiindca acolo linia desparte doua date intregi. */
+  s = s.replace(/(\d{3,4})\s+–\s+(?=\d{3,4}(?!\d))/g, '$1–')
+
   /* Cratima sau linia de unire cu spatii de-o parte si de alta e ori un
      interval de date — "23 august - 2 decembrie 1944" — ori o linie de pauza.
      Se hotaraste dupa ce sta in jurul ei. */
