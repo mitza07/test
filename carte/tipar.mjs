@@ -24,6 +24,9 @@ function incarcaIlustratii() {
   return pe
 }
 const ILUSTRATII = incarcaIlustratii()
+/* Care variantă de poze intră în pagină: cele de tipar, la 1.700 px, sau cele
+   de ecran, la 900. A doua scoate copia de citit, de zece ori mai ușoară. */
+const POZE = process.env.POZE === 'ecran' ? 'ecran' : 'tipar'
 let nrIl = 0
 const ilustratiiFolosite = []
 
@@ -49,7 +52,7 @@ function figuraIlustratie(m) {
   const lata = m.latime && m.inaltime && m.latime / m.inaltime > 1.28
   const stil = latMm < OGLINDA ? ` style="width:${latMm}mm"` : ''
   return `<figure class="ilustratie${lata ? ' lata' : ''}${latMm < OGLINDA ? ' ingusta' : ''}" id="${id}"${stil}>
-<img src="ilustratii/tipar/${m.local.split('/').pop()}" alt="${esc(m.legenda)}"/>
+<img src="ilustratii/${POZE}/${m.local.split('/').pop()}" alt="${esc(m.legenda)}"/>
 <figcaption><span class="fig-nr">Ilustrația ${n}</span>${esc(m.legenda)}
 <span class="credit">${esc(creditScurt(m))}</span></figcaption>
 </figure>`
@@ -74,7 +77,7 @@ const SUBTITLU = 'în 3.026 de ani'
 const AN = '2026'
 
 const DIAG = { populatie: diagramaPopulatie, lexic: diagramaLexic, etnic: diagramaEtnic, teritoriu: diagramaTeritoriu }
-const SUBT_DIAG = {
+export const SUBT_DIAG = {
   populatie: ['Populația României la recensăminte, 1859–2021', 'Creșterea până în 1992 și pierderea a 3,8 milioane de locuitori în cele trei decenii următoare, prin scăderea natalității și prin emigrare, sunt cele două fapte demografice majore ale istoriei recente.'],
   lexic: ['Din ce e făcută limba română', 'Proporțiile sunt calculate de Marius Sala pe vocabularul reprezentativ, de 2.581 de cuvinte. În lexicul fundamental, de circa 1.500 de cuvinte, ponderea latinei moștenite urcă spre 70 la sută: cu cât cuvântul este mai frecvent, cu atât e mai probabil să fie latin.'],
   etnic: ['Structura etnică, 1930 și 2021', 'Omogenizarea nu este rezultatul unui singur proces: Holocaustul și emigrarea în Israel, deportarea și plecarea germanilor, pierderea Basarabiei și a Cadrilaterului, apoi asimilarea au acționat succesiv. La recensământul din 2021, circa 9 la sută dintre locuitori nu și-au declarat etnia; procentele se raportează la cei care au declarat-o.'],

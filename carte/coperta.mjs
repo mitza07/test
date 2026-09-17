@@ -124,7 +124,7 @@ body { width: ${W.toFixed(2)}mm; height: ${H.toFixed(2)}mm; background: #0c1620;
   <div class="cap">O istorie scrisă din ceea ce se poate documenta, nu din ceea ce ne-am dori să fie adevărat.</div>
   <p>${blurb}</p>
   <p>${VOL ? VOL.desc : 'Douăzeci și trei de capitole cronologice și șaptesprezece priviri transversale — limba, credința, minoritățile, cultura, economia, pământul. Fiecare capitol se încheie cu principala dispută a epocii, cu ambele poziții expuse corect.'}</p>
-  <p>Cele douăsprezece hărți sunt desenate din coordonate geografice reale: fiecare hotar istoric e definit o singură dată și reutilizat, astfel încât suprafețele să rămână comparabile de la o epocă la alta.</p>
+  <p>Cele treisprezece hărți sunt desenate din date geografice publice — cursurile de apă și țărmul din Natural Earth, relieful din modelul de teren al NOAA. Hotarele care merg pe apă sunt decupate din cursul real al râului, iar fiecare hotar e definit o singură dată și reutilizat, astfel încât suprafețele să rămână comparabile de la o epocă la alta.</p>
   <div class="date">
     <div><b>3.026</b><span>ani în cronologie</span></div>
     <div><b>331</b><span>ilustrații de arhivă</span></div>

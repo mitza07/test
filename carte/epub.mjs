@@ -372,10 +372,12 @@ writeFileSync(OUT + '/OEBPS/content.opf', `<?xml version="1.0" encoding="utf-8"?
 </package>`)
 
 /* --- ambalarea: mimetype primul, necomprimat -------------------------------- */
-const epub = RAD + 'Istoria-Romaniei.epub'
+/* Ediția compactă merge la numele ei: altfel a doua rulare o scria peste cea
+   întreagă, iar diferența — de trei ori mai mare — nu se vedea decât la KDP. */
+const epub = RAD + (process.env.EPUB_MIC ? 'Istoria-Romaniei-compact.epub' : 'Istoria-Romaniei.epub')
 rmSync(epub, { force: true })
 execFileSync('zip', ['-X0', epub, 'mimetype'], { cwd: OUT })
 execFileSync('zip', ['-Xr9D', epub, 'META-INF', 'OEBPS'], { cwd: OUT })
 
 const { statSync } = await import('fs')
-console.log(`Istoria-Romaniei.epub · ${fisiere.length} documente · ${nrFig} hărți/diagrame · ${nrIl} ilustrații · ${(statSync(epub).size / 1048576).toFixed(1)} MB`)
+console.log(`${epub.split('/').pop()} · ${fisiere.length} documente · ${nrFig} hărți/diagrame · ${nrIl} ilustrații · ${(statSync(epub).size / 1048576).toFixed(1)} MB`)

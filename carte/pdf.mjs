@@ -15,7 +15,8 @@ const POLYFILL = RAD + 'node_modules/pagedjs/dist/paged.polyfill.js'
 const color = process.argv.includes('--color')
 /* --volum=1 sau --volum=2 scoate tomul respectiv; fara el, cartea intreaga */
 const volum = Number((process.argv.find((x) => x.startsWith('--volum=')) || '').split('=')[1] || 0)
-const eticheta = (volum ? `vol${volum}-` : '') + (color ? 'color' : 'alb-negru')
+const citit = process.env.POZE === 'ecran'   /* copia usoara, de citit pe ecran */
+const eticheta = (volum ? `vol${volum}-` : '') + (citit ? 'de-citit' : color ? 'color' : 'alb-negru')
 
 const continut = JSON.parse(readFileSync(RAD + '../build/continut.json', 'utf8'))
 
@@ -115,7 +116,7 @@ const p2 = construiesteTipar(continut, { color, volum, indice: indiceHtml })
 const r2 = await pagineaza(browser, p2.html, `.lucru-2-${eticheta}.html`)
 console.log(`  trecerea a II-a: ${r2.date.pagini} pagini`)
 
-const iesire = RAD + `Istoria-Romaniei-interior-${eticheta}.pdf`
+const iesire = RAD + (citit ? `Istoria-Romaniei-${eticheta}.pdf` : `Istoria-Romaniei-interior-${eticheta}.pdf`)
 await r2.page.pdf({
   path: iesire,
   printBackground: true,

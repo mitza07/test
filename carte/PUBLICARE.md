@@ -90,7 +90,7 @@ cere și structura ei:
 
 | | Pagini | Cotor (crem) | Intră la |
 |---|---|---|---|
-| **Volumul I — Cronologia** (23 de capitole) | 520 | 33,0 mm | toate variantele, inclusiv color standard |
+| **Volumul I — Cronologia** (23 de capitole) | 522 | 33,1 mm | toate variantele, inclusiv color standard |
 | **Volumul II — Priviri transversale** (17 teme + atlasul) | 484 | 30,7 mm | toate variantele, inclusiv color standard |
 
 Amândouă stau sub 600, deci **color standard e disponibil pentru amândouă** — varianta
@@ -107,10 +107,25 @@ plafonul KDP.
 - Înălțime totală = 0,125″ + 9″ + 0,125″ = **9,25″**
 - Cotor = număr de pagini × **0,002252″** (hârtie albă) sau × **0,0025″** (crem)
 
-Calculat pe hârtie crem: **volumul I, 520 de pagini → cotor 33,0 mm**; **volumul II,
+Calculat pe hârtie crem: **volumul I, 522 de pagini → cotor 33,1 mm**; **volumul II,
 484 de pagini → cotor 30,7 mm**. Copertele sunt deja generate la aceste dimensiuni
-(`Istoria-Romaniei-coperta-vol1.pdf`, 344,2 × 235,0 mm, și `-vol2.pdf`, 341,9 × 235,0 mm),
+(`Istoria-Romaniei-coperta-vol1.pdf`, 344,3 × 235,0 mm, și `-vol2.pdf`, 341,9 × 235,0 mm),
 cu bleed de 3,2 mm și cu dreptunghiul alb de 48 × 26 mm rezervat codului de bare.
+
+Dacă se schimbă ceva în text sau în hărți, paginația se poate muta, iar cotorul odată cu
+ea. Comanda care le reface în ordinea corectă:
+
+```
+node build/build.mjs                 # conținutul și ediția web
+node carte/figuri-png.mjs            # hărțile și diagramele ca PNG, pentru manuscris
+cd carte
+for v in 1 2; do node pdf.mjs --volum=$v; node pdf.mjs --volum=$v --color; done
+POZE=ecran node pdf.mjs --volum=1 --color   # copiile ușoare, de citit pe ecran
+POZE=ecran node pdf.mjs --volum=2 --color
+node coperta.mjs 522 --volum=1       # numărul de pagini se ia din .paginatie-*.json
+node coperta.mjs 484 --volum=2
+node epub.mjs && node docx.mjs
+```
 
 ### ISBN la KDP
 
@@ -134,7 +149,31 @@ Singura obligație: fișierele de font nu se revând ca atare. Am trecut mențiu
 
 ## 6. Hărțile și diagramele
 
-Sunt generate din coordonate geografice, nu copiate. Nu reproduc nicio hartă publicată, deci nu există problemă de drepturi. Ariile calculate se abat cu 0,2–0,5% de cele reale.
+Sunt generate din coordonate geografice, nu copiate. Nu reproduc nicio hartă publicată,
+deci nu există problemă de drepturi asupra desenului. Sub desen stau însă date, iar
+datele au și ele o licență — motiv pentru care sunt luate numai din surse care se pot
+vinde mai departe:
+
+| Ce | De unde | Statut |
+|---|---|---|
+| Râuri, țărm, lacuri | **Natural Earth**, 1:10 m | „No rights reserved" — domeniu public, fără atribuire obligatorie |
+| Relief (curbe de nivel) | **ETOPO1**, NOAA | Lucrare a guvernului american: nu e supusă dreptului de autor. Uscatul vine din SRTM30 și GLOBE, tot domeniu public |
+| Hotare istorice | digitizate pentru volum | originale |
+
+Nu s-au folosit imagini de satelit sau tile-uri de hartă de la niciun serviciu comercial:
+și Google Maps, și Bing, și Mapbox le protejează strict, iar o carte care se vinde nu le
+poate purta. Ce se vede pe o imagine de satelit — muntele, fluviul, Delta — vine aici din
+datele libere de mai sus.
+
+**Hotarele care merg pe apă sunt decupate din cursul real**, nu trasate din ochi: se caută
+pe firul râului proiecțiile celor două noduri și se ia bucata dintre ele. Abaterea medie
+față de apă este de 0,64 km, iar pe porțiunile care chiar urmează râul, sub 50 de metri.
+
+Ariile calculate se abat cu 0,2–1,1% de cele reale: România de azi iese 239.444 km² față
+de 238.397 reali, România Mare 299.399 față de 295.049, Dobrogea 15.789 față de 15.485.
+
+`node build/valida.mjs` verifică toate cele 28 de contururi: autointersecții, salturi mari
+și aria fiecăruia, plus faptul că fiecare nod de apă stă chiar pe cursul lui.
 
 ---
 
@@ -153,15 +192,17 @@ Sunt generate din coordonate geografice, nu copiate. Nu reproduc nicio hartă pu
 
 | Fișier | Ce e | Dimensiune |
 |---|---|---|
-| `Istoria-Romaniei-interior-vol1-color.pdf` | interiorul volumului I, color | 520 pag. · 59 MB |
-| `Istoria-Romaniei-interior-vol1-alb-negru.pdf` | idem, alb-negru, aceeași paginație | 520 pag. · 59 MB |
+| `Istoria-Romaniei-interior-vol1-color.pdf` | interiorul volumului I, color | 522 pag. · 59 MB |
+| `Istoria-Romaniei-interior-vol1-alb-negru.pdf` | idem, alb-negru, aceeași paginație | 522 pag. · 59 MB |
 | `Istoria-Romaniei-interior-vol2-color.pdf` | interiorul volumului II, color | 484 pag. · 82 MB |
 | `Istoria-Romaniei-interior-vol2-alb-negru.pdf` | idem, alb-negru | 484 pag. · 82 MB |
-| `Istoria-Romaniei-coperta-vol1.pdf` | copertă completă, față–cotor–spate, cu bleed | 344,2 × 235,0 mm |
+| `Istoria-Romaniei-coperta-vol1.pdf` | copertă completă, față–cotor–spate, cu bleed | 344,3 × 235,0 mm |
 | `Istoria-Romaniei-coperta-vol2.pdf` | idem, volumul II | 341,9 × 235,0 mm |
-| `Istoria-Romaniei.epub` | ediția digitală, cu hărțile ca SVG | 36 MB |
-| `Istoria-Romaniei-manuscris.docx` | manuscrisul pentru editură, cu stiluri numite | 36 MB |
-| `Istoria-Romaniei-interior-color.pdf` | volumul întreg, pentru citit pe ecran | ~990 pag. · 141 MB |
+| `Istoria-Romaniei.epub` | ediția digitală, cu hărțile ca SVG și cu legendele lor | 37 MB |
+| `Istoria-Romaniei-compact.epub` | idem, cu ilustrațiile la 520 px, pentru taxa de livrare | 11 MB |
+| `Istoria-Romaniei-manuscris.docx` | manuscrisul pentru editură, cu stiluri numite, cu toate cele 13 hărți și 4 diagrame | 39 MB |
+| `Istoria-Romaniei-vol1-de-citit.pdf`, `-vol2-` | copiile ușoare, de citit pe ecran | 522 + 484 pag. · 19 + 23 MB |
+| `Istoria-Romaniei-interior-color.pdf` | volumul întreg, pentru citit pe ecran | 994 pag. · 141 MB |
 | `coperta-ebook-vol1.png`, `-vol2.png` | coperta de ebook, 1600 × 2560 px | — |
 
 ### Costul de livrare al EPUB-ului, la KDP

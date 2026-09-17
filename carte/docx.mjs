@@ -6,6 +6,8 @@
 import { writeFileSync, mkdirSync, rmSync, readFileSync, existsSync, statSync, copyFileSync } from 'fs'
 import { execFileSync } from 'child_process'
 import { PLAN, PLAN_TEME } from '../build/build.mjs'
+import { HARTI } from '../build/harti.mjs'
+import { SUBT_DIAG } from './tipar.mjs'
 
 const RAD = new URL('./', import.meta.url).pathname
 const OUT = RAD + '.docx-lucru'
@@ -30,13 +32,13 @@ const p = (text, stil) =>
 const pgol = () => '<w:p/>'
 const saltPagina = () => '<w:p><w:r><w:br w:type="page"/></w:r></w:p>'
 
-function imagine(id, cx, cy, legenda, nr) {
+function imagine(id, cx, cy, legenda, nr, fisier) {
   const desen = `<wp:inline distT="0" distB="0" distL="0" distR="0">
-<wp:extent cx="${cx}" cy="${cy}"/><wp:docPr id="${id}" name="Ilustratia ${nr}" descr="${esc(legenda).slice(0, 180)}"/>
+<wp:extent cx="${cx}" cy="${cy}"/><wp:docPr id="${id}" name="${fisier ? `Figura ${nr}` : `Ilustratia ${nr}`}" descr="${esc(legenda).slice(0, 180)}"/>
 <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
 <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
 <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
-<pic:nvPicPr><pic:cNvPr id="${id}" name="il${nr}.jpg"/><pic:cNvPicPr/></pic:nvPicPr>
+<pic:nvPicPr><pic:cNvPr id="${id}" name="${fisier || `il${nr}.jpg`}"/><pic:cNvPicPr/></pic:nvPicPr>
 <pic:blipFill><a:blip r:embed="rId${id}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill>
 <pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm>
 <a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline>`
@@ -86,6 +88,39 @@ function pune(m, stare) {
   return imagine(id, cx, cy, m.legenda, nr) + p(`Ilustrația ${nr}. ${m.legenda} [${credit}]`, 'Legenda')
 }
 
+/* --- harta sau diagrama, randata mai devreme ca PNG -----------------------
+   Word nu deseneaza SVG, asa ca figurile vectoriale ale cartii intra aici ca
+   poze. Legenda hartii, care sta in afara desenului, se muta in text: altfel
+   tonurile n-ar spune nimic. */
+const FIGURI = (() => {
+  const cale = RAD + 'ilustratii/figuri/index.json'
+  if (!existsSync(cale)) {
+    console.warn('ATENȚIE: lipsesc PNG-urile hărților și diagramelor; rulează mai întâi\n' +
+      '  node figuri-png.mjs\naltfel manuscrisul iese fără nicio hartă.')
+    return {}
+  }
+  return Object.fromEntries(JSON.parse(readFileSync(cale, 'utf8')).map((f) => [f.cheie, f]))
+})()
+
+function puneFigura(cheie, stare) {
+  const f = FIGURI[cheie]
+  const src = RAD + 'ilustratii/figuri/' + cheie + '.png'
+  if (!f || !existsSync(src)) return ''
+  const h = HARTI[cheie]
+  const [titlu, jos] = h ? [h.titlu, h.jos] : (SUBT_DIAG[cheie] || ['', ''])
+  if (!titlu) return ''
+  const id = ++stare.id
+  copyFileSync(src, `${OUT}/word/media/fig${id}.png`)
+  stare.rels.push(`<Relationship Id="rId${id}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/fig${id}.png"/>`)
+  const nr = ++stare.nrFig
+  const raport = f.inaltime / f.latime
+  let cx = LAT_TEXT, cy = Math.round(cx * raport)
+  if (cy > INALT_MAX) { cy = INALT_MAX; cx = Math.round(cy / raport) }
+  const leg = (h?.legenda || []).map(([, t]) => t).join('; ')
+  const cap = `${h ? 'Harta' : 'Diagrama'} ${nr}. ${titlu}. ${jos}` + (leg ? ` Legendă: ${leg}.` : '')
+  return imagine(id, cx, cy, titlu, nr, `fig${id}.png`) + p(cap, 'Legenda')
+}
+
 /* --- un capitol sau o tema ------------------------------------------------ */
 function sectiune(c, eticheta, poze, stare) {
   const b = []
@@ -102,6 +137,8 @@ function sectiune(c, eticheta, poze, stare) {
     if (i < sec.length - 1) { b.push(...poze.slice(k, k + intre).map((m) => pune(m, stare))); k += intre }
   })
   b.push(...poze.slice(k).map((m) => pune(m, stare)))
+  for (const cheie of c.harti || []) b.push(puneFigura(cheie, stare))
+  for (const cheie of c.diagrame || []) b.push(puneFigura(cheie, stare))
 
   if (c.cronologie?.length) {
     b.push(p('Cronologie', 'Heading2'))
@@ -141,7 +178,7 @@ export function construiesteDocx(continut) {
   const cap = PLAN.map((pl) => ({ ...pl, ...(capById[pl.id] || {}) })).filter((c) => c.sectiuni?.length)
   const teme = PLAN_TEME.map((pl) => ({ ...pl, ...(temeById[pl.id] || {}) })).filter((c) => c.sectiuni?.length)
 
-  const stare = { id: 0, nr: 0, rels: [] }
+  const stare = { id: 0, nr: 0, nrFig: 0, rels: [] }
   const b = []
   b.push(p(TITLU, 'Titlu'), p(SUBTITLU, 'Subtitlu'), pgol(), p(AUTOR, 'Subtitlu'), saltPagina())
   cap.forEach((c, i) => b.push(sectiune(c, `Capitolul ${ROMAN[i + 1]}`, ILUSTRATII[c.id] || [], stare)))
@@ -186,6 +223,7 @@ ${stare.rels.join('\n')}</Relationships>`)
 <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
 <Default Extension="xml" ContentType="application/xml"/>
 <Default Extension="jpg" ContentType="image/jpeg"/>
+<Default Extension="png" ContentType="image/png"/>
 <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
 <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
 <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
@@ -194,12 +232,12 @@ ${stare.rels.join('\n')}</Relationships>`)
   const dest = RAD + 'Istoria-Romaniei-manuscris.docx'
   rmSync(dest, { force: true })
   execFileSync('zip', ['-Xr9Dq', dest, '[Content_Types].xml', '_rels', 'docProps', 'word'], { cwd: OUT })
-  return { dest, ilustratii: stare.nr, paragrafe: b.join('').split('<w:p').length - 1 }
+  return { dest, ilustratii: stare.nr, figuri: stare.nrFig, paragrafe: b.join('').split('<w:p').length - 1 }
 }
 
 if (process.argv[1]?.endsWith('docx.mjs')) {
   const continut = JSON.parse(readFileSync(new URL('../build/continut.json', import.meta.url), 'utf8'))
   const r = construiesteDocx(continut)
   console.log(`${r.dest.split('/').pop()} · ${(statSync(r.dest).size / 1048576).toFixed(1)} MB · ` +
-    `${r.paragrafe} paragrafe · ${r.ilustratii} ilustrații`)
+    `${r.paragrafe} paragrafe · ${r.ilustratii} ilustrații · ${r.figuri} hărți și diagrame`)
 }
