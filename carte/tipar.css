@@ -343,3 +343,6 @@ figcaption { break-inside: avoid; page-break-inside: avoid; }
 /* numele volumului pe semititlu, cand cartea apare in doua tomuri */
 .semi-vol { margin-top: 6mm; font-family: var(--sans); font-size: 9pt;
   letter-spacing: .18em; text-transform: uppercase; color: var(--gri-45); }
+/* izvoarele de rezolutie mica se aseaza pe doua treimi din oglinda */
+.ilustratie.mica img { width: 68%; max-height: 110mm; }
+.ilustratie.mica figcaption { margin-left: auto; margin-right: auto; width: 68%; }

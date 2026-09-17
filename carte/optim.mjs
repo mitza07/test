@@ -10,7 +10,7 @@ mkdirSync(RAD + 'ilustratii/tipar', { recursive: true })
 let inainte = 0, dupa = 0, n = 0
 for (const m of man) {
   const src = RAD + m.local
-  if (!existsSync(src) || statSync(src).size < 60000) continue
+  if (!existsSync(src) || statSync(src).size < 40000) continue
   const dest = RAD + 'ilustratii/tipar/' + m.local.split('/').pop()
   inainte += statSync(src).size
   if (!existsSync(dest)) {

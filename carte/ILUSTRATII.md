@@ -1,59 +1,100 @@
 # Ilustrațiile de arhivă
 
-## Ce am găsit
+**331 de ilustrații**, toate verificate una câte una: **309 în domeniul public, 22 sub
+CC BY** (cere doar credit tipărit, nu contaminează cartea).
 
-Douăzeci de imagini verificate una câte una: **nouăsprezece în domeniu public, una sub CC BY** (cere doar credit tipărit, nu contaminează cartea).
+## Cum au fost găsite
 
-Am respins din start tot ce era **CC BY-SA** — share-alike ar obliga volumul întreg să fie relicențiat liber — și tot ce era **CC BY-NC**, care interzice vânzarea.
+Nu una câte una, ci printr-o căutare sistematică pe Wikimedia Commons: **nouăsprezece
+fonduri tematice** care au dat material — hărți, antichitate, ev mediu, artă
+brâncovenească, portrete, tipărituri, secolul XIX, orașe vechi, secolul XX, preistorie,
+aromâni, Basarabia, femei, sport, hrană, medicină, mediu, comunism, vederi — fiecare cu
+rădăcinile lui de categorii, coborâte un nivel în arborele de subcategorii.
 
-| Capitol | Imaginea | Licență |
-|---|---|---|
-| Zorii fierului | Câmpul de morminte de la Hallstatt, gravură 1886–1902 | domeniu public |
-| Geții | Coiful din mormântul princiar de la Peretu, sec. IV î.Hr. | domeniu public |
-| Burebista | Stater de aur KOΣΩN (Münzkabinett Berlin) | domeniu public |
-| Burebista | *Murus dacicus* — tehnica zidurilor din Munții Orăștiei | domeniu public |
-| Decebal | Detaliu din Columna lui Traian | domeniu public |
-| Dacia romană | Miliarul de la Aiton, 108 d.Hr. — prima atestare a numelui Napoca | domeniu public |
-| Migrațiile | Tezaurul de la Pietroasele, gravură 1889 | domeniu public |
-| Voievodate | Filă din *Chronicon Pictum*, c. 1360 | domeniu public |
-| Întemeierea | Basarab I | domeniu public |
-| Cruciada târzie | Portretul de la Ambras al lui Vlad Țepeș | domeniu public |
-| Mihai Viteazul | Gravura de epocă, 1601 (Rijksmuseum) | domeniu public |
-| Brâncoveanu | Mănăstirea Hurezi | CC BY — credit obligatoriu |
-| Fanarioți | Horea și Cloșca, gravură de secol XVIII | domeniu public |
-| Fanarioți | Harta Principatelor, 1782 | domeniu public |
-| Unirea | Alexandru Ioan Cuza, 1859 | domeniu public |
-| Regatul | Carol I, bust de Frederic Storck, 1900 | domeniu public |
-| Marele Război | Trupe române la Mărășești, 1917 | domeniu public |
-| Interbelic | Sediul ziarului „Adevărul”, anii 1930 | domeniu public |
-| Anul 1940 | Bistrița, 8 septembrie 1940 — intrarea trupelor maghiare | domeniu public |
-| Minoritățile | Harta etnografică a lui Ami Boué, 1847 | domeniu public |
+Au rezultat **5.106 fișiere** care trec verificarea de licență. Un scor de relevanță a
+reținut din ele cele mai bune câteva sute, descărcate la 500 px și așezate în planșe de
+contact — treizeci de imagini pe planșă. Alegerea s-a făcut cu ochiul, pe planșe, nu
+după numele fișierului.
 
-## Ce nu am găsit, și de ce
+## Verificarea de licență
 
-**Perioada de după 1945 e aproape goală în domeniul public.** Fotografiile din comunism, din decembrie 1989 și din protestele de după 2015 sunt aproape toate CC BY-SA, încărcate de fotografi contemporani. Nu e o scăpare a căutării — e felul în care s-au licențiat.
+Fiecare fișier e citit cu `extmetadata` din API și trecut printr-o poartă care acceptă
+numai:
 
-Ai trei variante pentru capitolele moderne:
+- **domeniu public** (`PD-old`, `PD-art`, `CC0`, „no restrictions")
+- **CC BY** — cere credit tipărit, atât
 
-1. **Lași hărțile și diagramele mele** acolo unde nu există imagine liberă. E onest și nu costă nimic.
-2. **Cumperi licențe** de la AGERPRES (arhiva foto a agenției naționale) sau Getty/AP pentru câteva fotografii-cheie: 22 decembrie 1989, mineriada, Piața Victoriei 2017.
-3. **Accepți CC BY-SA** — dar atunci cartea, ca operă derivată, ar trebui pusă sub aceeași licență. Pentru un volum pe care vrei să-l vinzi, nu ți-o recomand.
+și respinge:
 
-## Cum le descarci
+- **CC BY-SA** — share-alike ar obliga volumul întreg să fie relicențiat liber
+- **CC BY-NC** — interzice vânzarea
+- **CC BY-ND**, **GFDL** — incompatibile cu o carte ilustrată vândută
 
-Wikimedia limitează rata pe IP-ul partajat prin care ies eu în internet — primesc `429` la fiecare cerere. De pe conexiunea ta merge instant.
+Asta explică de ce perioada de după 1945 e rară: fotografia contemporană de pe Commons
+e aproape toată share-alike. Nu e o scăpare a căutării, e felul în care s-a licențiat.
 
-```bash
-cd carte
-bash descarca-ilustratii.sh
-```
+## Controlul vizual
 
-Durează câteva zeci de secunde. După aceea, macheta le preia automat: `node tipar.mjs && node pdf.mjs` le pune în carte, cu creditul sub fiecare imagine și cu lista completă de proveniență la sfârșitul volumului.
+Licența și scorul de relevanță nu văd ce vede ochiul. După descărcare, toate ilustrațiile
+au fost puse în planșe de control și privite una câte una. **Nouă au fost respinse**, cu
+motivul consemnat în `program2.mjs`:
 
-Dacă vreo descărcare eșuează, fișierul rămâne sub 20 KB și e ignorat — cartea se construiește fără el, nu se strică.
+| Ce era | De ce a căzut |
+|---|---|
+| Panorama amfiteatrului de la Ulpia Traiana | 22.501 px lățime: în pagină ar fi o dungă |
+| Tabula Peutingeriana, sulul întreg | 26.381 px; în planșă intră cele două segmente decupate |
+| „Principatus Moldaviae", Cantemir | scanarea e **versoul alb** al foii, nu harta |
+| Interiorul sinagogii Status Quo, Târgu Mureș | decupaj îngust, ilizibil la dimensiunea paginii |
+| Retezat, lacul Bucura | panoramă, raport de laturi inutilizabil |
+| „A reverie of Prince Demetrius Cantemir" | scanare cu riglă de culoare alături |
+| Trei pagini din *National Geographic*, 1923 | pagini de carte fotografiate, cu riglă de culoare |
+
+A treia linie e cazul care contează: fișierul avea licență bună, titlu bun, rezoluție
+bună — și era o foaie goală. Nicio verificare automată nu prinde asta.
+
+Izvoarele sub 1.100 px sunt așezate pe două treimi din oglinda paginii, ca densitatea la
+tipar să rămână onestă; cele mai late decât înalte umplu oglinda.
+
+## Ce e greu de găsit liber
+
+| Subiect | Situație |
+|---|---|
+| Comunismul, 1948–1989 | fotografii de agenție, aproape toate încă sub drepturi |
+| Decembrie 1989 | idem; câteva cadre există sub CC BY-SA, inutilizabile aici |
+| Etnografie, costum popular | plăci vechi puține; fotografia modernă e share-alike |
+| Industrie, căi ferate | idem |
+| Sport | foarte puțin înainte de 1960 în domeniul public |
+
+Pentru capitolele acestea, alternativele sunt: licențe cumpărate de la **AGERPRES**
+(arhiva agenției naționale), **Fototeca Comunismului Românesc** (IICCMER), **Arhivele
+Naționale**, sau lăsate pe hărțile și diagramele originale ale volumului.
 
 ## Obligațiile care rămân
 
-Pentru imaginea CC BY (Hurezi), creditul **trebuie tipărit**. Pentru cele din domeniul public nu există obligație legală, dar lista de proveniență se tipărește oricum — e practica normală și îi ajută pe cititori.
+Pentru cele 22 de imagini **CC BY**, creditul trebuie tipărit — e în legendă și în lista
+de proveniență de la sfârșitul volumului. Pentru domeniul public nu există obligație
+legală, dar lista se tipărește oricum: e practica normală și îi ajută pe cititori să
+ajungă la izvor.
 
-Sursele de căutat mai departe, dacă vrei să completezi: **Biblioteca Academiei Române** (colecții digitizate), **Europeana**, **Gallica/BnF**, **Arhivele Naționale**, **Fototeca Comunismului Românesc** (IICCMER) și **Library of Congress**. Am testat LoC, Met Museum și Archive.org — răspund, dar au puțin material românesc.
+## Cum se reface totul
+
+```bash
+cd carte
+node cauta-mare.mjs              # strânge fondul (lung: ritmul e limitat de Commons)
+node planse.mjs <grup> 60        # planșe de contact pentru ales
+node program2.mjs                # descarcă selecția la 1.920 px
+node optim.mjs                   # reduce la rezoluția de tipar
+node verifica-poze.mjs           # planșe de control, pentru privit
+```
+
+Două lucruri învățate pe pielea noastră, amândouă consemnate în cod:
+
+**Lățimile.** Commons pre-generează miniaturi **numai la lățimi standard** — 250, 330,
+500, 960, 1280, 1920, 3840 — și răspunde cu `429` la orice altă lățime **și la orice
+cerere de original**. Cererile la 2.400 px eșuau una din două; la 1.920 nu mai eșuează
+niciuna.
+
+**Ritmul pe API.** Când se depășește rata permisă, `api.php` răspunde cu text simplu,
+nu cu JSON. `JSON.parse` pică, iar căutarea pare pur și simplu să nu fi găsit nimic —
+cea mai perfidă formă de eșec. Șase fonduri tematice au raportat zero fișiere din cauza
+asta. Acum răspunsul e verificat înainte de parsare și ritmul crește după fiecare refuz.

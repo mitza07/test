@@ -9,7 +9,9 @@ import { execFileSync } from 'child_process'
 import { createHash } from 'crypto'
 import { adresaFisier } from './cauta.mjs'
 import { manifest as manifestVechi } from './program.mjs'
+import { PLAN, PLAN_TEME } from '../build/build.mjs'
 import { SELECTIE } from './selectie.mjs'
+import { SELECTIE2 } from './selectie2.mjs'
 
 const RAD = new URL('./', import.meta.url).pathname
 const UA = 'IstoriaRomaniei-carte/1.0 (contact: mitza0704@gmail.com)'
@@ -44,6 +46,10 @@ const RESPINSE = new Map([
   ['A driver of the old school. He hopes to die before the inartistic automobile supplants his elegant victoria with prancing teams of greys, on the boulevards of Buckharest (i.e. Bucharest) LCCN2011660147.jpg', 'pagină de carte fotografiată, cu riglă de culoare'],
 ])
 
+/* capitolele si temele care exista cu adevarat in carte; o legenda asezata
+   intr-un capitol inexistent n-ar aparea nicaieri si nu s-ar observa */
+const CAPITOLE = new Set([...PLAN.map((x) => x.id), ...PLAN_TEME.map((x) => x.id), 'atlas'])
+
 export function manifestMare() {
   const out = [], vazut = new Set()
   const adauga = (o) => {
@@ -54,10 +60,11 @@ export function manifestMare() {
   for (const m of manifestVechi()) adauga({ ...m, cap: m.cap === 'harti' ? 'atlas' : m.cap, val: 1 })
   /* selectia mare */
   let lipsa = 0
-  for (const [id, cap, legenda] of SELECTIE) {
+  for (const [id, cap, legenda] of [...SELECTIE, ...SELECTIE2]) {
     const [g, i] = id.split(':')
     const c = lista(g)?.[Number(i)]
     if (!c) { console.error(`lipsă: ${id}`); lipsa++; continue }
+    if (!CAPITOLE.has(cap)) { console.error(`capitol inexistent: ${cap} (${id})`); lipsa++; continue }
     adauga({ cap, legenda, fisier: c.fisier, pagina: c.pagina, autor: curata(c.autor),
       data: curata(c.data), licenta: c.licenta, tipLicenta: c.tipLicenta,
       latime: c.latime, inaltime: c.inaltime, octeti: c.octeti,
@@ -94,8 +101,11 @@ if (process.argv[1]?.endsWith('program2.mjs')) {
       dormi(pauza)
       let cod = '000', dim = 0
       try {
-        /* daca originalul e deja mai mic decat treapta, se cere treapta de sub el */
-        const lat = (m.latime && m.latime < LAT) ? (m.latime < 960 ? 500 : m.latime < 1280 ? 960 : 1280) : LAT
+        /* se cere cea mai mare treapta standard care nu depaseste originalul;
+           sub 1.280 px se cere 960, fiindca MediaWiki nu mareste, ci serveste
+           originalul asa cum e */
+        const w = m.latime || 0
+        const lat = (!w || w >= LAT) ? LAT : w >= 1280 ? 1280 : 960
         cod = execFileSync('curl', ['-sSL', '--max-time', '180', '-A', UA, '-w', '%{http_code}',
           '-o', dest, adresaFisier(m.fisier, lat)], { stdio: ['pipe', 'pipe', 'pipe'] }).toString().trim()
         dim = existsSync(dest) ? statSync(dest).size : 0

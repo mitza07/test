@@ -11,6 +11,14 @@ const RAD = new URL('./', import.meta.url).pathname
 const IN = 25.4
 const PAGINI = Number(process.argv[2] || 488)
 const HARTIE = process.argv.includes('--alba') ? 'alba' : 'crem'
+/* --volum=1 sau --volum=2 pentru editia in doua tomuri */
+const VOLUM = Number((process.argv.find((x) => x.startsWith('--volum=')) || '').split('=')[1] || 0)
+const VOL = {
+  1: { nr: 'Volumul I', tit: 'Cronologia', sub: 'de la 1000 î.Hr. până azi',
+       desc: 'Douăzeci și trei de capitole, de la primele comunități neolitice până la România din Uniunea Europeană. Fiecare capitol se încheie cu principala dispută istoriografică a epocii, cu ambele poziții expuse corect.' },
+  2: { nr: 'Volumul II', tit: 'Priviri transversale', sub: 'și atlasul hărților vechi',
+       desc: 'Șaptesprezece priviri care taie cronologia de-a curmezișul — limba, credința, minoritățile, evreii, romii, aromânii, Basarabia, orașul, femeile, hrana, boala, sportul, mediul — și o planșă de hărți vechi, de la Mercator la harta etnografică de la Trianon.' },
+}[VOLUM]
 const GROSIME = HARTIE === 'alba' ? 0.002252 : 0.0025
 
 const cotor = PAGINI * GROSIME * IN            /* mm */
@@ -114,25 +122,25 @@ body { width: ${W.toFixed(2)}mm; height: ${H.toFixed(2)}mm; background: #0c1620;
 <div class="spate">
   <div class="cap">O istorie scrisă din ceea ce se poate documenta, nu din ceea ce ne-am dori să fie adevărat.</div>
   <p>${blurb}</p>
-  <p>Douăzeci și două de capitole cronologice și șase priviri transversale — limba, credința, minoritățile, cultura, economia, pământul. Fiecare capitol se încheie cu principala dispută a epocii, cu ambele poziții expuse corect.</p>
+  <p>${VOL ? VOL.desc : 'Douăzeci și trei de capitole cronologice și șaptesprezece priviri transversale — limba, credința, minoritățile, cultura, economia, pământul. Fiecare capitol se încheie cu principala dispută a epocii, cu ambele poziții expuse corect.'}</p>
   <p>Cele douăsprezece hărți sunt desenate din coordonate geografice reale: fiecare hotar istoric e definit o singură dată și reutilizat, astfel încât suprafețele să rămână comparabile de la o epocă la alta.</p>
   <div class="date">
     <div><b>3.026</b><span>ani acoperiți</span></div>
     <div><b>12</b><span>hărți originale</span></div>
-    <div><b>28</b><span>dispute istoriografice</span></div>
-    <div><b>453</b><span>repere cronologice</span></div>
+    <div><b>40</b><span>dispute istoriografice</span></div>
+    <div><b>238</b><span>ilustrații de arhivă</span></div>
   </div>
   <div class="nota">Textul a fost redactat cu ajutorul unui model de limbaj și trecut printr-o verificare factuală automată, care a corectat 568 de erori. Volumul se citește ca sinteză, nu ca lucrare de referință.</div>
   <div class="cod">cod de bare ISBN<br>48 × 26 mm</div>
 </div>
 
-<div class="cotor"><div class="cotor-text">Istoria României &nbsp;<i>în 3.026 de ani</i></div></div>
+<div class="cotor"><div class="cotor-text">Istoria României &nbsp;<i>${VOL ? VOL.nr + ' · ' + VOL.tit : 'în 3.026 de ani'}</i></div></div>
 
 <div class="fata">
   <div class="harta">${desen}</div>
-  <div class="supra">Volum enciclopedic ilustrat</div>
+  <div class="supra">${VOL ? VOL.nr + ' din două' : 'Volum enciclopedic ilustrat'}</div>
   <div class="titlu">Istoria<br>României</div>
-  <div class="sub">în 3.026 de ani</div>
+  <div class="sub">${VOL ? VOL.tit + ' — ' + VOL.sub : 'în 3.026 de ani'}</div>
   <div class="legenda-ani">
     ${STRATURI.map((s) => `<div><i style="background:${s.cul}"></i>${s.an === 'azi' ? '<b>azi</b>' : s.an}</div>`).join('')}
   </div>
@@ -141,8 +149,8 @@ body { width: ${W.toFixed(2)}mm; height: ${H.toFixed(2)}mm; background: #0c1620;
 
 </body></html>`
 
-writeFileSync(RAD + '.coperta.html', html)
-console.log(`copertă ${W.toFixed(1)} × ${H.toFixed(1)} mm · cotor ${cotor.toFixed(1)} mm (${PAGINI} pagini, hârtie ${HARTIE})`)
+writeFileSync(RAD + `.coperta${VOLUM ? '-v' + VOLUM : ''}.html`, html)
+console.log(`copertă${VOLUM ? ' vol. ' + VOLUM : ''} ${W.toFixed(1)} × ${H.toFixed(1)} mm · cotor ${cotor.toFixed(1)} mm (${PAGINI} pagini, hârtie ${HARTIE})`)
 
 /* --- randare --------------------------------------------------------------- */
 const { chromium } = await import('/opt/node22/lib/node_modules/playwright/index.mjs')
@@ -150,10 +158,11 @@ const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' })
 const p = await b.newPage()
 await p.goto('file://' + RAD + '.coperta.html', { waitUntil: 'load' })
 await p.waitForTimeout(1500)
-await p.pdf({ path: RAD + 'Istoria-Romaniei-coperta.pdf', printBackground: true, preferCSSPageSize: true,
+const sufix = VOLUM ? `-vol${VOLUM}` : ''
+await p.pdf({ path: RAD + `Istoria-Romaniei-coperta${sufix}.pdf`, printBackground: true, preferCSSPageSize: true,
   margin: { top: 0, right: 0, bottom: 0, left: 0 } })
 await p.setViewportSize({ width: Math.round(W * 4), height: Math.round(H * 4) })
-await p.screenshot({ path: RAD + 'coperta-previz.png', fullPage: false })
+await p.screenshot({ path: RAD + `coperta-previz${sufix}.png`, fullPage: false })
 
 /* coperta de ebook: doar fata, 1600 × 2560 px */
 await p.setViewportSize({ width: 1600, height: 2560 })
@@ -173,6 +182,6 @@ await p.evaluate(() => {
   l.style.right = '120px'; l.style.bottom = '330px'; l.style.fontSize = '20px'
 })
 await p.waitForTimeout(600)
-await p.screenshot({ path: RAD + 'coperta-ebook.png' })
+await p.screenshot({ path: RAD + `coperta-ebook${sufix}.png` })
 await b.close()
-console.log('Istoria-Romaniei-coperta.pdf · coperta-previz.png · coperta-ebook.png')
+console.log(`Istoria-Romaniei-coperta${sufix}.pdf · coperta-previz${sufix}.png · coperta-ebook${sufix}.png`)

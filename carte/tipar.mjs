@@ -17,7 +17,7 @@ function incarcaIlustratii() {
   const pe = {}
   for (const m of man) {
     const f = RAD_C + m.local
-    if (!exista(f) || stat(f).size < 60000) continue
+    if (!exista(f) || stat(f).size < 40000) continue
     ;(pe[m.cap] = pe[m.cap] || []).push(m)
   }
   return pe
@@ -41,7 +41,10 @@ function figuraIlustratie(m) {
   ilustratiiFolosite.push({ ...m, n, id })
   /* imaginile late umplu oglinda; cele inalte sunt limitate pe inaltime */
   const lata = m.latime && m.inaltime && m.latime / m.inaltime > 1.28
-  return `<figure class="ilustratie${lata ? ' lata' : ''}" id="${id}">
+  /* un izvor de sub 1.100 px n-ar da decat 200 dpi pe toata latimea oglinzii;
+     asezat mai mic, ajunge la o densitate onesta */
+  const mica = m.latime > 0 && m.latime < 1100
+  return `<figure class="ilustratie${lata ? ' lata' : ''}${mica ? ' mica' : ''}" id="${id}">
 <img src="ilustratii/tipar/${m.local.split('/').pop()}" alt="${esc(m.legenda)}"/>
 <figcaption><span class="fig-nr">Ilustrația ${n}</span>${esc(m.legenda)}
 <span class="credit">${esc(creditScurt(m))}</span></figcaption>
