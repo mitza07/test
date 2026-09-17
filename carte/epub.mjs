@@ -117,7 +117,7 @@ if (existsSync(RAD + 'ilustratii/manifest.json'))
   for (const m of JSON.parse(readFileSync(RAD + 'ilustratii/manifest.json', 'utf8'))) {
     /* varianta de ecran, nu cea de tipar: un EPUB de 136 MB s-ar plati la
        livrare, pe megaoctet, la fiecare exemplar vandut */
-    const redus = RAD + 'ilustratii/ecran/' + m.local.split('/').pop()
+    const redus = RAD + (process.env.EPUB_MIC ? 'ilustratii/il/' : 'ilustratii/ecran/') + m.local.split('/').pop()
     if (!existsSync(redus)) continue
     ;(ILUSTRATII[m.cap] = ILUSTRATII[m.cap] || []).push({ ...m, redus })
   }
