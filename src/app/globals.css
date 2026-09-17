@@ -1,0 +1,214 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Nucleu — design tokens
+   Light = hârtie caldă + cerneală; Dark = observator (control room).
+   Fiecare culoare are un rol, nu un nume de nuanță.
+------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+  --bg: #f7f5f0;
+  --surface: #ffffff;
+  --surface-2: #f0eee8;
+  --surface-3: #e8e5dd;
+  --ink: #131518;
+  --ink-2: #4b5160;
+  --ink-3: #7b8190;
+  --line: #e2dfd7;
+  --line-2: #cbc7bc;
+  --accent: #1f4be6;
+  --accent-ink: #1a3fc2;
+  --accent-soft: #e5ebff;
+  --accent-glow: rgba(31, 75, 230, 0.18);
+  --good: #13803e;
+  --good-soft: #dff4e6;
+  --warn: #a35a00;
+  --warn-soft: #fff0d6;
+  --bad: #c42b2b;
+  --bad-soft: #fde4e4;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #4a3aa7;
+  --shadow: 0 1px 2px rgba(19, 21, 24, 0.06), 0 8px 24px -12px rgba(19, 21, 24, 0.18);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0b0d11;
+    --surface: #12151b;
+    --surface-2: #191d25;
+    --surface-3: #21262f;
+    --ink: #eceae4;
+    --ink-2: #aab0bc;
+    --ink-3: #767d8b;
+    --line: #232833;
+    --line-2: #343a47;
+    --accent: #7d9bff;
+    --accent-ink: #9ab1ff;
+    --accent-soft: #1a2447;
+    --accent-glow: rgba(125, 155, 255, 0.22);
+    --good: #4ccb7a;
+    --good-soft: #10301e;
+    --warn: #f0b04a;
+    --warn-soft: #3a2a0e;
+    --bad: #f27070;
+    --bad-soft: #3e1616;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #9085e9;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -12px rgba(0, 0, 0, 0.7);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0b0d11;
+  --surface: #12151b;
+  --surface-2: #191d25;
+  --surface-3: #21262f;
+  --ink: #eceae4;
+  --ink-2: #aab0bc;
+  --ink-3: #767d8b;
+  --line: #232833;
+  --line-2: #343a47;
+  --accent: #7d9bff;
+  --accent-ink: #9ab1ff;
+  --accent-soft: #1a2447;
+  --accent-glow: rgba(125, 155, 255, 0.22);
+  --good: #4ccb7a;
+  --good-soft: #10301e;
+  --warn: #f0b04a;
+  --warn-soft: #3a2a0e;
+  --bad: #f27070;
+  --bad-soft: #3e1616;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #9085e9;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -12px rgba(0, 0, 0, 0.7);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  --shadow-card: var(--shadow);
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11", "calt";
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--accent);
+    color: #fff;
+  }
+  h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+@utility hairline {
+  border: 1px solid var(--line);
+}
+
+@utility glass {
+  background: color-mix(in oklab, var(--surface) 82%, transparent);
+  backdrop-filter: saturate(160%) blur(12px);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+}
+
+@utility grid-paper {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--line) 70%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--line) 70%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+}
+
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--good) 45%, transparent); }
+  70% { box-shadow: 0 0 0 8px transparent; }
+}
+@utility live-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--good);
+  animation: pulse-dot 2.2s ease-out infinite;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@utility animate-rise {
+  animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; color: #000; }
+}
