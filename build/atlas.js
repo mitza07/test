@@ -3,7 +3,11 @@
    Proiectie conica echidistanta simpla, centrata pe 45.8°N / 25°E:
    suficient de exacta pentru scara acestor harti si stabila intre ele.
    =========================================================================== */
-import { REGIUNI, FRONTIERE, ZONE, APE, VECINI, L } from './geo.js'
+import { REGIUNI, FRONTIERE, ZONE, VECINI, L } from './geo.js'
+/* Hidrografia nu mai e schitata de mana, ci luata din Natural Earth, care e in
+   domeniu public si poate intra intr-o carte vanduta. Dunarea are aici o suta
+   saptezeci de puncte in loc de treizeci si cinci, iar Delta isi are bratele. */
+import { RAURI, COASTA, LACURI, MARE } from './hidro.js'
 
 const LAT0 = 45.8, LON0 = 25.0, K = 100
 const kx = Math.cos((LAT0 * Math.PI) / 180) * K
@@ -63,7 +67,8 @@ export function harta(spec) {
   s.push(`<g clip-path="url(#${uid}-c)">`)
   /* uscat + mare */
   s.push(`<rect class="m-uscat" x="${fmt(x0)}" y="${fmt(y0)}" width="${fmt(W)}" height="${fmt(H)}"/>`)
-  s.push(`<path class="m-mare" d="${d(APE.marea)}"/>`)
+  s.push(`<path class="m-mare" d="${d(MARE)}"/>`)
+  for (const l of LACURI) s.push(`<path class="m-lac" d="${d(l.pct)}"/>`)
 
   /* frontiere de context (vecini) */
   for (const k in VECINI) s.push(`<path class="m-vecin" d="${d(VECINI[k], false)}"/>`)
@@ -93,9 +98,16 @@ export function harta(spec) {
 
   /* ape desenate peste uscat */
   if (spec.ape !== false) {
-    for (const k of (spec.rauri || ['dunare','prut','nistru','mures','olt','siret','tisa'])) {
-      s.push(`<path class="m-rau" d="${d(APE[k], false)}"/>`)
+    const implicite = ['dunare', 'prut', 'nistru', 'mures', 'olt', 'siret', 'tisa']
+    for (const k of (spec.rauri || implicite)) {
+      for (const bucata of (RAURI[k] || [])) s.push(`<path class="m-rau" d="${d(bucata, false)}"/>`)
     }
+    /* bratele Deltei se deseneaza numai unde intra in cadru */
+    for (const k of ['chilia', 'sulina', 'sfgheorghe']) {
+      for (const bucata of (RAURI[k] || [])) s.push(`<path class="m-rau-mic" d="${d(bucata, false)}"/>`)
+    }
+    /* tarmul, peste umplutura marii */
+    for (const c of COASTA) s.push(`<path class="m-tarm" d="${d(c, false)}"/>`)
   }
 
   /* contur de stat */
@@ -157,4 +169,4 @@ export function harta(spec) {
   return { vb, body: s.join('') }
 }
 
-export { REGIUNI, FRONTIERE, ZONE, APE, VECINI, L }
+export { REGIUNI, FRONTIERE, ZONE, VECINI, L }

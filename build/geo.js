@@ -6,33 +6,121 @@
    segment intre doua noduri comune; regiunile si frontierele de stat se
    compun din aceleasi segmente, asa incat suprafetele se imbina exact si
    raman identice de la o harta la alta.
-   =========================================================================== */
 
-/* --- noduri: punctele in care se intalnesc trei sau mai multe hotare ------- */
-const N = {
-  halmeu:     [23.00, 48.10],  prislop:    [24.90, 47.79],
-  satmarV:    [22.05, 47.55],  satmarE:    [23.60, 47.45],
-  beba:       [20.26, 46.11],  nadlac:     [20.85, 46.17],
-  zam:        [22.70, 46.10],  hateg:      [22.60, 45.45],
-  orsova:     [22.42, 44.72],  turnuRosu:  [24.30, 45.55],
-  turnuMag:   [24.87, 43.75],  vrancea:    [26.35, 45.68],
-  galati:     [28.03, 45.45],  reni:       [28.19, 45.47],
-  silistra:   [27.27, 44.11],  vamaVeche:  [28.57, 43.75],
-  bucSV:      [25.50, 47.30],  herta:      [26.55, 48.28],
-  horodistea: [26.70, 48.25],  hotin:      [26.60, 48.45],
-  chilia:     [29.65, 45.42],  sulina:     [29.70, 45.30],
-  liman:      [30.55, 46.05],  turtucaia:  [26.60, 44.06],
-  bucE:       [26.20, 47.92],
-  ekrene:     [28.03, 43.35],
+   Hotarele care merg pe apa nu mai sunt trasate din ochi: se decupeaza din
+   cursurile adevarate — Dunarea, Prutul, Nistrul, Tisa, Oltul, Muresul,
+   Siretul si linia tarmului — asa cum vin din Natural Earth. Raman desenate
+   de mana numai hotarele de creasta si cele conventionale, care nu au sub ele
+   niciun obiect natural dupa care sa fie luate.
+   =========================================================================== */
+import { RAURI, COASTA } from './hidro.js'
+
+/* --- croirea unui hotar dupa cursul real ---------------------------------- */
+const APA = { ...RAURI, tarm: COASTA }
+const KMLAT = 111.2, KMLON = 78.1           /* grade -> km, la 45,5° latitudine */
+const km = (a, b) => Math.hypot((b[0] - a[0]) * KMLON, (b[1] - a[1]) * KMLAT)
+const rnd = (p) => [Math.round(p[0] * 1e3) / 1e3, Math.round(p[1] * 1e3) / 1e3]
+
+/* Punctul de pe traseu cel mai apropiat de p: nu varful cel mai apropiat, ci
+   proiectia pe latura, ca sa nu se piarda exactitatea unde firul e rar. */
+function proiecteaza(fir, p) {
+  let bun = { d: Infinity }
+  for (let i = 0; i + 1 < fir.length; i++) {
+    const a = fir[i], b = fir[i + 1]
+    const dx = b[0] - a[0], dy = b[1] - a[1]
+    let t = (dx || dy) ? ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy) : 0
+    t = Math.max(0, Math.min(1, t))
+    const q = [a[0] + t * dx, a[1] + t * dy]
+    const d = km(p, q)
+    if (d < bun.d) bun = { d, q, i, t }
+  }
+  return bun
 }
+
+/**
+ * Bucata reala de apa dintre doua puncte, in sensul A -> B.
+ * Se alege firul care trece cel mai aproape de amandoua, se taie intre
+ * proiectiile lor, iar la capete se asaza exact punctele cerute. Nodurile de
+ * apa ale atlasului sunt chiar proiectiile lor pe fir, asa ca substituirea nu
+ * abate traseul cu nimic, dar pastreaza garantia veche: doua segmente care
+ * pleaca din acelasi nod se inchid la virgula.
+ */
+/* Cat de departe de fir a cazut fiecare NOD impus ca si capat. Daca hidrografia
+   se regenereaza cu alta toleranta, cursurile se misca putin, iar nodurile raman
+   pe loc: lista asta scoate la iveala imediat nodurile ramase in urma, inainte
+   sa se vada ca dunga alba intre doua regiuni. valida.mjs o citeste.
+   Capetele care nu sunt noduri — colturile libere ale zonelor istorice — n-au ce
+   cauta aici: ele sunt puse dinadins pe uscat, si sunt oricum singure. */
+export const ABATERI = []
+let NODURI = new Map()
+const noteaza = (q, p, cheie) => {
+  if (NODURI.has(p)) ABATERI.push({ nod: NODURI.get(p), apa: cheie, km: km(q, p) })
+}
+
+function peApa(cheie, A, B, opt = {}) {
+  const fire = APA[cheie]
+  if (!fire) throw new Error(`nu cunosc apa "${cheie}"`)
+  let ales = null
+  for (const fir of fire) {
+    const a = proiecteaza(fir, A), b = proiecteaza(fir, B)
+    if (!ales || a.d + b.d < ales.a.d + ales.b.d) ales = { fir, a, b }
+  }
+  const { fir, a, b } = ales
+  const invers = a.i > b.i || (a.i === b.i && a.t > b.t)
+  const [p, q] = invers ? [b, a] : [a, b]
+  let out = [p.q, ...fir.slice(p.i + 1, q.i + 1), q.q].map(rnd)
+  if (invers) out.reverse()
+  if (opt.capA !== false) { noteaza(out[0], A, cheie); out[0] = A }
+  if (opt.capB !== false) { noteaza(out[out.length - 1], B, cheie); out[out.length - 1] = B }
+  const cap = out[0], coada = out[out.length - 1]
+  /* un varf cazut peste capatul impus ar face un colt de nimic */
+  return out.filter((pt, i) => i === 0 || i === out.length - 1 ||
+    (km(pt, cap) > 0.4 && km(pt, coada) > 0.4))
+}
+
+/** Prefixul unui traseu, pana in dreptul unui punct. */
+function panaLa(pct, p) {
+  let k = 0, bun = Infinity
+  pct.forEach((q, i) => { const d = km(q, p); if (d < bun) { bun = d; k = i } })
+  return pct.slice(0, k + 1)
+}
+
+/* --- noduri: punctele in care se intalnesc trei sau mai multe hotare -------
+   Cele care stau pe apa sunt asezate exact pe cursul real: altfel hotarul
+   croit din rau ar porni de alaturi si ar lasa o dunga alba intre regiuni. */
+const N = {
+  halmeu:     [22.995, 48.112],  prislop:    [24.90, 47.79],
+  satmarV:    [22.05, 47.55],    satmarE:    [23.60, 47.45],
+  beba:       [20.26, 46.11],    nadlac:     [20.753, 46.142],
+  zam:        [22.697, 45.949],  hateg:      [22.60, 45.45],
+  orsova:     [22.416, 44.729],  turnuRosu:  [24.265, 45.532],
+  turnuMag:   [24.774, 43.746],  vrancea:    [26.35, 45.68],
+  galati:     [28.047, 45.407],  reni:       [28.202, 45.443],
+  silistra:   [27.258, 44.136],  vamaVeche:  [28.578, 43.749],
+  bucSV:      [25.50, 47.30],    herta:      [26.55, 48.28],
+  horodistea: [26.704, 48.272],  hotin:      [26.601, 48.452],
+  chilia:     [29.686, 45.194],  sulina:     [29.673, 45.136],
+  liman:      [30.494, 46.080],  turtucaia:  [26.596, 44.089],
+  bucE:       [26.20, 47.92],
+  ekrene:     [28.072, 43.327],
+  /* capatul de rasarit al hotarului pe Tisa: varsarea Viseului */
+  viseu:      [24.148, 47.912],
+  /* Ceatalul Chiliei, unde Dunarea se desface in bratele Deltei */
+  ceatal:     [28.747, 45.231],
+}
+
+NODURI = new Map(Object.entries(N).map(([k, p]) => [p, k]))
 
 /* --- segmente de hotar: fiecare porneste si se incheie intr-un nod --------- */
 const S = {
-  /* frontiera de nord, pe Tisa: Halmeu -> Prislop */
-  tisa: [N.halmeu, [23.35,48.08],[23.63,47.99],[23.90,47.94],[24.20,47.94],[24.60,47.93], N.prislop],
+  /* frontiera de nord: pe Tisa pana la varsarea Viseului, apoi pe creasta
+     Muntilor Maramuresului pana in Prislop */
+  tisa: [...peApa('tisa', N.halmeu, N.viseu), [24.42, 47.96], [24.70, 47.90], N.prislop],
 
-  /* frontiera de nord-vest, cu Ungaria: Beba Veche -> Halmeu, cu doua opriri */
-  ungV1: [N.beba, [20.75,46.30], N.nadlac],
+  /* frontiera de nord-vest, cu Ungaria: Beba Veche -> Halmeu, cu doua opriri.
+     Pana la Mures frontiera si malul se suprapun, asa ca ungV1 si mures1 sunt
+     una si aceeasi linie. */
+  ungV1: [N.beba, N.nadlac],
   ungV2: [N.nadlac, [21.05,46.55],[21.25,46.75],[21.32,46.98],[21.50,47.20],[21.75,47.42], N.satmarV],
   ungV3: [N.satmarV, [22.35,47.75],[22.65,47.87],[22.90,48.02], N.halmeu],
 
@@ -40,27 +128,29 @@ const S = {
   serb1: [N.orsova, [21.95,44.68],[21.66,44.73],[21.50,44.88],[21.42,45.20]],
   serb2: [[21.42,45.20],[21.10,45.30],[20.90,45.42],[20.78,45.75],[20.55,45.95], N.beba],
 
-  /* Dunarea de sud, frontiera cu Bulgaria: Orsova -> Turnu Magurele -> Silistra */
-  dunS1: [N.orsova, [22.55,44.55],[22.70,44.25],[22.95,43.99],[23.30,43.87],[23.80,43.80],[24.35,43.72], N.turnuMag],
-  dunS2: [N.turnuMag, [25.36,43.66],[25.97,43.90],[26.10,43.95], N.turtucaia],
-  dunS3: [N.turtucaia, [26.90,44.10], N.silistra],
+  /* Dunarea de sud, frontiera cu Bulgaria: Orsova -> gura Oltului -> Silistra */
+  dunS1: peApa('dunare', N.orsova, N.turnuMag),
+  dunS2: peApa('dunare', N.turnuMag, N.turtucaia),
+  dunS3: peApa('dunare', N.turtucaia, N.silistra),
 
-  /* Dunarea dobrogeana: Silistra -> Galati -> gura Prutului */
-  dunD: [N.silistra, [27.33,44.20],[27.85,44.28],[27.95,44.69],[28.00,44.95],[27.96,45.27], N.galati],
-
-  /* bratul Chilia: gura Prutului -> gura Chiliei -> Sulina */
-  chiliaS0: [N.reni, [28.50,45.38],[28.90,45.35],[29.30,45.35], N.chilia],
-  chiliaCS: [N.chilia, N.sulina],
+  /* Dunarea dobrogeana: Silistra -> Galati */
+  dunD: peApa('dunare', N.silistra, N.galati),
 
   /* Dunarea intre Galati si gura Prutului */
-  dunGR: [N.galati, N.reni],
+  dunGR: peApa('dunare', N.galati, N.reni),
+
+  /* bratul Chilia: gura Prutului -> Ceatalul Chiliei -> gura Musura */
+  chiliaS0: [...peApa('dunare', N.reni, N.ceatal), ...peApa('chilia', N.ceatal, N.chilia).slice(1)],
+
+  /* tarmul dintre gura Chiliei si gura Sulinei */
+  chiliaCS: peApa('tarm', N.chilia, N.sulina),
 
   /* litoralul Marii Negre: Sulina -> Vama Veche -> Ekrene */
-  coastaN: [N.sulina, [29.68,45.16],[29.10,44.85],[28.80,44.60],[28.65,44.17],[28.58,43.82], N.vamaVeche],
-  coastaC: [N.vamaVeche, [28.40,43.55],[28.15,43.42], N.ekrene],
+  coastaN: peApa('tarm', N.sulina, N.vamaVeche),
+  coastaC: peApa('tarm', N.vamaVeche, N.ekrene),
 
   /* litoralul Bugeacului: limanul Nistrului -> gura Chiliei */
-  coastaB: [N.liman, [30.20,45.80],[29.85,45.55], N.chilia],
+  coastaB: peApa('tarm', N.liman, N.chilia),
 
   /* frontiera de sud a Cadrilaterului, 1913-1940: Ekrene -> Turtucaia */
   cadrS: [N.ekrene, [27.50,43.45],[27.00,43.62],[26.72,43.88], N.turtucaia],
@@ -69,12 +159,10 @@ const S = {
   dobS: [N.silistra, [27.60,44.05],[27.95,43.95],[28.20,43.80], N.vamaVeche],
 
   /* Prutul: Horodistea -> gura Prutului */
-  prut: [N.horodistea, [26.85,48.10],[27.05,47.85],[27.25,47.60],[27.55,47.35],[27.75,47.10],
-         [28.00,46.90],[28.15,46.60],[28.25,46.30],[28.20,46.00],[28.10,45.75], N.reni],
+  prut: peApa('prut', N.horodistea, N.reni),
 
   /* Nistrul: Hotin -> liman */
-  nistru: [N.hotin, [27.10,48.48],[27.60,48.42],[28.10,48.30],[28.50,48.15],[29.00,47.75],
-           [29.30,47.45],[29.55,47.10],[29.85,46.80],[29.60,46.50],[29.95,46.30],[30.40,46.20], N.liman],
+  nistru: peApa('nistru', N.hotin, N.liman),
 
   /* coltul de nord al Basarabiei: Herta -> Hotin, si Herta -> Horodistea */
   basN: [N.herta, N.hotin],
@@ -99,23 +187,24 @@ const S = {
   carpM1: [N.vrancea, [26.30,45.55],[25.90,45.45],[25.50,45.45],[25.10,45.40],[24.70,45.45], N.turnuRosu],
   carpM2: [N.turnuRosu, [23.90,45.45],[23.50,45.35],[23.10,45.25],[22.80,45.30], N.hateg],
 
-  /* Oltul: Turnu Rosu -> Turnu Magurele */
-  olt: [N.turnuRosu, [24.35,45.20],[24.45,44.85],[24.55,44.50],[24.70,44.15], N.turnuMag],
+  /* Oltul: Turnu Rosu -> varsarea in Dunare */
+  olt: peApa('olt', N.turnuRosu, N.turnuMag),
 
   /* Cerna si Mehedinti: Hateg -> Orsova */
   cerna: [N.hateg, [22.60,45.30],[22.52,45.00], N.orsova],
 
-  /* Milcovul si Siretul: Vrancea -> Galati */
-  milcov: [N.vrancea, [26.65,45.80],[26.95,45.78],[27.20,45.72],[27.50,45.62],[27.80,45.52], N.galati],
+  /* Milcovul pana in Siret, apoi Siretul pana la Dunare: Vrancea -> Galati */
+  milcov: [N.vrancea, [26.70,45.79],[27.00,45.78],
+    ...peApa('siret', [27.20,45.74], N.galati, { capA: false })],
 
   /* marginea Apusenilor: Hateg -> Zam -> Satmar est -> Prislop */
-  apus1: [N.hateg, [22.72,45.75], N.zam],
+  apus1: [N.hateg, [22.72,45.70], N.zam],
   apus2: [N.zam, [22.85,46.40],[23.00,46.70],[23.20,47.00],[23.35,47.28], N.satmarE],
   apus3: [N.satmarE, [24.10,47.60],[24.60,47.70], N.prislop],
 
   /* Muresul, hotarul de nord al Banatului: Beba Veche -> Nadlac -> Zam */
   mures1: [N.beba, N.nadlac],
-  mures2: [N.nadlac, [21.32,46.15],[21.90,46.10], N.zam],
+  mures2: peApa('mures', N.nadlac, N.zam),
 
   /* hotarul Crisana / Maramures-Satmar: Satmar vest -> Satmar est */
   satmar: [N.satmarV, [22.55,47.52],[23.10,47.48], N.satmarE],
@@ -211,65 +300,56 @@ export const FRONTIERE = {
 }
 FRONTIERE.moldovaVest = ring(S.bucSE1, S.bucSE2, S.hertaE, S.prut, rev(S.dunGR), rev(S.milcov), rev(S.carpO2))
 
-/* --- suprafete istorice care nu urmeaza hotarele regionale ---------------- */
+/* --- suprafete istorice care nu urmeaza hotarele regionale ----------------
+   Si aici hotarul de apa se ia din segmentele deja croite, nu se copiaza de
+   mana: altfel Moesia ar ramane cu Dunarea veche, desenata din ochi, si ar
+   iesi o dunga alba intre ea si Oltenia pe harta pe care apar amandoua. */
 export const ZONE = {
   /* stapanirea lui Burebista la apogeu, c. 60-44 i.Hr. (aproximativa) */
-  daciaBurebista: [[20.30,45.10],[20.10,45.90],[20.60,46.60],[21.40,47.20],[22.30,47.80],[23.30,48.30],
-    [24.40,48.60],[25.60,48.80],[27.00,48.80],[28.40,48.50],[29.60,47.90],[30.60,47.10],[31.60,46.70],
-    [32.00,46.30],[31.20,46.00],[30.30,45.80],[29.60,45.35],[28.90,44.60],[28.55,43.90],[28.20,43.40],
-    [27.60,43.20],[26.80,43.15],[26.00,43.25],[25.20,43.35],[24.40,43.45],[23.60,43.60],[22.90,43.85],
-    [22.20,44.10],[21.40,44.50],[20.70,44.80]],
+  daciaBurebista: ring(
+    [[20.30,45.10],[20.10,45.90],[20.60,46.60],[21.40,47.20],[22.30,47.80],[23.30,48.30],
+     [24.40,48.60],[25.60,48.80],[27.00,48.80],[28.40,48.50],[29.60,47.90],[30.60,47.10],
+     [31.60,46.70],[32.00,46.30],[31.20,46.00]],
+    peApa('tarm', [31.20,46.00], [27.95,43.18]),
+    [[27.60,43.20],[26.80,43.15],[26.00,43.25],[25.20,43.35],[24.40,43.45],[23.60,43.60],
+     [22.90,43.85],[22.20,44.10],[21.40,44.50],[20.70,44.80]]),
 
   /* nucleul regatului dac: Muntii Orastiei */
   muntiiOrastiei: [[22.90,45.85],[23.60,45.95],[23.90,45.70],[23.60,45.40],[23.00,45.35],[22.70,45.60]],
 
   /* provincia Dacia romana, cu limes-ul de vest si Limes Transalutanus */
-  daciaRomana: [[21.30,46.15],[21.60,46.55],[22.00,46.95],[22.60,47.25],[23.15,47.18],[23.70,47.30],
-    [24.30,47.25],[24.80,47.05],[25.30,46.75],[25.70,46.35],[26.00,45.95],[26.30,45.60],[25.90,45.45],
-    [25.50,45.45],[25.10,45.40],[25.10,45.00],[25.20,44.50],[25.30,44.00],[25.32,43.70],[24.87,43.75],
-    [24.35,43.72],[23.80,43.80],[23.30,43.87],[22.95,43.99],[22.70,44.25],[22.55,44.55],[22.42,44.72],
-    [21.95,44.68],[21.66,44.73],[21.50,44.88],[21.42,45.20],[21.30,45.55],[21.20,45.90]],
+  daciaRomana: ring(
+    [[21.30,46.15],[21.60,46.55],[22.00,46.95],[22.60,47.25],[23.15,47.18],[23.70,47.30],
+     [24.30,47.25],[24.80,47.05],[25.30,46.75],[25.70,46.35],[26.00,45.95],[26.30,45.60],
+     [25.90,45.45],[25.50,45.45],[25.10,45.40],[25.10,45.00],[25.20,44.50],[25.30,44.00]],
+    peApa('dunare', [25.35,43.68], N.orsova), S.serb1, [[21.30,45.55],[21.20,45.90]]),
 
   /* Moesia Inferior si Scythia Minor, sud de Dunare */
-  moesia: [[22.95,43.99],[23.30,43.87],[23.80,43.80],[24.35,43.72],[24.87,43.75],[25.36,43.66],
-    [25.97,43.90],[26.60,44.06],[27.27,44.11],[27.60,44.05],[27.95,43.95],[28.20,43.80],[28.57,43.75],
-    [28.40,43.55],[28.15,43.42],[28.05,43.25],[27.92,43.20],[27.50,43.10],[26.80,43.00],[26.00,43.00],
-    [25.20,43.05],[24.40,43.10],[23.60,43.20],[23.00,43.40],[22.80,43.70]],
+  moesia: ring(
+    peApa('dunare', [23.55,43.85], N.silistra),
+    S.dobS, S.coastaC,
+    [[27.92,43.20],[27.50,43.10],[26.80,43.00],[26.00,43.00],[25.20,43.05],[24.40,43.10],
+     [23.70,43.25],[23.45,43.55]]),
 
   /* sudul Basarabiei retrocedat Moldovei intre 1856 si 1878 */
-  bugeacSud: [[28.22,46.20],[28.60,46.10],[29.20,45.95],[29.60,45.85],[29.95,45.68],[29.65,45.42],
-    [29.30,45.35],[28.90,45.35],[28.50,45.38],[28.19,45.47],[28.10,45.75],[28.20,46.00]],
+  bugeacSud: ring(
+    [[28.22,46.20],[28.60,46.10],[29.20,45.95]],
+    peApa('tarm', [29.60,45.90], N.chilia),
+    rev(S.chiliaS0),
+    rev(peApa('prut', [28.22,46.20], N.reni))),
 
   /* Transnistria sub administratie romaneasca, 1941-1944 */
-  transnistria: [[26.60,48.45],[27.10,48.48],[27.60,48.42],[28.10,48.30],[28.50,48.15],[29.00,47.75],
-    [29.30,47.45],[29.55,47.10],[29.85,46.80],[29.60,46.50],[29.95,46.30],[30.40,46.20],[30.55,46.05],
-    [30.90,46.30],[31.60,46.60],[32.20,47.00],[31.80,47.60],[30.90,48.00],[29.80,48.40],[28.60,48.60],[27.50,48.60]],
+  transnistria: ring(
+    peApa('nistru', [27.785,48.442], N.liman),
+    [[30.90,46.30],[31.60,46.60],[32.20,47.00],[31.80,47.60],[30.90,48.05],[29.80,48.50],[28.60,48.65]]),
 
   /* nord-vestul Transilvaniei, cedat Ungariei prin Dictatul de la Viena */
-  vienaNV: [[21.60,46.72],[22.10,46.68],[22.60,46.72],[23.10,46.72],[23.50,46.70],[23.72,46.65],
-    [24.10,46.55],[24.45,46.50],[24.75,46.40],[25.05,46.30],[25.30,46.10],[25.55,45.95],[25.80,45.83],
-    [26.05,45.85],[26.25,45.75],[26.40,45.80],[26.25,46.05],[26.10,46.40],[25.95,46.70],[25.75,47.00],
-    [25.50,47.30],[25.20,47.55],[24.90,47.79],[24.60,47.93],[24.20,47.94],[23.90,47.94],[23.63,47.99],
-    [23.35,48.08],[23.00,48.10],[22.90,48.02],[22.65,47.87],[22.35,47.75],[22.05,47.55],[21.75,47.42],
-    [21.50,47.20],[21.32,46.98],[21.25,46.75]],
-}
-
-/* --- ape ------------------------------------------------------------------ */
-export const APE = {
-  marea: ring(S.coastaN, S.coastaC,
-    [[28.05,43.25],[27.92,43.20],[27.90,42.70],[27.47,42.50],[27.70,42.42],[28.03,41.98],[28.50,41.50],[29.00,41.20]],
-    [[33.60,41.00],[33.60,46.60],[31.40,46.35],[30.90,46.18]], [N.liman], rev(S.coastaB)),
-
-  dunare: ring([[18.90,45.75],[19.60,45.25],[20.10,45.00],[20.45,44.85],[21.00,44.80],[21.42,45.20]],
-    rev(S.serb1), S.dunS1, S.dunS2, S.dunS3, S.dunD, S.dunGR, S.chiliaS0, S.chiliaCS),
-
-  prut: ring([[25.20,48.55],[25.80,48.40],[26.30,48.35]], S.hertaE.slice(1), S.prut),
-  nistru: ring([[25.60,49.00],[26.20,48.70]], S.nistru, [[30.90,45.95]]),
-  siret: [[25.35,47.95],[25.80,47.65],[26.20,47.20],[26.60,46.60],[27.00,46.00],[27.20,45.72],[27.80,45.52],[28.03,45.45]],
-  mures: [[25.60,46.55],[25.00,46.45],[24.40,46.35],[23.80,46.15],[23.20,46.10],[22.70,46.10],[21.90,46.10],[21.32,46.15],[20.85,46.17],[20.30,46.20]],
-  olt: [[25.75,46.10],[25.60,45.85],[25.30,45.65],[24.90,45.70],[24.55,45.65],[24.30,45.55],[24.35,45.20],[24.45,44.85],[24.55,44.50],[24.70,44.15],[24.87,43.75]],
-  tisa: [[22.90,48.05],[22.20,48.15],[21.40,48.00],[20.90,47.50],[20.30,46.90],[20.15,46.25],[20.10,45.60],[20.30,45.10],[20.45,44.85]],
-  nipru: [[31.60,47.30],[31.20,46.90],[31.40,46.55],[31.60,46.40]],
+  vienaNV: ring(
+    [[21.60,46.72],[22.10,46.68],[22.60,46.72],[23.10,46.72],[23.50,46.70],[23.72,46.65],
+     [24.10,46.55],[24.45,46.50],[24.75,46.40],[25.05,46.30],[25.30,46.10],[25.55,45.95],
+     [25.80,45.83],[26.05,45.85],[26.25,45.75]],
+    rev(S.carpO2), rev(S.carpO1), rev(S.tisa), rev(S.ungV3),
+    panaLa(rev(S.ungV2), [21.25,46.75])),
 }
 
 /* --- frontiere ale vecinilor, pentru context ------------------------------ */
@@ -278,7 +358,7 @@ export const VECINI = {
   serbiaBulgaria: [[22.70,44.25],[22.55,43.80],[22.45,43.40],[22.55,43.00],[22.35,42.75],[22.35,42.30]],
   bulgariaTurcia: [[28.03,41.98],[27.50,41.95],[26.95,41.72],[26.35,41.72],[26.05,41.35]],
   bulgariaGrecia: [[26.05,41.35],[25.20,41.30],[24.50,41.40],[23.80,41.40],[23.00,41.35],[22.35,42.30]],
-  ungariaUcraina: [[22.90,48.02],[22.20,48.15],[21.40,48.00],[20.90,48.55]],
+  ungariaUcraina: [...rev(panaLa(rev(peApa('tisa', [21.40,48.03], N.halmeu)), [22.15,48.32])), [20.90,48.55]],
   ucrainaPoloniaSlovacia: [[21.40,48.00],[22.00,48.40],[22.60,49.10]],
   moldovaUcrainaN: [[26.60,48.45],[26.20,48.70],[25.60,49.00]],
 }

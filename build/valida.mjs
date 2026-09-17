@@ -1,4 +1,4 @@
-import { REGIUNI, FRONTIERE, ZONE } from './geo.js'
+import { REGIUNI, FRONTIERE, ZONE, ABATERI } from './geo.js'
 const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1])
 function seg(p1,p2,p3,p4){
   const d=(p2[0]-p1[0])*(p4[1]-p3[1])-(p2[1]-p1[1])*(p4[0]-p3[0])
@@ -31,3 +31,27 @@ console.log('--- FRONTIERE ---')
 for(const k in FRONTIERE) check(k, FRONTIERE[k])
 console.log('--- ZONE ---')
 for(const k in ZONE) check(k, ZONE[k])
+
+/* nodurile de apa trebuie sa stea pe apa: altfel hotarul croit din rau porneste
+   de alaturi si intre doua regiuni vecine ramane o dunga alba */
+console.log('--- NODURI PE APA ---')
+/* Un nod de apa poate fi capat pe mai multe cursuri deodata: gura Prutului e si
+   pe Prut, si pe Dunare. Pe cursul lui propriu trebuie sa cada exact; pe celalalt
+   are voie sa ramana la cativa kilometri, fiindca cele doua fisiere de
+   hidrografie nu impart varful de la confluenta. Se cere deci ca fiecare nod sa
+   stea exact pe cel putin un curs. */
+const peNod = new Map()
+for (const a of ABATERI) {
+  const v = peNod.get(a.nod)
+  if (!v || a.km < v.km) peNod.set(a.nod, a)
+}
+let rele = 0
+for (const [nod, a] of peNod) {
+  if (a.km <= 0.3) continue
+  rele++
+  console.log(`✗ ${nod} nu sta pe niciun curs: cel mai aproape e "${a.apa}", la ${a.km.toFixed(2)} km`)
+}
+const punti = ABATERI.filter((a) => a.km > 0.3).length
+console.log(`${rele ? '✗' : '✓'} ${peNod.size} noduri de apa, toate pe curs ` +
+  `(abaterea cea mai mare ${Math.max(...[...peNod.values()].map((a) => a.km)).toFixed(3)} km); ` +
+  `${punti} capete de segment trec peste o confluenta`)
