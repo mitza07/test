@@ -9,6 +9,7 @@ import { PLAN, PLAN_TEME } from '../build/build.mjs'
 import { bandaCronologica } from '../build/cronograf.mjs'
 import { bandaVietilor } from '../build/vieti.mjs'
 import { toateTabelele, sectiuneTabel } from '../build/tabele.mjs'
+import { cifreleCartii, exactitateaHartilor } from '../build/cifre-carte.mjs'
 import { readFileSync as citeste, existsSync as exista, statSync as stat } from 'fs'
 import { tipografic } from '../build/tipo.mjs'
 
@@ -281,25 +282,37 @@ ${aparat(c, termeni)}
   /* cuprins */
   /* Tabelele materialului final: nimic nou, numai ce e deja in carte, asezat
      la un loc ca sa poata fi cautat. */
+  /* Cate harti are chiar volumul care se tipareste, si cat de departe cad ariile
+     calculate de cele reale — socotite, nu scrise de mana. Pana azi scria
+     "douasprezece harti" si "sub un procent"; sunt treisprezece si pana la 2,2. */
+  const NUM = cifreleCartii(volum)
+  const NR_LIT = { 1: 'O singură hartă e desenată', 2: 'Cele două hărți sunt desenate',
+    3: 'Cele trei hărți sunt desenate', 12: 'Cele douăsprezece hărți sunt desenate',
+    13: 'Cele treisprezece hărți sunt desenate' }
+  const TEXT_HARTI = NUM.harti
+    ? `${NR_LIT[NUM.harti] || `Cele ${NUM.harti} hărți sunt desenate`} din coordonate geografice reale.`
+    : 'Hărțile volumului sunt desenate din coordonate geografice reale.'
+  const EX = exactitateaHartilor()
+  const TEXT_ARII = `Ariile calculate se abat de cele reale cu cel mult ` +
+    `${EX.abatereMax.toFixed(1).replace('.', ',')} la sută: ` +
+    EX.arii.map((a) => `${a.nume} ${a.km2.toLocaleString('ro')} km² față de ${a.real.toLocaleString('ro')}`).join(', ') + '.'
+
   const TABELE = toateTabelele([...cap, ...teme.map((t) => ({ ...t, tema: true, per: 'transversal' }))])
   const tabelHtmlTipar = (t) => sectiuneTabel(t, { esc }).replace(/^<h2>[\s\S]*?<\/p>\n/, '')
 
   const cuprins = (cap.length ? `<div class="grup">Partea întâi · Cronologia</div><ol>` +
-    cap.map((c, i) => `<li><span class="nr">${ROMAN[i + 1]}</span><span class="tit">${esc(c.titlu)}</span>
-<span class="per">${esc(c.per)}</span><span class="pct"></span><a class="pg" href="#${c.id}"></a></li>`).join('') +
+    cap.map((c, i) => `<li><a class="pg" href="#${c.id}"></a><span class="nr">${ROMAN[i + 1]}</span><span class="tit">${esc(c.titlu)}</span>
+<span class="per">${esc(c.per)}</span></li>`).join('') +
     `</ol>` : '') +
     (teme.length ? `<div class="grup">Partea a doua · Priviri transversale</div><ol>` +
-    teme.map((c) => `<li class="fara-nr"><span class="nr"></span><span class="tit">${esc(c.titlu)}</span>
-<span class="pct"></span><a class="pg" href="#${c.id}"></a></li>`).join('') + `</ol>` : '') +
+    teme.map((c) => `<li class="fara-nr"><a class="pg" href="#${c.id}"></a><span class="nr"></span><span class="tit">${esc(c.titlu)}</span></li>`).join('') + `</ol>` : '') +
     `<div class="grup">Material final</div><ol>` +
     [...TABELE.map((t) => [t.id, t.titlu]),
       ['lista-figuri', 'Lista hărților și a diagramelor'], ['indice', 'Indice de nume și locuri'], ['nota-metoda', 'Notă asupra metodei']]
-      .map(([id, t]) => `<li class="fara-nr"><span class="nr"></span><span class="tit">${esc(t)}</span>
-<span class="pct"></span><a class="pg" href="#${id}"></a></li>`).join('') + `</ol>`
+      .map(([id, t]) => `<li class="fara-nr"><a class="pg" href="#${id}"></a><span class="nr"></span><span class="tit">${esc(t)}</span></li>`).join('') + `</ol>`
 
   const listaFig = `<ol>` + figuriLista.map((f) =>
-    `<li><span class="nr">${f.tip === 'Harta' ? 'H' : 'D'}${f.n}</span><span>${esc(f.titlu)}</span>
-<span class="pct"></span><a class="pg" href="#${f.id}"></a></li>`).join('') + `</ol>`
+    `<li><a class="pg" href="#${f.id}"></a><span class="nr">${f.tip === 'Harta' ? 'H' : 'D'}${f.n}</span><span>${esc(f.titlu)}</span></li>`).join('') + `</ol>`
 
   /* indicele se completeaza la a doua trecere, cand se stiu paginile */
   const indice = optiuni.indice || '<p style="color:#888;font-size:8pt">Indicele se generează la a doua trecere.</p>'
@@ -398,13 +411,13 @@ ${TABELE.map((t) => `<section class="anexa" id="${t.id}">
   din România, colaborarea cu Germania nazistă, represiunea comunistă, robia romilor,
   mineriadele — sunt tratate la fel de detaliat ca victoriile.</p>
   <h3>Despre hărți</h3>
-  <p>Cele douăsprezece hărți sunt desenate din coordonate geografice reale. Fiecare
+  <p>${TEXT_HARTI} Fiecare
   hotar istoric — Carpații, Prutul, Nistrul, Oltul, Milcovul, Cerna, Mureșul, Dunărea,
   linia Dictatului de la Viena — este definit o singură dată și reutilizat, astfel încât
   suprafețele să se îmbine exact și să rămână comparabile de la o hartă la alta.
-  Ariile calculate se abat cu mai puțin de un procent de la cele reale: România Mare
-  296.108 km² față de 295.049, România de azi 237.307 față de 238.397, Dobrogea 15.519
-  față de 15.485, Cadrilaterul 7.438 față de 7.412.</p>
+  Hotarele care merg pe apă sunt decupate din cursul real al râului, luat din Natural
+  Earth; relieful vine din ETOPO1, modelul de teren al NOAA. Amândouă sunt în domeniul
+  public. ${TEXT_ARII}</p>
   <h3>Ce lipsește</h3>
   <p>O sinteză nu înlocuiește lectura specialiștilor. Pentru fiecare epocă există
   bibliografii mult mai bogate decât ce încape într-un volum ilustrat, iar unele dintre

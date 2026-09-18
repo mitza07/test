@@ -9,12 +9,12 @@
 .m-uscat { fill: #e8e4d9; }
 .m-mare  { fill: #c3d6e1; }
 .m-vecin { fill: none; stroke: #8d9aa2; stroke-width: 1.1; stroke-dasharray: 5 3.5; }
-.m-ta { fill: #7ba3c6; }
-.m-tb { fill: #d0aa62; }
-.m-tc { fill: #9b8fb2; }
-.m-td { fill: #79a48d; }
-.m-te { fill: #c8805f; }
-.m-tf { fill: #b0a893; }
+.m-ta { fill: #7ba3c6; color: #7ba3c6; }
+.m-tb { fill: #d0aa62; color: #d0aa62; }
+.m-tc { fill: #9b8fb2; color: #9b8fb2; }
+.m-td { fill: #79a48d; color: #79a48d; }
+.m-te { fill: #c8805f; color: #c8805f; }
+.m-tf { fill: #b0a893; color: #b0a893; }
 .m-tg { fill: #e8e4d9; }
 .m-lim  { stroke: #fff; opacity: .7; }
 .m-has  { color: #9e2f18; }

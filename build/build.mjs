@@ -7,6 +7,7 @@ import { cronograma, diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagra
 import { bandaCronologica } from './cronograf.mjs'
 import { bandaVietilor } from './vieti.mjs'
 import { toateTabelele, sectiuneTabel } from './tabele.mjs'
+import { cifreleCartii } from './cifre-carte.mjs'
 import { tipografic } from './tipo.mjs'
 
 const esc = (s) => tipografic(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -203,9 +204,11 @@ export function construieste(continut) {
   const teme = PLAN_TEME.map((pl) => ({ ...pl, titlu: TEME_TITLU[pl.id], ...(temeById[pl.id] || {}) }))
     .filter((c) => c.sectiuni && c.sectiuni.length)
 
-  const cuvinte = [...cap, ...teme].reduce((n, c) =>
-    n + (c.sectiuni || []).reduce((m, s) => m + s.paragrafe.join(' ').split(/\s+/).length, 0), 0)
-  const nrHarti = new Set(cap.flatMap((c) => c.harti || [])).size
+  /* Numarul de cuvinte se socoteste la fel peste tot — corpul, rezumatele si
+     disputele — ca sa nu spuna frontispiciul 136,5k si PUBLICARE.md 147.479. */
+  const NUM = cifreleCartii(0)
+  const cuvinte = NUM.cuvinte
+  const nrHarti = NUM.harti
 
   /* cronograma foloseste planul complet, ca scara sa nu sara intre versiuni */
   const crono = cronograma(PLAN.filter((p) => !p.preludiu).map((p) => ({ ...p, titlu: (capById[p.id] || {}).titlu || p.id })))
@@ -265,11 +268,23 @@ ${dia}
 ${atlas.map(figuraIlustratie).join('')}</div>
 </article>` : ''
 
-  return `<title>Istoria României</title>
+  return `<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Istoria României în 3.026 de ani: 23 de capitole, 17 priviri transversale, 13 hărți desenate din date geografice publice și 331 de ilustrații de arhivă.">
+<title>Istoria României</title>
+<!-- Capul a lipsit cu totul pana acum: pagina mergea fiindca vizualizatorul de
+     artefacte o impacheteaza el in <html><head>. Deschisa direct, ca fisier,
+     iesea in quirks mode si cu diacriticele stricate. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Spectral:ital,wght@0,300;0,600;1,300;1,400&family=IBM+Plex+Sans+Condensed:wght@400;500;600&display=swap">
 <style>${css}</style>
+</head>
+<body>
 
 <header class="frontispiciu">
   <div class="banda">
@@ -366,7 +381,9 @@ ${atlas.map(figuraIlustratie).join('')}</div>
   }, { rootMargin: '-15% 0px -70% 0px' })
   document.querySelectorAll('article.capitol[id]').forEach(function (n) { obs.observe(n) })
 })()
-</script>`
+</script>
+</body>
+</html>`
 }
 
 /* --- rulare: doar cand fisierul este pornit direct, nu la import ---------- */

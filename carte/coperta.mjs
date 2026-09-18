@@ -7,6 +7,8 @@
 import { writeFileSync, readFileSync } from 'fs'
 import { FRONTIERE, ZONE } from '../build/geo.js'
 
+import { cifreleCartii } from '../build/cifre-carte.mjs'
+
 const RAD = new URL('./', import.meta.url).pathname
 const IN = 25.4
 const PAGINI = Number(process.argv[2] || 488)
@@ -20,6 +22,18 @@ const VOL = {
        desc: 'Șaptesprezece priviri care taie cronologia de-a curmezișul — limba, credința, minoritățile, evreii, romii, aromânii, Basarabia, orașul, femeile, hrana, boala, sportul, mediul — și o planșă de hărți vechi, de la Mercator la harta etnografică de la Trianon.' },
 }[VOLUM]
 const GROSIME = HARTIE === 'alba' ? 0.002252 : 0.0025
+
+/* Cifrele de pe coperta a patra nu se mai scriu de mana. Scrise asa, ajunsesera
+   sa spuna 666 de repere cronologice acolo unde cartea are 656, si sa promita
+   pe amandoua volumele treisprezece harti si 331 de ilustratii — cand volumul
+   al doilea n-are nicio harta si are 181 de ilustratii. Pe coperta unei carti
+   al carei argument de vanzare e tocmai rigoarea. */
+const socoteala = cifreleCartii
+
+const NUM = socoteala(VOLUM)
+const CIFRA_LITERE = { 1: 'singura', 2: 'cele două', 3: 'trei', 4: 'patru', 5: 'cinci', 6: 'șase',
+  7: 'șapte', 8: 'opt', 9: 'nouă', 10: 'zece', 11: 'unsprezece', 12: 'douăsprezece',
+  13: 'treisprezece', 14: 'paisprezece', 15: 'cincisprezece' }
 
 const cotor = PAGINI * GROSIME * IN            /* mm */
 const bleed = 0.125 * IN                       /* 3,175 mm */
@@ -70,7 +84,14 @@ const html = `<!DOCTYPE html><html lang="ro"><head><meta charset="utf-8"><style>
 * { box-sizing: border-box; margin: 0; }
 body { width: ${W.toFixed(2)}mm; height: ${H.toFixed(2)}mm; background: #0c1620;
   color: #e8edf2; font-family: Literata, serif; display: flex; overflow: hidden; }
-.spate, .fata { width: ${latTrim.toFixed(2)}mm; height: 100%; position: relative; }
+/* Panoul din spate si cel din fata poarta fiecare si bleed-ul marginii lui
+   exterioare, nu numai blocul taiat. Scrise la latTrim, cele trei panouri
+   insumau W minus doua bleed-uri, flex-ul le alipea la stanga si tot ce urma
+   dupa spate — cotorul si coperta intreaga din fata — aluneca cu 3,175 mm.
+   Pe cartea legata, cele doua fire albe ale cotorului ar fi cazut amandoua
+   alaturi de indoitura, iar titlul de pe cotor ar fi iesit descentrat cu mai
+   mult decat dublul tolerantei declarate de tipografie. */
+.spate, .fata { flex: 1 1 ${(bleed + latTrim).toFixed(2)}mm; height: 100%; position: relative; }
 .spate { padding: ${(bleed + 16).toFixed(1)}mm 14mm ${(bleed + 14).toFixed(1)}mm ${(bleed + 14).toFixed(1)}mm; }
 .cotor { width: ${cotor.toFixed(2)}mm; height: 100%; background: #0a121b;
   border-left: .3mm solid rgba(255,255,255,.09); border-right: .3mm solid rgba(255,255,255,.09);
@@ -124,12 +145,14 @@ body { width: ${W.toFixed(2)}mm; height: ${H.toFixed(2)}mm; background: #0c1620;
   <div class="cap">O istorie scrisă din ceea ce se poate documenta, nu din ceea ce ne-am dori să fie adevărat.</div>
   <p>${blurb}</p>
   <p>${VOL ? VOL.desc : 'Douăzeci și trei de capitole cronologice și șaptesprezece priviri transversale — limba, credința, minoritățile, cultura, economia, pământul. Fiecare capitol se încheie cu principala dispută a epocii, cu ambele poziții expuse corect.'}</p>
-  <p>Cele treisprezece hărți sunt desenate din date geografice publice — cursurile de apă și țărmul din Natural Earth, relieful din modelul de teren al NOAA. Hotarele care merg pe apă sunt decupate din cursul real al râului, iar fiecare hotar e definit o singură dată și reutilizat, astfel încât suprafețele să rămână comparabile de la o epocă la alta.</p>
+  <p>${NUM.harti
+    ? `Cele ${CIFRA_LITERE[NUM.harti] || NUM.harti} hărți sunt desenate din date geografice publice — cursurile de apă și țărmul din Natural Earth, relieful din modelul de teren al NOAA. Hotarele care merg pe apă sunt decupate din cursul real al râului, iar fiecare hotar e definit o singură dată și reutilizat, astfel încât suprafețele să rămână comparabile de la o epocă la alta.`
+    : `Volumul se încheie cu planșa cartografică: hărți vechi, de la Mercator la harta etnografică de la Trianon, citite nu ca ilustrații, ci ca izvoare — fiecare arată nu numai un teritoriu, ci și ce știa și ce voia să arate cel care a desenat-o.`}</p>
   <div class="date">
-    <div><b>3.026</b><span>ani în cronologie</span></div>
-    <div><b>331</b><span>ilustrații de arhivă</span></div>
-    <div><b>40</b><span>dispute istoriografice</span></div>
-    <div><b>666</b><span>repere cronologice</span></div>
+    <div><b>${NUM.ani.toLocaleString('ro')}</b><span>ani în cronologie</span></div>
+    <div><b>${NUM.ilustratii}</b><span>ilustrații de arhivă</span></div>
+    <div><b>${NUM.dispute}</b><span>dispute istoriografice</span></div>
+    <div><b>${NUM.repere}</b><span>repere cronologice</span></div>
   </div>
   <div class="nota">Textul a fost redactat cu ajutorul unui model de limbaj și trecut printr-o verificare factuală automată, care a corectat 818 de erori. Volumul se citește ca sinteză, nu ca lucrare de referință.</div>
   <div class="cod">cod de bare ISBN<br>48 × 26 mm</div>
@@ -151,7 +174,14 @@ body { width: ${W.toFixed(2)}mm; height: ${H.toFixed(2)}mm; background: #0c1620;
 </body></html>`
 
 writeFileSync(RAD + `.coperta${VOLUM ? '-v' + VOLUM : ''}.html`, html)
-console.log(`copertă${VOLUM ? ' vol. ' + VOLUM : ''} ${W.toFixed(1)} × ${H.toFixed(1)} mm · cotor ${cotor.toFixed(1)} mm (${PAGINI} pagini, hârtie ${HARTIE})`)
+const suma = 2 * (bleed + latTrim) + cotor
+if (Math.abs(suma - W) > 0.05) {
+  console.error(`coperta nu se inchide: panourile insumeaza ${suma.toFixed(2)} mm pe un corp de ${W.toFixed(2)} mm`)
+  process.exit(1)
+}
+console.log(`copertă${VOLUM ? ' vol. ' + VOLUM : ''} ${W.toFixed(1)} × ${H.toFixed(1)} mm · cotor ${cotor.toFixed(1)} mm ` +
+  `(${PAGINI} pagini, hârtie ${HARTIE}) · ${NUM.harti} hărți, ${NUM.ilustratii} ilustrații, ` +
+  `${NUM.dispute} dispute, ${NUM.repere} repere, ${NUM.ani.toLocaleString('ro')} ani`)
 
 /* --- randare --------------------------------------------------------------- */
 const { chromium } = await import('/opt/node22/lib/node_modules/playwright/index.mjs')

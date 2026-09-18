@@ -20,11 +20,11 @@ Textul a fost scris de un model de limbaj, iar verificarea factuală a fost tot 
 
 ## 2. Un risc juridic concret: citatele
 
-Volumul are 28 de citate de epocă. Autorii sunt morți de secole, deci textele originale sunt în domeniul public. **Traducerile moderne nu sunt.** Traducerea românească a lui Herodot făcută de Adelina Piatkowski și Felicia Vanț-Ștef, sau cea a lui Strabon de Felicia Vanț-Ștef, sunt opere protejate — 70 de ani de la moartea traducătorului.
+Volumul are 40 de citate de epocă. Autorii sunt morți de secole, deci textele originale sunt în domeniul public. **Traducerile moderne nu sunt.** Traducerea românească a lui Herodot făcută de Adelina Piatkowski și Felicia Vanț-Ștef, sau cea a lui Strabon de Felicia Vanț-Ștef, sunt opere protejate — 70 de ani de la moartea traducătorului.
 
 Dacă un citat din carte reproduce cuvânt cu cuvânt o traducere publicată, ai nevoie de acord sau trebuie să retraduci. Citarea scurtă cu indicarea sursei este permisă de art. 33 din Legea 8/1996, dar limita e „conformă bunelor uzanțe" și nu e o cifră fixă.
 
-**De făcut:** verificat fiecare dintre cele 28 de citate — dacă e traducere preluată, se indică traducătorul și ediția, sau se înlocuiește.
+**De făcut:** verificat fiecare dintre cele 40 de citate — dacă e traducere preluată, se indică traducătorul și ediția, sau se înlocuiește.
 
 ---
 

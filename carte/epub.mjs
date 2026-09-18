@@ -8,6 +8,7 @@ import { HARTI } from '../build/harti.mjs'
 import { bandaCronologica } from '../build/cronograf.mjs'
 import { bandaVietilor } from '../build/vieti.mjs'
 import { toateTabelele, sectiuneTabel } from '../build/tabele.mjs'
+import { cifreleCartii, exactitateaHartilor } from '../build/cifre-carte.mjs'
 import { diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagramaEtnic } from '../build/diagrame.mjs'
 import { PLAN, PLAN_TEME } from '../build/build.mjs'
 import { tipografic } from '../build/tipo.mjs'
@@ -34,6 +35,12 @@ const SUBT_DIAG = {
 }
 const TEME_TITLU = { limba: 'Limba română', religie: 'Religie și Biserică', minoritati: 'Minoritățile',
   cultura: 'Cultură și știință', economie: 'Economia și societatea', geografie: 'Pământul și oamenii' }
+
+const NUM = cifreleCartii(0)
+const EX = exactitateaHartilor()
+const TEXT_ARII = `Ariile calculate se abat de cele reale cu cel mult ` +
+  `${EX.abatereMax.toFixed(1).replace('.', ',')} la sută: ` +
+  EX.arii.map((a) => `${a.nume} ${a.km2.toLocaleString('ro')} km² față de ${a.real.toLocaleString('ro')}`).join(', ') + '.'
 
 const STIL = `
 @font-face { font-family: "Literata"; font-weight: normal; font-style: normal;
@@ -387,7 +394,7 @@ writeFileSync(OUT + '/OEBPS/nota.xhtml', pag('Notă asupra metodei',
   `<h1>Notă asupra metodei</h1>
 <p class="prim">Volumul a fost redactat capitol cu capitol și trecut apoi printr-o verificare factuală separată, care a urmărit datele, numele proprii, cifrele și atribuirea citatelor. Au rezultat 818 de corecții. Acolo unde o cifră este disputată în literatura de specialitate — numărul victimelor răscoalei din 1907, bilanțul Holocaustului din România, numărul morților din decembrie 1989 — ea este dată ca interval, cu menționarea disputei.</p>
 <h2>Despre hărți</h2>
-<p class="prim">Cele douăsprezece hărți sunt desenate din coordonate geografice reale. Fiecare hotar istoric este definit o singură dată și reutilizat, astfel încât suprafețele să se îmbine exact. Ariile calculate se abat cu mai puțin de un procent de la cele reale: România Mare 296.108 km² față de 295.049, România de azi 237.307 față de 238.397, Dobrogea 15.519 față de 15.485.</p>
+<p class="prim">Cele ${NUM.harti} hărți ale volumului sunt desenate din coordonate geografice reale. Fiecare hotar istoric este definit o singură dată și reutilizat, astfel încât suprafețele să se îmbine exact. Hotarele care merg pe apă sunt decupate din cursul real al râului, luat din Natural Earth; relieful vine din ETOPO1, modelul de teren al NOAA — amândouă în domeniul public. ${TEXT_ARII}</p>
 <h2>Ce lipsește</h2>
 <p class="prim">O sinteză nu înlocuiește lectura specialiștilor. Volumul nu are note de subsol și nu indică sursa fiecărei afirmații în parte.</p>`))
 fisiere.push({ id: 'nota', href: 'nota.xhtml', titlu: 'Notă asupra metodei', inToc: true })
@@ -425,7 +432,7 @@ writeFileSync(OUT + '/OEBPS/content.opf', `<?xml version="1.0" encoding="utf-8"?
   <dc:publisher>[editura]</dc:publisher>
   <dc:subject>Istorie</dc:subject>
   <dc:subject>România</dc:subject>
-  <dc:description>${esc(SUBTITLU)}. Douăzeci și trei de capitole cronologice și șaptesprezece priviri transversale, cu douăsprezece hărți desenate din coordonate geografice reale și peste două sute de ilustrații de arhivă.</dc:description>
+  <dc:description>${esc(SUBTITLU)}. ${NUM.capitole} de capitole cronologice și ${NUM.teme} priviri transversale, cu ${NUM.harti} hărți desenate din coordonate geografice reale, ${NUM.diagrame} diagrame și ${NUM.ilustratii} de ilustrații de arhivă.</dc:description>
   <dc:rights>Toate drepturile rezervate.</dc:rights>
   <meta property="dcterms:modified">${azi}</meta>
   ${areCoperta ? '<meta name="cover" content="img-coperta"/>' : ''}
