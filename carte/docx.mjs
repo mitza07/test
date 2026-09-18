@@ -77,14 +77,48 @@ ${stil('Aparat', 'Aparat critic', '<w:pPr><w:ind w:firstLine="0" w:left="283" w:
 </w:styles>`
 
 /* --- ilustratia, cu legenda si creditul ei -------------------------------- */
+/* Latimea in pixeli a unui JPEG, citita din antetul lui: se cauta markerul de
+   cadru (SOF0..SOF3, SOF5..SOF7, SOF9..SOF11, SOF13..SOF15) si se citesc cele
+   doua numere de dupa. Fara biblioteca: manifestul da pixelii originalului, iar
+   noua ne trebuie ai fisierului lipit. */
+function pixeliLati(cale) {
+  const b = readFileSync(cale)
+  if (b[0] !== 0xff || b[1] !== 0xd8) return 0
+  let i = 2
+  while (i < b.length - 9) {
+    if (b[i] !== 0xff) { i++; continue }
+    const m = b[i + 1]
+    if (m === 0xd8 || m === 0x01 || (m >= 0xd0 && m <= 0xd7)) { i += 2; continue }
+    const len = b.readUInt16BE(i + 2)
+    const cadru = (m >= 0xc0 && m <= 0xcf) && m !== 0xc4 && m !== 0xc8 && m !== 0xcc
+    if (cadru) return b.readUInt16BE(i + 7)
+    i += 2 + len
+  }
+  return 0
+}
+
+/* Manuscrisul e ce primeste un editor ca sa culeaga din el, nu ce se citeste pe
+   ecran: acolo o poza sub trei sute de puncte pe tol nu se poate tipari. Pana
+   acum manuscrisul lipea copia de ecran — 900 px mediana — dar ii dadea latimea
+   socotita din pixelii originalului, asa ca toate cele 331 de ilustratii ieseau
+   la 150 de puncte pe tol, niciuna peste 200. Acum se lipeste varianta de tipar
+   si latimea se socoteste din pixelii fisierului lipit, nu din ai originalului.
+   Manuscrisul creste de la 44 la vreo 140 de megaocteti — atat cantareste un
+   manuscris care se poate tipari. Cu DOCX_USOR=1 se face copia usoara, de
+   citit, cu pozele de ecran. */
+const USOR = Boolean(process.env.DOCX_USOR)
+const PPT = USOR ? 200 : 300     /* puncte pe tol cerute de poza lipita */
+
 function pune(m, stare) {
-  /* varianta de ecran: un manuscris de sute de megaocteti nu se deschide */
-  const redus = RAD + 'ilustratii/ecran/' + m.local.split('/').pop()
+  const nume = m.local.split('/').pop()
+  const potrivite = USOR
+    ? ['ilustratii/ecran/' + nume, 'ilustratii/tipar/' + nume]
+    : ['ilustratii/tipar/' + nume, 'ilustratii/ecran/' + nume]
+  const src = potrivite.map((x) => RAD + x).find(existsSync)
   const mare = RAD + m.local
-  const src = existsSync(redus) ? redus : mare
   /* Pragul de 40 KB e pentru descarcari stricate si se masoara pe original.
      Aplicat pe copia deja comprimata pentru ecran, taia opt ilustratii bune. */
-  if (!existsSync(src)) return ''
+  if (!src) return ''
   if (!existsSync(mare) || statSync(mare).size < 40000) return ''
   const id = ++stare.id
   copyFileSync(src, `${OUT}/word/media/il${id}.jpg`)
@@ -96,9 +130,11 @@ function pune(m, stare) {
   const lat = m.pxLatime || m.latime || 0
   const inalt = m.pxInaltime || m.inaltime || 0
   const raport = (lat && inalt) ? inalt / lat : 0.7
-  /* Nici o poza nu se intinde peste ce-i dau pixelii ei: la 200 de puncte pe
-     tol, o gravura de 900 px tine 4,5 toli, nu sase. */
-  let cx = lat ? Math.min(LAT_TEXT, Math.round((lat / 200) * EMU)) : LAT_TEXT
+  /* Latimea se ia din fisierul LIPIT, nu din original: o poza de 1.600 de
+     pixeli tine cinci toli si un sfert la trei sute de puncte pe tol, si atat
+     i se da. */
+  const px = pixeliLati(src) || lat
+  let cx = px ? Math.min(LAT_TEXT, Math.round((px / PPT) * EMU)) : LAT_TEXT
   let cy = Math.round(cx * raport)
   if (cy > INALT_MAX) { cy = INALT_MAX; cx = Math.round(cy / raport) }
   const credit = creditScurt(m)

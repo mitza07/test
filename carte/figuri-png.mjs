@@ -21,7 +21,11 @@ const DIAGRAME = { populatie: diagramaPopulatie, lexic: diagramaLexic,
 const RAD = new URL('./', import.meta.url).pathname
 const DIR = RAD + 'ilustratii/figuri/'
 const CSS = readFileSync(RAD + '../build/stil.css', 'utf8')
-const LAT = 1800                      /* 117 mm la circa 390 puncte pe tol */
+/* 1.800 de pixeli pe latimea oglinzii: 117 mm la circa 390 de puncte pe tol la
+   tipar, si exact 300 de puncte pe tol in manuscris, unde poza tine sase toli.
+   Benzile se randau la 1.400, adica 233 in manuscris — sub pragul de tipar —
+   asa ca li se da aceeasi latime ca hartilor. */
+const LAT = 1800
 
 mkdirSync(DIR, { recursive: true })
 
@@ -36,12 +40,12 @@ const sectiuni = [...continut.capitole, ...continut.teme]
 const figuri = [
   ...Object.entries(HARTI).map(([k, h]) => ({ k, tip: 'harta', titlu: h.titlu, jos: h.jos, gen: () => h.spec() })),
   ...Object.entries(DIAGRAME).map(([k, g]) => ({ k, tip: 'diagrama', gen: g })),
-  ...sectiuni.map((c) => ({ k: 'banda-' + c.id, tip: 'banda', lat: 1400,
+  ...sectiuni.map((c) => ({ k: 'banda-' + c.id, tip: 'banda',
     gen: () => bandaCronologica(c, { de: -6000, la: 2026 }) })),
-  ...sectiuni.map((c) => ({ k: 'vieti-' + c.id, tip: 'vieti', lat: 1400,
+  ...sectiuni.map((c) => ({ k: 'vieti-' + c.id, tip: 'vieti',
     gen: () => bandaVietilor(c, { de: c.de, la: c.la }) })),
   /* benzile pe ceas: capitolele in care unitatea de masura e ziua, nu anul */
-  ...sectiuni.filter((c) => CEASURI[c.id]).map((c) => ({ k: 'ceas-' + c.id, tip: 'ceas', lat: 1600,
+  ...sectiuni.filter((c) => CEASURI[c.id]).map((c) => ({ k: 'ceas-' + c.id, tip: 'ceas',
     titlu: CEASURI[c.id].titlu, jos: CEASURI[c.id].jos,
     gen: () => bandaZilelor(c, CEASURI[c.id]) })),
 ].filter((f) => f.gen())
