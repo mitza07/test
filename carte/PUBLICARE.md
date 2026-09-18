@@ -12,7 +12,7 @@ Textul a fost scris de un model de limbaj, iar verificarea factuală a fost tot 
 
 **b) O editură românească va presupune un autor uman.** Nu există obligație legală de declarare, dar a nu spune e o problemă de contract, nu de lege.
 
-**c) Riscul factual e al tău, nu al meu.** Pe web, o eroare se corectează în cinci minute. Tipărită în 500 de exemplare, rămâne acolo. Cele 818 de corecții pe care le-a găsit a doua trecere arată exact cât de multe greșeli produce prima. Nimic nu garantează că a treia trecere n-ar mai găsi 200.
+**c) Riscul factual e al tău, nu al meu.** Pe web, o eroare se corectează în cinci minute. Tipărită în 500 de exemplare, rămâne acolo. Cele 818 corecții pe care le-a găsit a doua trecere arată exact cât de multe greșeli produce prima. Nimic nu garantează că a treia trecere n-ar mai găsi 200.
 
 **Recomandarea mea:** înainte de tipar, textul trece pe la un istoric. Nu pentru stil — pentru date, atribuiri și cifre. Un absolvent de istorie plătit pentru două săptămâni de lectură costă mult mai puțin decât un tiraj retras.
 
@@ -83,15 +83,15 @@ Numărul maxim de pagini la 6 × 9 inch depinde de cerneală și de hârtie:
 | **Color standard, hârtie albă** | **72 – 600** |
 | Color premium, hârtie albă | 24 – 828 |
 
-Asta a decis structura cărții. Cu 147.479 de cuvinte și 331 de ilustrații, într-un
-singur volum macheta dă **peste o mie de pagini** — peste plafonul de 828, indiferent de
+Asta a decis structura cărții. Cu 147.479 de cuvinte și 371 de ilustrații, într-un
+singur volum macheta dă **1.100 de pagini** — peste plafonul de 828, indiferent de
 hârtie și cerneală. De aceea cartea apare **în două volume**, tăiate acolo unde o
 cere și structura ei:
 
 | | Pagini | Cotor (crem) | Intră la |
 |---|---|---|---|
-| **Volumul I — Cronologia** (23 de capitole) | 522 | 33,1 mm | toate variantele, inclusiv color standard |
-| **Volumul II — Priviri transversale** (17 teme + atlasul) | 484 | 30,7 mm | toate variantele, inclusiv color standard |
+| **Volumul I — Cronologia** (23 de capitole) | 580 | 36,8 mm | toate variantele, inclusiv color standard |
+| **Volumul II — Priviri transversale** (17 teme + atlasul) | 534 | 33,9 mm | toate variantele, inclusiv color standard |
 
 Amândouă stau sub 600, deci **color standard e disponibil pentru amândouă** — varianta
 cea mai ieftină la culoare. Color premium și alb-negru rămân și ele posibile; macheta
@@ -107,9 +107,9 @@ plafonul KDP.
 - Înălțime totală = 0,125″ + 9″ + 0,125″ = **9,25″**
 - Cotor = număr de pagini × **0,002252″** (hârtie albă) sau × **0,0025″** (crem)
 
-Calculat pe hârtie crem: **volumul I, 522 de pagini → cotor 33,1 mm**; **volumul II,
-484 de pagini → cotor 30,7 mm**. Copertele sunt deja generate la aceste dimensiuni
-(`Istoria-Romaniei-coperta-vol1.pdf`, 344,3 × 235,0 mm, și `-vol2.pdf`, 341,9 × 235,0 mm),
+Calculat pe hârtie crem: **volumul I, 580 de pagini → cotor 36,8 mm**; **volumul II,
+534 de pagini → cotor 33,9 mm**. Copertele sunt deja generate la aceste dimensiuni
+(`Istoria-Romaniei-coperta-vol1.pdf`, 348,0 × 235,0 mm, și `-vol2.pdf`, 345,1 × 235,0 mm),
 cu bleed de 3,2 mm și cu dreptunghiul alb de 48 × 26 mm rezervat codului de bare.
 
 Dacă se schimbă ceva în text sau în hărți, paginația se poate muta, iar cotorul odată cu
@@ -122,8 +122,8 @@ cd carte
 for v in 1 2; do node pdf.mjs --volum=$v; node pdf.mjs --volum=$v --color; done
 POZE=ecran node pdf.mjs --volum=1 --color   # copiile ușoare, de citit pe ecran
 POZE=ecran node pdf.mjs --volum=2 --color
-node coperta.mjs 522 --volum=1       # numărul de pagini se ia din .paginatie-*.json
-node coperta.mjs 484 --volum=2
+node coperta.mjs 580 --volum=1       # numărul de pagini se ia din .paginatie-*.json
+node coperta.mjs 534 --volum=2
 node epub.mjs && node docx.mjs
 ```
 
@@ -192,29 +192,32 @@ de 238.397 reali, România Mare 299.399 față de 295.049, Dobrogea 15.789 faț�
 
 | Fișier | Ce e | Dimensiune |
 |---|---|---|
-| `Istoria-Romaniei-interior-vol1-color.pdf` | interiorul volumului I, color | 522 pag. · 59 MB |
-| `Istoria-Romaniei-interior-vol1-alb-negru.pdf` | idem, alb-negru, aceeași paginație | 522 pag. · 59 MB |
-| `Istoria-Romaniei-interior-vol2-color.pdf` | interiorul volumului II, color | 484 pag. · 82 MB |
-| `Istoria-Romaniei-interior-vol2-alb-negru.pdf` | idem, alb-negru | 484 pag. · 82 MB |
-| `Istoria-Romaniei-coperta-vol1.pdf` | copertă completă, față–cotor–spate, cu bleed | 344,3 × 235,0 mm |
-| `Istoria-Romaniei-coperta-vol2.pdf` | idem, volumul II | 341,9 × 235,0 mm |
-| `Istoria-Romaniei.epub` | ediția digitală, cu hărțile ca SVG și cu legendele lor | 37 MB |
-| `Istoria-Romaniei-compact.epub` | idem, cu ilustrațiile la 520 px, pentru taxa de livrare | 11 MB |
-| `Istoria-Romaniei-manuscris.docx` | manuscrisul pentru editură, cu stiluri numite, cu toate cele 13 hărți și 4 diagrame | 39 MB |
-| `Istoria-Romaniei-vol1-de-citit.pdf`, `-vol2-` | copiile ușoare, de citit pe ecran | 522 + 484 pag. · 19 + 23 MB |
-| `Istoria-Romaniei-interior-color.pdf` | volumul întreg, pentru citit pe ecran | 994 pag. · 141 MB |
+| `Istoria-Romaniei-interior-vol1-color.pdf` | interiorul volumului I, color | 580 pag. · 64 MB |
+| `Istoria-Romaniei-interior-vol1-alb-negru.pdf` | idem, alb-negru, aceeași paginație | 580 pag. · 64 MB |
+| `Istoria-Romaniei-interior-vol2-color.pdf` | interiorul volumului II, color | 534 pag. · 94 MB |
+| `Istoria-Romaniei-interior-vol2-alb-negru.pdf` | idem, alb-negru | 534 pag. · 94 MB |
+| `Istoria-Romaniei-coperta-vol1.pdf` | copertă completă, față–cotor–spate, cu bleed | 348,0 × 235,0 mm |
+| `Istoria-Romaniei-coperta-vol2.pdf` | idem, volumul II | 345,1 × 235,0 mm |
+| `Istoria-Romaniei.epub` | ediția digitală, cu hărțile ca SVG și cu legendele lor | 41 MB |
+| `Istoria-Romaniei-compact.epub` | idem, cu ilustrațiile puse la două măsuri după ce e în ele | 25 MB |
+| `Istoria-Romaniei-manuscris.docx` | manuscrisul pentru editură, cu stiluri numite, cu toate imaginile la 300 dpi, cu proveniențele și cu materialul final | 161 MB |
+| `Istoria-Romaniei-vol1-de-citit.pdf`, `-vol2-` | copiile ușoare, de citit pe ecran | 580 + 534 pag. · 20 + 26 MB |
+| `Istoria-Romaniei-interior-color.pdf` | volumul întreg, pentru citit pe ecran | 1.100 pag. · 158 MB |
 | `coperta-ebook-vol1.png`, `-vol2.png` | coperta de ebook, 1600 × 2560 px | — |
 
 ### Costul de livrare al EPUB-ului, la KDP
 
 La royalty de 70%, Amazon scade o taxă de livrare calculată pe megaoctet — în jur de
-0,15 USD/MB în Statele Unite. Un EPUB de 36 MB înseamnă circa 5 dolari din fiecare
+0,15 USD/MB în Statele Unite. Un EPUB de 41 MB înseamnă circa 6 dolari din fiecare
 exemplar vândut. Trei ieșiri:
 
 1. **Royalty de 35%** — nu se percepe taxă de livrare. Pentru o carte ilustrată groasă
    iese adesea mai bine decât 70% minus livrarea.
-2. **Ediție compactă** — `node optim-web.mjs 520 58` reface ilustrațiile la 520 px, iar
-   EPUB-ul scade sub 13 MB, cu circa 2 dolari taxă.
+2. **Ediție compactă** — `node optim-epub.mjs` reface ilustrațiile pe două măsuri, după
+   ce e în ele: cele 121 de citit — hărți vechi, tipărituri, documente, manuscrise — la
+   900 px, celelalte 250 la 520. EPUB-ul scade la 25 MB, cu circa 3,7 dolari taxă.
+   Reducerea oarbă de dinainte, la 520 px pentru toate, cobora la 14 MB, dar făcea
+   ilizibilă *Tabula Geographica Moldaviae* a lui Cantemir.
 3. **Altă platformă** — Kobo, Google Play Books și Apple Books nu percep taxă pe
    megaoctet.
 
