@@ -1,0 +1,429 @@
+/* ===========================================================================
+   Asambleaza pagina finala dintr-un singur fisier HTML.
+   =========================================================================== */
+import { readFileSync, writeFileSync, existsSync } from 'fs'
+import { HARTI } from './harti.mjs'
+import { cronograma, diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagramaEtnic } from './diagrame.mjs'
+import { bandaCronologica } from './cronograf.mjs'
+import { bandaVietilor } from './vieti.mjs'
+import { bandaZilelor } from './ceas.mjs'
+import { bareComparative } from './bare.mjs'
+import { toateTabelele, sectiuneTabel, tabelHtml } from './tabele.mjs'
+import { aseaza } from './asezare.mjs'
+import { cifreleCartii } from './cifre-carte.mjs'
+import { creditScurt } from './credit.mjs'
+import { tipografic } from './tipo.mjs'
+
+const esc = (s) => tipografic(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
+/* --- planul volumului ---------------------------------------------------- */
+export const PLAN = [
+  { id: 'neolitic',     de: -6000, la: -1000, per: 'c. 6000 – 1000 î.Hr.', preludiu: true, harti: ['cadrulGeografic'] },
+  { id: 'preistorie',   de: -1000, la: -514, per: 'c. 1000 – 514 î.Hr.' },
+  { id: 'geti',         de: -514,  la: -300, per: '514 – 300 î.Hr.' },
+  { id: 'burebista',    de: -300,  la: 87,   per: '300 î.Hr. – 87 d.Hr.', harti: ['daciaBurebista'] },
+  { id: 'decebal',      de: 87,    la: 106,  per: '87 – 106' },
+  { id: 'dacia-romana', de: 106,   la: 275,  per: '106 – 275', harti: ['daciaRomana'] },
+  { id: 'migratii',     de: 275,   la: 1000, per: '275 – 1000', harti: ['migratii'] },
+  { id: 'voievodate',   de: 1000,  la: 1330, per: '1000 – 1330' },
+  { id: 'intemeiere',   de: 1330,  la: 1418, per: '1330 – 1418' },
+  { id: 'cruciada',     de: 1418,  la: 1504, per: '1418 – 1504' },
+  { id: 'otoman',       de: 1504,  la: 1601, per: '1504 – 1601', harti: ['treiTari', 'mihai1600'] },
+  { id: 'brancoveanu',  de: 1601,  la: 1711, per: '1601 – 1711' },
+  { id: 'fanarioti',    de: 1711,  la: 1821, per: '1711 – 1821', harti: ['pierderi1775'] },
+  { id: 'renastere',    de: 1821,  la: 1866, per: '1821 – 1866', harti: ['unirea1859'] },
+  { id: 'regat',        de: 1866,  la: 1914, per: '1866 – 1914', harti: ['regat1878'] },
+  { id: 'mare-razboi',  de: 1914,  la: 1920, per: '1914 – 1920', harti: ['romaniaMare'] },
+  { id: 'interbelic',   de: 1920,  la: 1939, per: '1920 – 1939' },
+  { id: 'razboi2',      de: 1939,  la: 1944, per: '1939 – 1944', harti: ['anul1940', 'razboi1941'] },
+  { id: 'comunism1',    de: 1944,  la: 1965, per: '1944 – 1965' },
+  { id: 'ceausescu',    de: 1965,  la: 1989, per: '1965 – 1989', diagrame: ['populatie'] },
+  { id: 'revolutia',    de: 1989,  la: 1990, per: 'decembrie 1989' },
+  { id: 'tranzitie',    de: 1990,  la: 2007, per: '1990 – 2007' },
+  { id: 'contemporan',  de: 2007,  la: 2026, per: '2007 – 2026', harti: ['azi'] },
+]
+export const PLAN_TEME = [
+  { id: 'limba',        diagrame: ['lexic'] },
+  { id: 'religie' },
+  { id: 'minoritati',   diagrame: ['etnic'] },
+  { id: 'evrei' },
+  { id: 'romi' },
+  { id: 'aromani' },
+  { id: 'moldova-rep' },
+  { id: 'cultura' },
+  { id: 'stiinta' },
+  { id: 'orase' },
+  { id: 'femei' },
+  { id: 'mancare' },
+  { id: 'boli' },
+  { id: 'sport' },
+  { id: 'geografie' },
+  { id: 'mediu' },
+  { id: 'economie',     diagrame: ['teritoriu'] },
+]
+
+const DIAG = { populatie: diagramaPopulatie, lexic: diagramaLexic, etnic: diagramaEtnic, teritoriu: diagramaTeritoriu }
+const SUBT_DIAG = {
+  populatie: ['Populația României la recensăminte, 1859–2021', 'Creșterea până în 1992 și pierderea a 3,8 milioane de locuitori în cele trei decenii următoare — prin scăderea natalității și prin emigrare — sunt cele două fapte demografice majore ale istoriei recente.'],
+  lexic: ['Din ce e făcută limba română', 'Proporțiile sunt calculate de Marius Sala pe vocabularul reprezentativ (2.581 de cuvinte). În lexicul fundamental, de circa 1.500 de cuvinte, ponderea latinei moștenite urcă spre 70%: cu cât cuvântul este mai frecvent, cu atât e mai probabil să fie latin.'],
+  etnic: ['Structura etnică, 1930 și 2021', 'Omogenizarea nu este rezultatul unui singur proces: Holocaustul și emigrarea în Israel, deportarea și plecarea germanilor, pierderea Basarabiei și a Cadrilaterului, apoi asimilarea au acționat succesiv. La recensământul din 2021, circa 9% dintre locuitori nu și-au declarat etnia; procentele se raportează la cei care au declarat-o.'],
+  teritoriu: ['Suprafața statului român, 1859–2026', 'Șapte configurații teritoriale în 167 de ani. Saltul din 1918 și prăbușirea din 1940 sunt cele mai mari variații de graniță din istoria modernă a Europei de Est în afara războaielor mondiale propriu-zise.'],
+}
+
+const TEME_TITLU = {
+  limba: 'Limba română', religie: 'Religie și Biserică', minoritati: 'Minoritățile',
+  cultura: 'Cultură și știință', economie: 'Economia și societatea', geografie: 'Pământul și oamenii',
+}
+
+/* --- fragmente ----------------------------------------------------------- */
+function figura(cheie) {
+  const h = HARTI[cheie]
+  if (!h) return ''
+  const { vb, body } = h.spec()
+  const leg = (h.legenda || []).map(([t, txt]) => {
+    if (t === 'ceda') return `<span><i class="lin" style="border-top-color:var(--chinovar);border-top-style:dashed"></i>${esc(txt)}</span>`
+    if (t === 'campanie') return `<span><i class="lin" style="border-top-color:var(--chinovar)"></i>${esc(txt)}</span>`
+    if (t === 'hasu') return `<span><i class="hasu"></i>${esc(txt)}</span>`
+    if (t === 'batalie') return `<span><i style="border:0;width:auto;height:auto;color:var(--chinovar)">✕</i>${esc(txt)}</span>`
+    if (t === 'sit') return `<span><i style="border:0;color:var(--chinovar)">▲</i>${esc(txt)}</span>`
+    if (t === 'oras') return `<span><i style="border:0">●</i>${esc(txt)}</span>`
+    if (t === 'capitala') return `<span><i style="border:0">◉</i>${esc(txt)}</span>`
+    if (/^h[0-4]$/.test(t)) return `<span><i class="leg-${t}"></i>${esc(txt)}</span>`
+    return `<span><i style="background:var(--m-${t})"></i>${esc(txt)}</span>`
+  }).join('')
+  return `<figure class="lat-plin"><div class="figura">
+<svg viewBox="${vb}" role="img" aria-label="${esc(h.titlu)}" preserveAspectRatio="xMidYMid meet">${body}</svg>
+${leg ? `<div class="legenda">${leg}</div>` : ''}
+<figcaption><b>${esc(h.titlu)}</b> — ${esc(h.jos)}</figcaption>
+</div></figure>`
+}
+
+function diagrama(cheie) {
+  const gen = DIAG[cheie]; if (!gen) return ''
+  const { vb, body } = gen()
+  const [t, j] = SUBT_DIAG[cheie]
+  return `<figure class="lat-plin"><div class="figura">
+<svg class="diagrama" viewBox="${vb}" role="img" aria-label="${esc(t)}" preserveAspectRatio="xMidYMid meet">${body}</svg>
+<figcaption><b>${esc(t)}</b> — ${esc(j)}</figcaption>
+</div></figure>`
+}
+
+/* ---------------------------------------------------------------------------
+   Ilustratiile de arhiva. In pagina web nu se incarca fisierele in document —
+   ar insemna sute de megaocteti — ci se cer de la Commons prin Special:FilePath,
+   la o latime standard, singura pe care serverul o serveste direct.
+   --------------------------------------------------------------------------- */
+const ILUSTRATII = (() => {
+  const cale = new URL('../carte/ilustratii/manifest.json', import.meta.url)
+  let man = []
+  try { man = JSON.parse(readFileSync(cale, 'utf8')) } catch { return {} }
+  const pe = {}
+  for (const m of man) (pe[m.cap] = pe[m.cap] || []).push(m)
+  return pe
+})()
+/* Vizualizatorul de artefacte incarca numai fisierele paginii, nu si imagini
+   de pe alte domenii, deci ilustratiile intra in pagina ca date incorporate.
+   La 520 px si calitate 58 incap toate cele 331 sub plafonul de 16 MB al
+   paginii; cine vrea rezolutia mare urmeaza legatura din legenda, la Commons. */
+let nrIl = 0
+const CALE_IL = new URL('../carte/ilustratii/il/', import.meta.url).pathname
+function incorporeaza(nume) {
+  try { return 'data:image/jpeg;base64,' + readFileSync(CALE_IL + nume).toString('base64') }
+  catch { return '' }
+}
+function figuraIlustratie(m) {
+  const n = ++nrIl
+  const nume = incorporeaza(m.local.split('/').pop())
+  if (!nume) return ''
+  const credit = creditScurt(m)
+  /* Fara width si height, pana cand imaginea intra in raza de incarcare locul
+     ei are inaltime zero: pagina crestea cu vreo suta saizeci de mii de pixeli
+     pe masura ce se citea, si tot ce era dedesubt sarea. Browserul deduce
+     raportul din perechea de atribute si rezerva locul dinainte. */
+  const lat = m.pxLatime || m.latime || 0
+  const inalt = m.pxInaltime || m.inaltime || 0
+  const masura = (lat && inalt) ? ` width="${lat}" height="${inalt}"` : ''
+  return `<figure class="ilustratie" id="il-${n}">
+<a href="${esc(m.pagina)}" target="_blank" rel="noopener"><img loading="lazy" decoding="async"
+ src="${nume}"${masura} alt="${esc(m.legenda)}"/></a>
+<figcaption><b>Ilustrația ${n}.</b> ${esc(m.legenda)}<small>${esc(credit)}</small></figcaption>
+</figure>`
+}
+
+/* banda cronologica de la deschiderea capitolului */
+function bandaCap(c) {
+  const b = bandaCronologica(c, { de: -6000, la: 2026 })
+  if (!b) return ''
+  return `<figure class="banda-cron"><svg viewBox="${b.vb}" role="img" aria-label="Reperele capitolului, la scară" preserveAspectRatio="xMidYMid meet">${b.body}</svg></figure>`
+}
+
+/* Impartirea blocurilor printre subcapitole sta in asezare.mjs, comuna celor
+   patru formate; aici raman numai randatoarele. */
+const LAT = '\u0000lat\u0000'
+
+function blocuriCapitol(c) {
+  const blocuri = aseaza(c, {
+    poze: ILUSTRATII[c.id] || [],
+    rezumat: (c) => c.rezumat ? `<p class="cap-rezumat">${esc(c.rezumat)}</p>` : '',
+    proza: (s) => `<section class="sectiune"><h3>${esc(s.subtitlu)}</h3><div class="proza">` +
+      (s.paragrafe || []).map((x) => `<p>${esc(x)}</p>`).join('') + `</div></section>`,
+    ilustratie: figuraIlustratie,
+    /* Hartile si diagramele stau mai late decat masura de citit; se insemneaza
+       aici si se scot din coloana la asezare. */
+    harta: (k) => LAT + figura(k),
+    diagrama: (k) => LAT + diagrama(k),
+    /* Capitolul in care unitatea de masura nu e anul, ci ziua. */
+    ceas: (c, cfg) => {
+      const b = bandaZilelor(c, cfg)
+      if (!b) return ''
+      /* Ca la celelalte figuri ale editiei de ecran: fara numar, fiindca pe
+         web nu exista o lista de figuri la care sa trimita. */
+      return LAT + `<figure class="lat-plin banda-ceas"><div class="figura">
+<svg viewBox="${b.vb}" role="img" aria-label="${esc(cfg.titlu)}" preserveAspectRatio="xMidYMid meet">${b.body}</svg>
+<figcaption><b>${esc(cfg.titlu)}</b> — ${esc(cfg.jos)}</figcaption></div></figure>`
+    },
+    bare: (b) => {
+      const r = bareComparative(b)
+      if (!r) return ''
+      return LAT + `<figure class="lat-plin bare"><div class="figura">
+<svg viewBox="${r.vb}" role="img" aria-label="${esc(b.titlu)}" preserveAspectRatio="xMidYMid meet">${r.body}</svg>
+<figcaption><b>${esc(b.titlu)}</b> — ${esc(b.jos)}</figcaption></div></figure>`
+    },
+    tabel: (t) => `<div class="tabel-cap" id="${t.id}"><div class="rubrica-m">${esc(t.titlu)}</div>
+<p class="tabel-intro">${esc(t.intro)}</p>${tabelHtml(t, { esc, legaturi: false })}</div>`,
+    citat: (c) => c.citat && c.citat.text
+      ? `<figure class="citat"><blockquote>„${esc(c.citat.text)}”</blockquote>
+<figcaption><b style="font-family:var(--sans);letter-spacing:.05em">${esc(c.citat.autor)}</b>${c.citat.context ? ' — ' + esc(c.citat.context) : ''}</figcaption></figure>`
+      : '',
+    cifre: (c) => (c.cifre || []).length
+      ? `<div class="cifre">` + c.cifre.map((x) =>
+        `<div class="cifra"><b>${esc(x.valoare)}</b><span>${esc(x.eticheta)}</span><small>${esc(x.nota)}</small></div>`).join('') + `</div>`
+      : '',
+    /* Anii celor cinci oameni stau scrisi in fise, dar nimeni nu-i aseaza in
+       cap unul langa altul cat citeste: banda ii aseaza. */
+    vieti: (c) => {
+      if (!(c.figuri || []).length) return ''
+      const bv = bandaVietilor(c, { de: c.de, la: c.la })
+      return bv ? `<div class="vieti"><div class="rubrica-m">Cine trăiește când</div>
+<figure class="banda-cron banda-vieti"><svg viewBox="${bv.vb}" role="img" aria-label="Viețile oamenilor capitolului, la scară" preserveAspectRatio="xMidYMid meet">${bv.body}</svg></figure></div>` : ''
+    },
+    figuri: (c) => (c.figuri || []).length
+      ? `<div class="figuri">` + c.figuri.map((x) =>
+        `<div class="pers"><div class="pers-cap"><span class="pers-nume">${esc(x.nume)}</span><span class="pers-ani">${esc(x.ani)}</span></div><div class="pers-rol">${esc(x.rol)}</div><p>${esc(x.descriere)}</p></div>`).join('') + `</div>`
+      : '',
+    cronologie: (c) => (c.cronologie || []).length
+      ? `<div class="cronologie"><div class="rubrica-m">Repere</div><dl class="cron-lista">` +
+        c.cronologie.map((x) => `<dt>${esc(x.an)}</dt><dd>${esc(x.eveniment)}</dd>`).join('') + `</dl></div>`
+      : '',
+    controversa: (c) => c.controversa
+      ? `<div class="controversa"><div class="rubrica">Dispută istoriografică</div><p>${esc(c.controversa)}</p></div>`
+      : '',
+  })
+  /* Se strang cele inguste in cate o coloana de citit, iar hartile raman
+     intre ele, la latimea lor. */
+  const out = []
+  let col = []
+  const inchide = () => { if (col.length) { out.push(`<div class="corp">${col.join('')}</div>`); col = [] } }
+  for (const b of blocuri) {
+    if (b.startsWith(LAT)) { inchide(); out.push(b.slice(LAT.length)) } else col.push(b)
+  }
+  inchide()
+  return out.join('')
+}
+
+/* --- pagina -------------------------------------------------------------- */
+export function construieste(continut) {
+  const css = readFileSync(new URL('./stil.css', import.meta.url), 'utf8')
+  const capById = Object.fromEntries((continut.capitole || []).map((c) => [c.id, c]))
+  const temeById = Object.fromEntries((continut.teme || []).map((c) => [c.id, c]))
+
+  const cap = PLAN.map((pl) => ({ ...pl, ...(capById[pl.id] || {}) }))
+    .filter((c) => c.sectiuni && c.sectiuni.length)
+  const teme = PLAN_TEME.map((pl) => ({ ...pl, titlu: TEME_TITLU[pl.id], ...(temeById[pl.id] || {}) }))
+    .filter((c) => c.sectiuni && c.sectiuni.length)
+
+  /* Numarul de cuvinte se socoteste la fel peste tot — corpul, rezumatele si
+     disputele — ca sa nu spuna frontispiciul 136,5k si PUBLICARE.md 147.479. */
+  const NUM = cifreleCartii(0)
+  const cuvinte = NUM.cuvinte
+  const nrHarti = NUM.harti
+
+  /* cronograma foloseste planul complet, ca scara sa nu sara intre versiuni */
+  const crono = cronograma(PLAN.filter((p) => !p.preludiu).map((p) => ({ ...p, titlu: (capById[p.id] || {}).titlu || p.id })))
+
+  /* --- rail: inaltimi proportionale cu durata reala --------------------- */
+  const A0 = -1000, A1 = 2026
+  const rail = PLAN.map((p) => {
+    const de = Math.max(p.de, A0)
+    const top = ((de - A0) / (A1 - A0)) * 100
+    const h = p.preludiu ? 1.2 : ((Math.min(p.la, A1) - de) / (A1 - A0)) * 100
+    const c = capById[p.id]
+    return `<a class="rail-ep${h < 1.6 ? ' mic' : h < 5 ? ' fara-titlu' : ''}" href="#${p.id}" data-id="${p.id}" data-per="${esc(p.per)}" data-titlu="${esc((c || {}).titlu || '')}" style="top:${top.toFixed(3)}%;height:${h.toFixed(3)}%" title="${esc(p.per)} — ${esc((c || {}).titlu || '')}">
+<span><i>${esc(p.per)}</i><b>${esc((c || {}).titlu || '')}</b></span></a>`
+  }).join('')
+
+  const cuprins = [...cap, ...teme].map((c) =>
+    `<a href="#${c.id}"><b>${esc(c.per === 'transversal' ? '—' : c.per)}</b><span>${esc(c.titlu)}</span></a>`).join('')
+
+  const TABELE = toateTabelele([...cap, ...teme.map((t) => ({ ...t, tema: true, per: 'transversal' }))])
+
+  const corpCapitole = cap.map((c, i) => {
+    const ani = Math.abs(c.la - c.de)
+    return `<article class="capitol" id="${c.id}">
+<header class="cap-cap"><div class="cap-meta">
+<span class="cap-per">${esc(c.per)}</span>
+<span class="cap-durata">${ani >= 2 ? ani + ' ani' : 'un an'} · capitolul ${i + 1} din ${cap.length}</span>
+</div><h2 class="cap-titlu">${esc(c.titlu)}</h2></header>
+${blocuriCapitol(c)}
+</article>`
+  }).join('')
+
+  const corpTeme = teme.map((c) => {
+    return `<article class="capitol" id="${c.id}">
+<header class="cap-cap"><div class="cap-meta">
+<span class="cap-per">Secțiune tematică</span>
+<span class="cap-durata">de la antichitate până azi</span>
+</div><h2 class="cap-titlu">${esc(c.titlu)}</h2></header>
+${blocuriCapitol(c)}
+</article>`
+  }).join('')
+
+  /* plansa cartografica: hartile vechi, adunate la sfarsit, ca izvoare */
+  const atlas = ILUSTRATII.atlas || []
+  const plansaAtlas = atlas.length ? `<article class="capitol" id="atlas">
+<header class="cap-cap"><div class="cap-meta">
+<span class="cap-per">Planșă cartografică</span>
+<span class="cap-durata">1513 – 1920</span>
+</div><h2 class="cap-titlu">Cum a fost desenat acest pământ</h2></header>
+<div class="corp"><p class="cap-rezumat">Hărțile de mai jos nu sunt ilustrații ale textului, ci izvoare în sine. Fiecare arată nu numai un teritoriu, ci și ce știa și ce voia să arate cel care a desenat-o: un cartograf venețian de secol XVI care nu văzuse niciodată Carpații, un geograf grec care pregătea o insurecție, un statistician maghiar care apăra la Paris hotarele unui regat pe cale să dispară.</p>
+${atlas.map(figuraIlustratie).join('')}</div>
+</article>` : ''
+
+  return `<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Istoria României în 3.026 de ani: 23 de capitole, 17 priviri transversale, 13 hărți desenate din date geografice publice și 331 de ilustrații de arhivă.">
+<title>Istoria României</title>
+<!-- Capul a lipsit cu totul pana acum: pagina mergea fiindca vizualizatorul de
+     artefacte o impacheteaza el in <html><head>. Deschisa direct, ca fisier,
+     iesea in quirks mode si cu diacriticele stricate. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Spectral:ital,wght@0,300;0,600;1,300;1,400&family=IBM+Plex+Sans+Condensed:wght@400;500;600&display=swap">
+<style>${css}</style>
+</head>
+<body>
+
+<header class="frontispiciu">
+  <div class="banda">
+    <div class="fr-grid">
+      <div>
+        <div class="rubrica">Volum enciclopedic ilustrat</div>
+        <h1 class="fr-titlu">Istoria<br>României<br><em>în 3.026 de ani</em></h1>
+        <p class="fr-sub">De la primele comunități neolitice până la alegerile din 2025: o istorie a spațiului carpato-danubiano-pontic, cu hărțile desenate din coordonate reale, cu peste trei sute de ilustrații de arhivă și cu paginile ei dificile lăsate la vedere.</p>
+        <div class="fr-date">
+          <div><b>${cap.length}</b><span>capitole</span></div>
+          <div><b>${teme.length}</b><span>priviri transversale</span></div>
+          <div><b>${nrHarti}</b><span>hărți originale</span></div>
+          <div><b>${nrIl}</b><span>ilustrații de arhivă</span></div>
+          <div><b>${(Math.round(cuvinte / 500) / 2).toLocaleString('ro-RO')}k</b><span>cuvinte</span></div>
+        </div>
+      </div>
+      <div class="fr-teza">
+        <p>Statul român în hotarele de azi are 79 de ani. Numele „România” are 165. Limba are aproximativ o mie cinci sute. Locul are trei mii.</p>
+        <p>Cele patru nu se suprapun, iar cea mai mare parte a confuziilor din istoria acestei țări vine din a le trata ca și cum s-ar suprapune.</p>
+      </div>
+    </div>
+    <figure class="fr-crono"><div class="figura" style="background:var(--surface2)">
+    <svg class="diagrama" viewBox="${crono.vb}" role="img" aria-label="Cronograma celor 3.026 de ani, la scară" preserveAspectRatio="xMidYMid meet">${crono.body}</svg>
+    <figcaption>Fiecare bandă este un capitol, lată cât durata lui reală. Ultima sută de ani ocupă <b>3% din timp</b> și aproape jumătate din text — nu din patriotism, ci fiindcă densitatea izvoarelor crește exponențial.</figcaption>
+    </div></figure>
+  </div>
+</header>
+
+<main class="banda schela">
+  <nav class="rail" aria-label="Cronologie">
+    <div class="rail-cap rubrica-m">Cronologic</div>
+    <div class="rail-scara">${rail}</div>
+    <div class="rail-legenda" id="rail-activ" aria-live="polite"></div>
+    <div class="rail-nota">Înălțimea fiecărei benzi este durata ei reală.</div>
+  </nav>
+  <div>
+    <section class="capitol" id="argument" style="border-top:0">
+      <div class="corp">
+        <div class="rubrica">Argument</div>
+        <h2 class="cap-titlu" style="margin-top:.4rem">Ce se poate spune cu certitudine</h2>
+        <div class="proza" style="margin-top:1.2rem">
+          <p>Istoria acestui spațiu este scrisă, mai mult decât altele din Europa, în jurul unei întrebări de identitate: de unde vin românii. Întrebarea a fost pusă politic încă din secolul al XVIII-lea, când Școala Ardeleană avea nevoie de argumentul latinității pentru a cere drepturi în Transilvania, și a fost pusă din nou, cu semn contrar, de istoriografia maghiară și de cea sovietică. Răspunsul onest este că izvoarele scrise tac aproape o mie de ani, între retragerea aureliană și primele mențiuni medievale, și că arheologia nu poate confirma o etnie.</p>
+          <p>Volumul acesta încearcă altceva: să spună ce se poate documenta, să numească explicit ce este disputat și să nu confunde tradiția istoriografică romantică cu faptul stabilit. Fiecare capitol are, la sfârșit, o notă despre principala controversă a epocii, cu ambele poziții expuse corect. Paginile dificile — Holocaustul din România, colaborarea cu Germania nazistă, represiunea comunistă, mineriadele, eșecurile tranziției — sunt tratate la fel de detaliat ca victoriile.</p>
+          <p>Hărțile nu sunt ilustrații decorative. Sunt desenate din coordonate geografice reale, iar fiecare hotar istoric — Carpații, Prutul, Nistrul, Oltul, Milcovul, linia Dictatului de la Viena — este definit o singură dată și reutilizat, astfel încât suprafețele să fie comparabile de la o hartă la alta. Ariile calculate se abat cu mai puțin de un procent de la cele reale.</p>
+        </div>
+      </div>
+      ${diagrama('teritoriu')}
+      <div class="corp">
+        <div class="cuprins">${cuprins}</div>
+      </div>
+    </section>
+    ${corpCapitole}
+    ${corpTeme}
+    ${plansaAtlas}
+  </div>
+</main>
+
+<section class="capitol aparat" id="aparat">
+ <div class="banda">
+  <div class="corp">
+    <div class="rubrica">Material final</div>
+    <h2 class="cap-titlu" style="margin-top:.4rem">Tot ce e în carte, așezat ca să poată fi căutat</h2>
+    <p class="cap-rezumat">Volumul are două sute de fișe de oameni împrăștiate câte cinci prin patruzeci de secțiuni, patruzeci de dispute istoriografice fiecare la coada capitolului ei și o sută șaizeci de cifre. Aici nu se adaugă nimic: se strâng la un loc.</p>
+  </div>
+  ${TABELE.map((t) => `<div id="${t.id}">${sectiuneTabel(t, { esc, nivel: 'h3' })}</div>`).join('')}
+ </div>
+</section>
+
+<footer class="colofon">
+  <div class="banda">
+    <h2>Notă asupra metodei</h2>
+    <p>Textul a fost redactat capitol cu capitol și trecut apoi printr-o verificare factuală separată, care a urmărit datele, numele proprii, cifrele și atribuirea citatelor. Acolo unde o cifră este disputată în literatura de specialitate — numărul victimelor răscoalei din 1907, bilanțul Holocaustului din România, numărul morților din decembrie 1989 — este dată ca interval, cu menționarea disputei, nu ca valoare unică.</p>
+    <p>Hărțile sunt originale, generate din contururi în coordonate geografice; nu reproduc hărți existente. Diagramele folosesc date de recensământ și suprafețe oficiale. Proporțiile lexicale ale limbii române urmează calculele lui Marius Sala pe vocabularul reprezentativ.</p>
+    <p style="color:var(--muted);font-size:.86em;margin-top:1.4rem">O lucrare de sinteză nu înlocuiește lectura specialiștilor. Pentru fiecare epocă există bibliografii mult mai bogate decât ce încape într-un volum ilustrat, iar unele dintre judecățile de aici sunt, inevitabil, discutabile.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var ep = Array.prototype.slice.call(document.querySelectorAll('.rail-ep'))
+  if (!ep.length || !('IntersectionObserver' in window)) return
+  var harta = {}
+  ep.forEach(function (a) { harta[a.dataset.id] = a })
+  var vizibile = {}
+  var obs = new IntersectionObserver(function (intrari) {
+    intrari.forEach(function (i) { vizibile[i.target.id] = i.isIntersecting })
+    var activ = null
+    for (var k in harta) if (vizibile[k]) { activ = k; break }
+    ep.forEach(function (a) { a.classList.toggle('activ', a.dataset.id === activ) })
+    var cutie = document.getElementById('rail-activ')
+    if (cutie && activ && harta[activ]) {
+      cutie.innerHTML = '<i></i><b></b>'
+      cutie.firstChild.textContent = harta[activ].dataset.per
+      cutie.lastChild.textContent = harta[activ].dataset.titlu
+    }
+  }, { rootMargin: '-15% 0px -70% 0px' })
+  document.querySelectorAll('article.capitol[id]').forEach(function (n) { obs.observe(n) })
+})()
+</script>
+</body>
+</html>`
+}
+
+/* --- rulare: doar cand fisierul este pornit direct, nu la import ---------- */
+if (process.argv[1] && process.argv[1].endsWith('build.mjs')) {
+const caleContinut = new URL('./continut.json', import.meta.url)
+const continut = existsSync(caleContinut) ? JSON.parse(readFileSync(caleContinut, 'utf8')) : { capitole: [], teme: [] }
+const html = construieste(continut)
+writeFileSync(new URL('../istoria-romaniei.html', import.meta.url), html)
+console.log(`scris: ${(html.length / 1024).toFixed(0)} KB · ${continut.capitole?.length || 0} capitole · ${continut.teme?.length || 0} teme`)
+}

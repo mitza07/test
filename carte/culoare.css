@@ -1,0 +1,48 @@
+/* ===========================================================================
+   Suprascrie doar tonurile hărților și ale diagramelor, pentru varianta cu
+   interior color. Restul machetei rămâne identic, deci cele două ediții au
+   exact aceeași paginație și acelașiindice.
+   Culorile sunt aceleași ca ale ediției web — albastrul de Voroneț, chinovarul
+   rubricilor, ocrul foiței de aur — dar cu saturația coborâtă, fiindcă pe
+   hârtie tiparul digital le împinge în sus.
+   =========================================================================== */
+.m-uscat { fill: #e8e4d9; }
+.m-mare  { fill: #c3d6e1; }
+.m-vecin { fill: none; stroke: #8d9aa2; stroke-width: 1.1; stroke-dasharray: 5 3.5; }
+.m-ta { fill: #7ba3c6; color: #7ba3c6; }
+.m-tb { fill: #d0aa62; color: #d0aa62; }
+.m-tc { fill: #9b8fb2; color: #9b8fb2; }
+.m-td { fill: #79a48d; color: #79a48d; }
+.m-te { fill: #c8805f; color: #c8805f; }
+.m-tf { fill: #b0a893; color: #b0a893; }
+.m-tg { fill: #e8e4d9; }
+.m-lim  { stroke: #fff; opacity: .7; }
+.m-has  { color: #9e2f18; }
+.m-rau  { stroke: #6d9fba; opacity: 1; }
+.m-stat { stroke: #16202b; }
+.m-rama { stroke: #16202b; }
+.m-l-frontiera { stroke: #16202b; }
+.m-l-ceda      { stroke: #9e2f18; }
+.m-l-campanie  { stroke: #9e2f18; }
+.m-l-fina      { stroke: #16202b; }
+.m-et     { fill: #16202b; }
+.m-et-mic { fill: #3a4654; }
+.m-et-apa { fill: #4a7189; }
+.m-et-scara { fill: #5c6675; }
+.m-loc, .m-oras, .m-capitala circle { fill: #16202b; }
+.m-batalie { stroke: #9e2f18; }
+.m-sit path { fill: #9e2f18; }
+.m-scara line { stroke: #5c6675; }
+
+.d-ax    { stroke: #16202b; }
+.d-grid  { stroke: #ccd2da; }
+.d-et    { fill: #5c6675; }
+.d-et-b  { fill: #16202b; }
+.d-linie { stroke: #1d5a8c; }
+.d-arie  { fill: #1d5a8c; opacity: .14; }
+.d-pct   { fill: #1d5a8c; }
+.d-marc  { stroke: #9e2f18; }
+.d-et-marc { fill: #9e2f18; }
+
+/* în ediția color, fereastra capitolului de pe banda cronologică e chinovar */
+.cg-ctx-cap { fill: #a6321c; }

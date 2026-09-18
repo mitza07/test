@@ -1,0 +1,251 @@
+/* ===========================================================================
+   ATLAS — proiectie si randare SVG
+   Proiectie conica echidistanta simpla, centrata pe 45.8°N / 25°E:
+   suficient de exacta pentru scara acestor harti si stabila intre ele.
+   =========================================================================== */
+import { REGIUNI, FRONTIERE, ZONE, VECINI, L } from './geo.js'
+/* Hidrografia nu mai e schitata de mana, ci luata din Natural Earth, care e in
+   domeniu public si poate intra intr-o carte vanduta. Dunarea are aici o suta
+   saptezeci de puncte in loc de treizeci si cinci, iar Delta isi are bratele. */
+import { RAURI, COASTA, LACURI, MARE } from './hidro.js'
+/* Relieful vine din ETOPO1, tot domeniu public, ca trepte hipsometrice
+   vectoriale: se maresc oricat si se tiparesc curat si in negru. */
+import { RELIEF, TREPTE } from './relief.js'
+
+const LAT0 = 45.8, LON0 = 25.0, K = 100
+const kx = Math.cos((LAT0 * Math.PI) / 180) * K
+export const proj = ([lon, lat]) => [(lon - LON0) * kx, -(lat - LAT0) * K]
+
+const fmt = (n) => Math.round(n * 100) / 100
+const path = (pts, close) => pts.map((p, i) => (i ? 'L' : 'M') + fmt(p[0]) + ' ' + fmt(p[1])).join('') + (close ? 'Z' : '')
+export const d = (coords, close = true) => path(coords.map(proj), close)
+
+/* centroid ponderat pe arie, pentru pozitionarea etichetelor de rezerva */
+export function centroid(ring) {
+  let a = 0, x = 0, y = 0
+  const pts = ring.map(proj)
+  for (let i = 0; i < pts.length; i++) {
+    const [x1, y1] = pts[i], [x2, y2] = pts[(i + 1) % pts.length]
+    const f = x1 * y2 - x2 * y1
+    a += f; x += (x1 + x2) * f; y += (y1 + y2) * f
+  }
+  a *= 0.5
+  return a === 0 ? pts[0] : [x / (6 * a), y / (6 * a)]
+}
+
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+
+/* ---------------------------------------------------------------------------
+   harta(spec) -> string SVG
+   spec = {
+     view:   [lonMin, latMin, lonMax, latMax]  cadrul geografic
+     tonuri: { numeRegiune: 'a'|'b'|'c'|'d'|'nul' }   sau prin ansambluri
+     contur: [numeRegiune...]   contur ingrosat comun (frontiera de stat)
+     zone:   [{ ring:[[lon,lat]...], ton, haș, eticheta }]  suprafete ad-hoc
+     linii:  [{ pts, stil:'frontiera'|'ceda'|'campanie', eticheta }]
+     locuri: [{ p:[lon,lat,nume], tip:'capitala'|'oras'|'sit'|'batalie' }]
+     note:   [{ p:[lon,lat], text, clasa }]
+   }
+   --------------------------------------------------------------------------- */
+/* Etichetele care n-au incaput nicaieri fara sa se atinga de altceva. Gol
+   inseamna ca harta se citeste; verifica-l cu "node valida-harti.mjs". */
+export const ETICHETE_SUPRAPUSE = []
+
+export function harta(spec) {
+  const [lonA, latA, lonB, latB] = spec.view
+  const [x0, y1] = proj([lonA, latA])
+  const [x1, y0] = proj([lonB, latB])
+  const W = x1 - x0, H = y1 - y0
+  const pad = spec.pad ?? 8
+  const vb = `${fmt(x0 - pad)} ${fmt(y0 - pad)} ${fmt(W + 2 * pad)} ${fmt(H + 2 * pad)}`
+  const s = []
+  const uid = spec.id || 'm'
+
+  s.push(`<defs>`)
+  s.push(`<pattern id="${uid}-h" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">`,
+         `<rect width="7" height="7" fill="none"/><line x1="0" y1="0" x2="0" y2="7" stroke="currentColor" stroke-width="1.6" opacity=".5"/></pattern>`)
+  s.push(`<pattern id="${uid}-p" width="5" height="5" patternUnits="userSpaceOnUse">`,
+         `<circle cx="1.2" cy="1.2" r="1" fill="currentColor" opacity=".4"/></pattern>`)
+  s.push(`<marker id="${uid}-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">`,
+         `<path d="M0 1L9 5L0 9z" fill="currentColor"/></marker>`)
+  s.push(`<clipPath id="${uid}-c"><rect x="${fmt(x0)}" y="${fmt(y0)}" width="${fmt(W)}" height="${fmt(H)}"/></clipPath>`)
+  s.push(`</defs>`)
+
+  s.push(`<g clip-path="url(#${uid}-c)">`)
+  /* uscat + mare */
+  s.push(`<rect class="m-uscat" x="${fmt(x0)}" y="${fmt(y0)}" width="${fmt(W)}" height="${fmt(H)}"/>`)
+  /* treptele de relief, sub tot restul: fiecare treapta e o singura cale, cu
+     golurile in sens invers, ca sa se umple corect */
+  if (spec.relief === 'trepte') {
+    /* campia de sub cel dintai prag se asterne peste tot: treptele de deasupra
+       o acopera pe rand, iar marea vine la urma */
+    s.push(`<rect class="m-relief m-h0" x="${fmt(x0)}" y="${fmt(y0)}" width="${fmt(W)}" height="${fmt(H)}"/>`)
+    TREPTE.forEach((t, i) => {
+      const cale = RELIEF[t].map((r) => d(r)).join('')
+      if (cale) s.push(`<path class="m-relief m-h${i + 1}" d="${cale}"/>`)
+    })
+  }
+  s.push(`<path class="m-mare" d="${d(MARE)}"/>`)
+  for (const l of LACURI) s.push(`<path class="m-lac" d="${d(l.pct)}"/>`)
+
+  /* frontiere de context (vecini) */
+  for (const k in VECINI) s.push(`<path class="m-vecin" d="${d(VECINI[k], false)}"/>`)
+
+  /* regiuni tonate */
+  const tonuri = spec.tonuri || {}
+  for (const k in REGIUNI) {
+    const t = tonuri[k]
+    if (!t || t === 'nul') continue
+    s.push(`<path class="m-reg m-t${t}" d="${d(REGIUNI[k].ring)}"><title>${esc(REGIUNI[k].nume)}</title></path>`)
+  }
+  /* zone ad-hoc */
+  for (const z of spec.zone || []) {
+    const cls = 'm-reg' + (z.ton ? ' m-t' + z.ton : '')
+    s.push(`<path class="${cls}" d="${d(z.ring)}"${z.opac ? ` opacity="${z.opac}"` : ''}/>`)
+    if (z.has) s.push(`<path class="m-has" d="${d(z.ring)}" fill="url(#${uid}-h)"/>`)
+  }
+
+  /* hasuri peste regiuni (teritorii pierdute / ocupate) */
+  for (const k of spec.has || []) s.push(`<path class="m-has" d="${d(REGIUNI[k].ring)}" fill="url(#${uid}-h)"/>`)
+
+  /* limitele interne dintre regiunile tonate */
+  for (const k in REGIUNI) {
+    if (!tonuri[k] || tonuri[k] === 'nul') continue
+    s.push(`<path class="m-lim" d="${d(REGIUNI[k].ring)}"/>`)
+  }
+
+  /* curbele de nivel, peste tonurile politice: arata unde sta muntele fara sa
+     acopere culoarea regiunii */
+  if (spec.relief === 'linii') {
+    for (const t of (spec.nivele || [600, 1200])) {
+      const cale = (RELIEF[t] || []).map((r) => d(r)).join('')
+      /* de doua ori: o data deschis, o data inchis. Pe tonurile palide se vede
+         linia inchisa, pe cele adanci cea deschisa — altfel curbele ar disparea
+         exact peste regiunile tiparite in gri inchis. */
+      if (cale) s.push(`<path class="m-nivel-halo" d="${cale}"/>`, `<path class="m-nivel" d="${cale}"/>`)
+    }
+  }
+
+  /* ape desenate peste uscat */
+  if (spec.ape !== false) {
+    const implicite = ['dunare', 'prut', 'nistru', 'mures', 'olt', 'siret', 'tisa']
+    for (const k of (spec.rauri || implicite)) {
+      for (const bucata of (RAURI[k] || [])) s.push(`<path class="m-rau" d="${d(bucata, false)}"/>`)
+    }
+    /* bratele Deltei se deseneaza numai unde intra in cadru */
+    for (const k of ['chilia', 'sulina', 'sfgheorghe']) {
+      for (const bucata of (RAURI[k] || [])) s.push(`<path class="m-rau-mic" d="${d(bucata, false)}"/>`)
+    }
+    /* tarmul, peste umplutura marii */
+    for (const c of COASTA) s.push(`<path class="m-tarm" d="${d(c, false)}"/>`)
+  }
+
+  /* contur de stat */
+  if (spec.contur && spec.contur.length) {
+    s.push(`<path class="m-stat" d="${spec.contur.map((k) => d(REGIUNI[k].ring)).join('')}"/>`)
+  }
+  for (const c of spec.conturZone || []) s.push(`<path class="m-stat" d="${d(c)}"/>`)
+
+  /* linii tematice */
+  for (const l of spec.linii || []) {
+    s.push(`<path class="m-linie m-l-${l.stil || 'frontiera'}" d="${d(l.pts, false)}"${l.sageata ? ` marker-end="url(#${uid}-a)"` : ''}/>`)
+  }
+  s.push(`</g>`)
+
+  /* locuri */
+  /* Eticheta unui loc statea unde-i spunea mana: anc si sus, scrise la fiecare
+     loc in parte. Cand doua locuri cad aproape — Durostorum si Tropaeum
+     Traiani sunt la saizeci si opt de kilometri, adica sub zece milimetri pe
+     harta — si amandoua isi vor eticheta la dreapta, cele doua nume se scriu
+     unul peste altul. Asa au ramas: nu exista nimic care sa le desparta.
+
+     Aici se incearca, pentru fiecare loc, pozitiile pe rand — intai cea ceruta
+     de mana, apoi celelalte trei — si se ia prima care nu se atinge de nimic
+     asezat inainte. Etichetele mari, ale regiunilor, sunt asezate pe harta
+     inainte, deci intra si ele in socoteala. Ce nu incape nicaieri se
+     consemneaza in ETICHETE_SUPRAPUSE, ca sa se vada la verificare. */
+  const LAT_LITERA = 4.9        /* latimea medie a unei litere la 10 px */
+  const SUS_TEXT = 3.6, JOS_TEXT = 1.4
+  const asezate = []
+  const seAting = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1
+  const cutie = (px, py, nume, anc, sus) => {
+    const w = nume.length * LAT_LITERA
+    const dx = anc === 'end' ? -6.5 : anc === 'middle' ? 0 : 6.5
+    const dy = sus ? -7.5 : anc === 'middle' ? 13 : 3.8
+    const x = px + dx, y = py + dy
+    const x0 = anc === 'end' ? x - w : anc === 'middle' ? x - w / 2 : x
+    return { x0, x1: x0 + w, y0: y - SUS_TEXT, y1: y + JOS_TEXT, x, y, anc }
+  }
+  /* semnele locurilor sunt si ele obstacole: un nume peste un cerc nu se citeste */
+  for (const o of spec.locuri || []) {
+    const [px, py] = proj([o.p[0], o.p[1]])
+    asezate.push({ x0: px - 5, x1: px + 5, y0: py - 5.5, y1: py + 5.5 })
+  }
+  for (const n of spec.note || []) {
+    const [px, py] = proj(n.p)
+    const w = String((n.text || [''])[0] || '').length * 6.2
+    asezate.push({ x0: px - w / 2, x1: px + w / 2, y0: py - 6, y1: py + 6 })
+  }
+
+  for (const o of spec.locuri || []) {
+    const [lon, lat, nume] = o.p
+    const [px, py] = proj([lon, lat])
+    const tip = o.tip || 'oras'
+    if (tip === 'batalie') {
+      s.push(`<g class="m-loc m-batalie" transform="translate(${fmt(px)} ${fmt(py)})">`,
+             `<path d="M-4.2-4.2L4.2 4.2M-4.2 4.2L4.2-4.2"/></g>`)
+    } else if (tip === 'sit') {
+      s.push(`<g class="m-loc m-sit" transform="translate(${fmt(px)} ${fmt(py)})"><path d="M0-5L4.5 3.5H-4.5Z"/></g>`)
+    } else if (tip === 'capitala') {
+      s.push(`<g class="m-loc m-capitala" transform="translate(${fmt(px)} ${fmt(py)})"><circle r="4.4"/><circle r="1.7" class="m-in"/></g>`)
+    } else {
+      s.push(`<circle class="m-loc m-oras" cx="${fmt(px)}" cy="${fmt(py)}" r="2.6"/>`)
+    }
+    /* intai cum cere mana, apoi dreapta, stanga, sus, jos */
+    const cerut = { anc: o.anc || 'start', sus: Boolean(o.sus) }
+    const variante = [cerut,
+      { anc: 'start', sus: false }, { anc: 'end', sus: false },
+      { anc: 'start', sus: true }, { anc: 'end', sus: true },
+      { anc: 'middle', sus: true }, { anc: 'middle', sus: false }]
+    let c = null
+    for (const v of variante) {
+      const k = cutie(px, py, nume, v.anc, v.sus)
+      /* propriul semn nu se socoteste obstacol pentru propria eticheta */
+      const ale = asezate.filter((b) => !(b.x0 === px - 5 && b.y0 === py - 5.5))
+      if (!ale.some((b) => seAting(k, b))) { c = k; break }
+    }
+    if (!c) {
+      c = cutie(px, py, nume, cerut.anc, cerut.sus)
+      ETICHETE_SUPRAPUSE.push({ nume, harta: spec.titlu || '?' })
+    }
+    asezate.push(c)
+    s.push(`<text class="m-et m-et-loc" x="${fmt(c.x)}" y="${fmt(c.y)}" text-anchor="${c.anc}">${esc(nume)}</text>`)
+  }
+
+  /* etichete de regiune si note libere */
+  for (const n of spec.note || []) {
+    const [px, py] = proj(n.p)
+    const cls = 'm-et ' + (n.clasa || 'm-et-reg')
+    const linii = String(n.text).split('\n')
+    s.push(`<text class="${cls}" x="${fmt(px)}" y="${fmt(py)}" text-anchor="${n.anc || 'middle'}"${n.rot ? ` transform="rotate(${n.rot} ${fmt(px)} ${fmt(py)})"` : ''}>`)
+    linii.forEach((t, i) => s.push(`<tspan x="${fmt(px)}" dy="${i ? '1.15em' : '0'}">${esc(t)}</tspan>`))
+    s.push(`</text>`)
+  }
+
+  /* rama */
+  s.push(`<rect class="m-rama" x="${fmt(x0)}" y="${fmt(y0)}" width="${fmt(W)}" height="${fmt(H)}"/>`)
+
+  /* scara grafica */
+  if (spec.scara !== false) {
+    const km = spec.scaraKm || 200
+    const L = (km / 111.32) * K
+    const bx = x0 + 12, by = y1 - 12
+    s.push(`<g class="m-scara"><line x1="${fmt(bx)}" y1="${fmt(by)}" x2="${fmt(bx + L)}" y2="${fmt(by)}"/>`,
+           `<line x1="${fmt(bx)}" y1="${fmt(by - 3)}" x2="${fmt(bx)}" y2="${fmt(by + 3)}"/>`,
+           `<line x1="${fmt(bx + L)}" y1="${fmt(by - 3)}" x2="${fmt(bx + L)}" y2="${fmt(by + 3)}"/>`,
+           `<text class="m-et m-et-scara" x="${fmt(bx + L / 2)}" y="${fmt(by - 6)}" text-anchor="middle">${km} km</text></g>`)
+  }
+  return { vb, body: s.join('') }
+}
+
+export { REGIUNI, FRONTIERE, ZONE, VECINI, L }

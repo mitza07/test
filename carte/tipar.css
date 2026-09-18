@@ -1,0 +1,471 @@
+/* ===========================================================================
+   MACHETA DE TIPAR — 6 × 9 inch (152,4 × 228,6 mm), interior alb-negru
+   ---------------------------------------------------------------------------
+   Marginea interioară de 19 mm respectă cerința Amazon KDP pentru volume de
+   301–500 de pagini (minimum 15,9 mm) și lasă loc cotorului să nu înghită
+   textul. Hărțile sunt redesenate în tonuri de gri cu hașuri, fiindcă un
+   interior color ar cvadrupla costul de producție.
+   =========================================================================== */
+
+@font-face { font-family: Literata; font-weight: 400; font-style: normal;
+  src: url("fonturi/Literata-400.ttf") format("truetype"); }
+@font-face { font-family: Literata; font-weight: 400; font-style: italic;
+  src: url("fonturi/Literata-400i.ttf") format("truetype"); }
+@font-face { font-family: Literata; font-weight: 600; font-style: normal;
+  src: url("fonturi/Literata-600.ttf") format("truetype"); }
+@font-face { font-family: Spectral; font-weight: 300; font-style: normal;
+  src: url("fonturi/Spectral-300.ttf") format("truetype"); }
+@font-face { font-family: Spectral; font-weight: 400; font-style: normal;
+  src: url("fonturi/Spectral-400.ttf") format("truetype"); }
+@font-face { font-family: Spectral; font-weight: 400; font-style: italic;
+  src: url("fonturi/Spectral-400i.ttf") format("truetype"); }
+@font-face { font-family: Spectral; font-weight: 600; font-style: normal;
+  src: url("fonturi/Spectral-600.ttf") format("truetype"); }
+@font-face { font-family: "Plex Cond"; font-weight: 400; font-style: normal;
+  src: url("fonturi/IBMPlexSansCondensed-400.ttf") format("truetype"); }
+@font-face { font-family: "Plex Cond"; font-weight: 500; font-style: normal;
+  src: url("fonturi/IBMPlexSansCondensed-500.ttf") format("truetype"); }
+@font-face { font-family: "Plex Cond"; font-weight: 600; font-style: normal;
+  src: url("fonturi/IBMPlexSansCondensed-600.ttf") format("truetype"); }
+
+:root {
+  --serif: Literata, Georgia, serif;
+  --display: Spectral, Georgia, serif;
+  --sans: "Plex Cond", Arial, sans-serif;
+  --negru: #000;
+  --gri-70: #4d4d4d;
+  --gri-45: #808080;
+  --gri-25: #b3b3b3;
+  --rigla: #999;
+}
+
+/* ------------------------------- pagina ---------------------------------- */
+@page {
+  size: 152.4mm 228.6mm;
+  margin: 18mm 16mm 20mm 19mm;   /* sus, exterior, jos, interior */
+
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+/* paginile pare sunt pe stânga: marginea mare trece la dreapta (spre cotor) */
+@page :left {
+  margin-left: 16mm; margin-right: 19mm;
+  @top-left {
+    content: "Istoria României";
+    font-family: var(--sans); font-size: 7.6pt; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--gri-70);
+    vertical-align: bottom; padding-bottom: 5mm;
+  }
+  @bottom-left {
+    content: counter(page);
+    font-family: var(--sans); font-size: 9pt; font-variant-numeric: tabular-nums;
+    color: var(--negru); vertical-align: top; padding-top: 6mm;
+  }
+}
+@page :right {
+  @top-right {
+    content: string(titlu-capitol);
+    font-family: var(--sans); font-size: 7.6pt; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--gri-70);
+    vertical-align: bottom; padding-bottom: 5mm; text-align: right;
+  }
+  @bottom-right {
+    content: counter(page);
+    font-family: var(--sans); font-size: 9pt; font-variant-numeric: tabular-nums;
+    color: var(--negru); vertical-align: top; padding-top: 6mm; text-align: right;
+  }
+}
+
+/* prima pagină a capitolului: fără cap de pagină, doar folio */
+@page capitol:first { @top-left { content: none; } @top-right { content: none; } }
+@page liminar { @top-left { content: none; } @top-right { content: none; }
+  @bottom-left { content: none; } @bottom-right { content: none; } }
+@page alba { @top-left { content: none; } @top-right { content: none; }
+  @bottom-left { content: none; } @bottom-right { content: none; } }
+
+/* ------------------------------ corpul ----------------------------------- */
+* { box-sizing: border-box; }
+html { font-size: 10.2pt; }
+body {
+  margin: 0; font-family: var(--serif); font-size: 10.2pt; line-height: 14.3pt;
+  color: var(--negru); text-align: justify; text-align-last: left; hyphens: auto;
+  -webkit-hyphens: auto; hyphenate-limit-chars: 6 3 3;
+  orphans: 2; widows: 2;
+}
+h1, h2, h3, h4 { font-family: var(--display); margin: 0; line-height: 1.16;
+  text-align: left; hyphens: none; break-after: avoid; }
+p { margin: 0; }
+a { color: inherit; text-decoration: none; }
+
+/* --------------------------- material liminar ---------------------------- */
+.liminar { page: liminar; break-before: recto; }
+.alba { page: alba; break-before: page; height: 1px; }
+
+.semititlu { page: liminar; break-before: recto; padding-top: 62mm; text-align: center; }
+.semititlu h1 { font-family: var(--display); font-weight: 300; font-size: 19pt;
+  letter-spacing: .01em; text-align: center; }
+
+.foaie-titlu { page: liminar; break-before: recto; padding-top: 44mm; text-align: center; }
+.foaie-titlu .supra { font-family: var(--sans); font-size: 8pt; font-weight: 500;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--gri-70); margin-bottom: 9mm; }
+.foaie-titlu h1 { font-family: var(--display); font-weight: 300; font-size: 33pt;
+  line-height: 1.04; letter-spacing: -.01em; text-align: center; }
+.foaie-titlu .subtitlu { font-family: var(--display); font-weight: 300; font-size: 15pt;
+  font-style: italic; color: var(--gri-70); margin-top: 5mm; }
+.foaie-titlu .rigla-titlu { width: 26mm; height: .6pt; background: var(--negru);
+  margin: 12mm auto; }
+.foaie-titlu .jos { font-family: var(--sans); font-size: 9pt; letter-spacing: .06em;
+  color: var(--gri-70); margin-top: 52mm; }
+
+.caseta { page: liminar; break-before: page; font-size: 7.8pt; line-height: 11.4pt;
+  text-align: left; hyphens: none; padding-top: 74mm; }
+.caseta p { margin-bottom: 3.4mm; }
+.caseta .cip { border: .5pt solid var(--rigla); padding: 3mm 3.5mm; margin-bottom: 4mm;
+  font-family: var(--sans); font-size: 7.4pt; line-height: 10.6pt; }
+.caseta .cip b { display: block; font-size: 6.6pt; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--gri-45); margin-bottom: 1.6mm; }
+.caseta .avertisment { border-left: 1.2pt solid var(--negru); padding-left: 3mm; }
+
+/* --------------------------------- cuprins -------------------------------- */
+.cuprins { page: liminar; break-before: recto; }
+.cuprins > h2 { font-family: var(--display); font-weight: 300; font-size: 20pt;
+  margin-bottom: 9mm; }
+.cuprins ol { list-style: none; margin: 0; padding: 0; }
+/* Randul de cuprins nu mai e o cutie flex. Paged.js pierde elementul de flex
+   care cade exact pe ruptura de pagina: asa a disparut capitolul XXI din
+   cuprinsul volumului intai, intre "XX Epoca Ceausescu" si "XXII Tranzitia" —
+   un capitol intreg lipsa din cuprinsul unei carti tiparite. Pe curgere de
+   blocuri, cu numarul atarnat in stanga si pagina plutind la dreapta,
+   fragmentarea e corecta. Punctele de legatura se inlocuiesc cu o linie
+   punctata sub rand, care se rupe si ea cum trebuie. */
+.cuprins li { display: block; padding: 0 0 1.8mm 9mm; margin-bottom: 1.6mm;
+  font-size: 9.4pt; line-height: 12.6pt; text-align: left;
+  border-bottom: .3pt dotted var(--rigla); break-inside: avoid; }
+.cuprins li::after { content: ""; display: block; clear: both; }
+.cuprins .nr { float: left; width: 7mm; margin-left: -9mm;
+  font-family: var(--sans); font-size: 8pt; color: var(--gri-45);
+  font-variant-numeric: tabular-nums; }
+.cuprins .pg { float: right; margin-left: 3mm; }
+.cuprins .tit { font-family: var(--display); }
+.cuprins .per { font-family: var(--sans); font-size: 7.6pt; color: var(--gri-45);
+  white-space: nowrap; }
+.cuprins .pct { display: none; }
+.cuprins .pg::after { content: target-counter(attr(href url), page);
+  font-family: var(--sans); font-size: 8.6pt; font-variant-numeric: tabular-nums; }
+.cuprins .grup { font-family: var(--sans); font-size: 7.4pt; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--gri-45);
+  margin: 7mm 0 3.5mm; text-align: left; text-align-last: left;
+  border-bottom: .4pt solid var(--rigla); padding-bottom: 1.6mm; }
+.cuprins li.fara-nr .nr { visibility: hidden; }
+
+/* -------------------------------- capitole ------------------------------- */
+.capitol { page: capitol; break-before: recto; }
+.capitol h2 { string-set: titlu-capitol content(text); }
+.cap-cap { padding-top: 30mm; margin-bottom: 11mm; }
+.cap-nr { font-family: var(--sans); font-size: 8pt; font-weight: 600;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--gri-45); }
+.cap-titlu { font-family: var(--display); font-weight: 300; font-size: 23pt;
+  line-height: 1.1; letter-spacing: -.008em; margin: 3.5mm 0 4mm; }
+.cap-per { font-family: var(--sans); font-size: 8.6pt; letter-spacing: .08em;
+  color: var(--negru); border-top: .6pt solid var(--negru); padding-top: 2.4mm;
+  display: inline-block; }
+.cap-rezumat { font-family: var(--display); font-style: italic; font-size: 10.6pt;
+  line-height: 15pt; color: var(--gri-70); margin-bottom: 7mm; text-align: justify; }
+
+.sectiune { margin-top: 6.5mm; }
+.sectiune > h3 { font-family: var(--display); font-weight: 600; font-size: 10.8pt;
+  margin-bottom: 2.6mm; break-after: avoid; }
+.proza p { text-indent: 4.6mm; }
+.proza p:first-child { text-indent: 0; }
+
+/* inițiala primului paragraf */
+.capitol .sectiune:first-of-type .proza p:first-child::first-letter {
+  font-family: var(--display); font-weight: 600; font-size: 3.1em; line-height: .82;
+  float: left; padding: .04em .1em 0 0;
+}
+
+/* ---------------------------------- figuri -------------------------------- */
+figure { margin: 6mm 0; break-inside: avoid; page-break-inside: avoid; }
+figure svg { display: block; width: 100%; height: auto; }
+figcaption { font-family: var(--sans); font-size: 7.6pt; line-height: 10.4pt;
+  color: var(--gri-70); text-align: left; hyphens: none; margin-top: 2.2mm;
+  padding-top: 1.8mm; border-top: .5pt solid var(--rigla); }
+figcaption b { color: var(--negru); font-weight: 600; }
+.fig-nr { font-family: var(--sans); font-size: 7pt; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--gri-45);
+  display: block; margin-bottom: 1.4mm; }
+.legenda { display: flex; flex-wrap: wrap; gap: 1mm 4mm; margin-top: 2mm;
+  font-family: var(--sans); font-size: 7.2pt; }
+.legenda span { display: inline-flex; align-items: center; gap: 1.4mm; }
+.legenda i { width: 4.2mm; height: 2.6mm; display: inline-block; border: .4pt solid var(--negru); }
+
+/* ---------------------- hărțile, în tonuri de gri ------------------------- */
+/* Valorile sunt alese ca să rămână distincte la tipar alb-negru: 8, 22, 38,
+   55, 72 și 88 la sută negru, plus hașuri pentru suprafețele care trebuie
+   deosebite fără să depindă de ton.                                          */
+.m-uscat { fill: #f2f2f2; }
+.m-mare  { fill: #e2e2e2; }
+.m-vecin { fill: none; stroke: #999; stroke-width: 1.1; stroke-dasharray: 5 3.5; }
+.m-reg   { stroke: none; }
+/* Tonul se scrie si ca "color", nu numai ca "fill": peticul din legenda nu e
+   o forma de SVG, ci un <i> de HTML cu fundal "currentColor". Fara asta, toate
+   petecele din legenda ieseau negre, identice, si legenda nu spunea nimic. */
+.m-ta { fill: #c9c9c9; color: #c9c9c9; } .m-tb { fill: #a0a0a0; color: #a0a0a0; } .m-tc { fill: #808080; color: #808080; }
+.m-td { fill: #5e5e5e; color: #5e5e5e; } .m-te { fill: #3d3d3d; color: #3d3d3d; } .m-tf { fill: #767676; color: #767676; }
+.m-tg { fill: #f2f2f2; color: #f2f2f2; }
+.m-lim  { fill: none; stroke: #fff; stroke-width: 1.1; opacity: .75; }
+.m-has  { color: #000; }
+.m-rau  { fill: none; stroke: #fff; stroke-width: 1.9; stroke-linejoin: round;
+          stroke-linecap: round; opacity: .85; }
+.m-stat { fill: none; stroke: #000; stroke-width: 3; stroke-linejoin: round; }
+.m-rama { fill: none; stroke: #000; stroke-width: 1.2; }
+.m-linie { fill: none; stroke-width: 2.6; stroke-linejoin: round; }
+.m-l-frontiera { stroke: #000; stroke-dasharray: 7 3.5; }
+.m-l-ceda      { stroke: #000; stroke-width: 3.4; stroke-dasharray: 9 4; }
+.m-l-campanie  { stroke: #000; stroke-width: 2.8; }
+.m-l-fina      { stroke: #000; stroke-width: 1.4; stroke-dasharray: 3.5 3; }
+
+/* etichetele hărții, mărite pentru scara tiparului: harta are circa 940 de
+   unități de viewBox pe 117 mm de hârtie, deci o unitate este 0,35 pt        */
+.m-et { font-family: var(--sans); fill: #000; }
+.m-et-reg { font-size: 21px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.m-et-mic { font-size: 17px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; fill: #333; }
+.m-et-loc { font-size: 16px; }
+.m-et-apa { font-size: 16px; font-style: italic; fill: #555; letter-spacing: .05em; }
+.m-et-scara { font-size: 15px; fill: #555; }
+.m-loc, .m-oras { fill: #000; }
+.m-oras { r: 4; }
+.m-batalie { fill: none; stroke: #000; stroke-width: 3.4; stroke-linecap: round; }
+.m-sit path { fill: #000; }
+.m-capitala circle { fill: #000; }
+.m-capitala .m-in { fill: #fff; }
+.m-scara line { stroke: #000; stroke-width: 1.6; }
+
+/* diagramele */
+.diagrama { font-family: var(--sans); }
+.d-ax   { stroke: #000; stroke-width: 1.4; }
+.d-grid { stroke: #c4c4c4; stroke-width: 1; }
+.d-et   { font-size: 15px; fill: #444; }
+.d-et-b { font-size: 16px; fill: #000; font-weight: 600; }
+.d-linie { fill: none; stroke: #000; stroke-width: 2.6; stroke-linejoin: round; }
+.d-arie { fill: #000; opacity: .12; }
+.d-pct  { fill: #000; }
+.d-marc { stroke: #000; stroke-width: 1.6; stroke-dasharray: 4 3; }
+.d-et-marc { font-size: 15px; fill: #000; }
+
+/* ------------------------------ aparatul ---------------------------------- */
+.citat { margin: 6mm 0; padding-left: 5mm; border-left: 1.2pt solid var(--negru);
+  break-inside: avoid; }
+.citat blockquote { margin: 0; font-family: var(--display); font-style: italic;
+  font-size: 10.4pt; line-height: 14.6pt; }
+.citat .sursa { font-family: var(--sans); font-size: 7.8pt; line-height: 10.6pt;
+  color: var(--gri-70); margin-top: 2.4mm; text-align: left; hyphens: none; }
+.citat .sursa b { color: var(--negru); letter-spacing: .05em; }
+
+.cifre { margin: 6mm 0; break-inside: avoid; }
+.cifre .cap-mic { font-family: var(--sans); font-size: 7pt; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--gri-45);
+  border-bottom: .5pt solid var(--rigla); padding-bottom: 1.4mm; margin-bottom: 2.6mm; }
+.cifra { display: grid; grid-template-columns: 34mm 1fr; gap: 0 3.5mm;
+  margin-bottom: 2.6mm; font-size: 8.4pt; line-height: 11.4pt; text-align: left; }
+.cifra b { font-family: var(--sans); font-weight: 600; font-size: 9.2pt;
+  font-variant-numeric: tabular-nums; text-align: right; }
+.cifra span { display: block; font-family: var(--sans); font-weight: 500; }
+.cifra small { display: block; color: var(--gri-70); font-size: 8pt; line-height: 11pt; }
+
+.figuri { margin: 6mm 0; }
+.pers { margin-bottom: 4mm; break-inside: avoid; font-size: 8.6pt; line-height: 11.8pt; }
+.pers-cap { font-family: var(--display); font-weight: 600; font-size: 9.6pt; }
+.pers-ani { font-family: var(--sans); font-weight: 400; font-size: 8pt; color: var(--gri-45); }
+.pers-rol { font-family: var(--display); font-style: italic; color: var(--gri-70);
+  font-size: 8.8pt; margin-bottom: .8mm; }
+
+.cronologie { margin: 6mm 0; }
+.cron-lista { margin: 0; }
+/* Anul e flotat in adancitura din stanga, nu inline-block: asa, cand data e
+   lunga si ocupa doua randuri, textul evenimentului curge in continuare
+   alaturi de ea, in loc sa fie impins sub ea. */
+.cron-r { margin: 0; padding: 1.5mm 0 1.5mm 29.5mm;
+  border-top: .4pt solid #ddd; font-size: 8.6pt; line-height: 11.6pt;
+  text-align: left; hyphens: none; break-inside: avoid; }
+.cron-r::after { content: ""; display: block; clear: left; }
+.cron-r:first-child { border-top: .6pt solid var(--negru); }
+.cron-r b { float: left; width: 26mm; margin-left: -29.5mm; text-align: right;
+  font-family: var(--sans); font-size: 8.2pt; font-weight: 600;
+  font-variant-numeric: tabular-nums; line-height: 11.6pt; }
+
+.controversa { margin: 6mm 0; padding: 3.4mm 4mm; border: .5pt solid var(--rigla);
+  break-inside: avoid; font-size: 8.8pt; line-height: 12pt; }
+.controversa .cap-mic { font-family: var(--sans); font-size: 7pt; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--gri-45); margin-bottom: 1.8mm; }
+
+.cap-mic { font-family: var(--sans); font-size: 7pt; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--gri-45); }
+
+/* ------------------------------- material final --------------------------- */
+.anexa { page: capitol; break-before: recto; }
+.anexa h2 { string-set: titlu-capitol content(text); font-family: var(--display);
+  font-weight: 300; font-size: 20pt; padding-top: 30mm; margin-bottom: 8mm; }
+.anexa h3 { font-family: var(--display); font-weight: 600; font-size: 10.8pt;
+  margin: 6mm 0 2.6mm; }
+.anexa p { margin-bottom: 3mm; }
+
+.lista-figuri { font-size: 8.6pt; line-height: 11.8pt; }
+/* aceeasi poveste ca la cuprins: fara flex, ca sa nu se piarda un rand */
+.lista-figuri li { display: block; padding: 0 0 1.4mm 11mm; margin-bottom: 1.2mm;
+  text-align: left; border-bottom: .3pt dotted var(--rigla); break-inside: avoid; }
+.lista-figuri li::after { content: ""; display: block; clear: both; }
+.lista-figuri .nr { float: left; width: 9mm; margin-left: -11mm;
+  font-family: var(--sans); font-size: 7.8pt; color: var(--gri-45); }
+.lista-figuri .pg { float: right; margin-left: 3mm; }
+.lista-figuri .pct { display: none; }
+.lista-figuri .pg::after { content: target-counter(attr(href url), page);
+  font-family: var(--sans); font-size: 8pt; font-variant-numeric: tabular-nums; }
+.lista-figuri ol { list-style: none; margin: 0; padding: 0; }
+
+.indice { column-count: 2; column-gap: 6mm; font-size: 8pt; line-height: 10.8pt;
+  text-align: left; hyphens: none; }
+.indice div { break-inside: avoid; margin-bottom: 1.2mm; }
+.indice .nume { font-weight: 400; }
+.indice .pagini { font-family: var(--sans); font-variant-numeric: tabular-nums;
+  color: var(--gri-70); }
+.indice .litera { font-family: var(--sans); font-size: 8.4pt; font-weight: 600;
+  letter-spacing: .14em; color: var(--negru); margin: 3.4mm 0 1.6mm;
+  border-bottom: .5pt solid var(--rigla); padding-bottom: .8mm; break-after: avoid; }
+.indice div:first-child .litera { margin-top: 0; }
+
+/* ancorele de indice nu trebuie să schimbe nimic în pagină */
+.ix { font: inherit; color: inherit; }
+
+/* --------------------------- ilustrații de arhivă ------------------------- */
+.ilustratie { margin: 6mm 0; break-inside: avoid; page-break-inside: avoid; }
+.ilustratie img { display: block; width: 100%; height: auto; }
+.ilustratie figcaption { font-family: var(--sans); font-size: 7.6pt; line-height: 10.4pt;
+  color: var(--gri-70); text-align: left; hyphens: none; margin-top: 2.2mm;
+  padding-top: 1.8mm; border-top: .5pt solid var(--rigla); }
+.ilustratie .credit { display: block; margin-top: 1.2mm; font-size: 6.9pt;
+  color: var(--gri-45); font-style: italic; }
+.proveniente { font-size: 7.2pt; line-height: 9.8pt; text-align: left; hyphens: none; }
+.proveniente p { margin-bottom: 1.8mm; }
+.proveniente b { font-family: var(--sans); font-size: 7pt; }
+
+/* legenda nu se rupe niciodată de imaginea ei */
+figcaption { break-inside: avoid; page-break-inside: avoid; }
+.ilustratie figcaption { break-before: avoid; page-break-before: avoid; }
+/* în plansa cartografică imaginile primesc toată înălțimea paginii */
+#atlas-vechi .ilustratie img { max-height: 158mm; width: auto; max-width: 100%; margin: 0 auto; }
+
+/* O imagine mai inalta decat lata nu are voie sa umple pagina pe latime: la
+   117 mm oglinda, un portret in picioare ar depasi inaltimea utila.
+   Plafonul nu e ales dupa cat de frumos ar arata cat mai mare, ci dupa ce
+   incape alaturi de el. Oglinda are 190,6 mm. La 150 mm, imaginea plus legenda
+   plus marginile tineau 183 mm — 96 la suta din pagina — asa ca nicio imagine
+   nalta nu putea imparti pagina cu text: cand textul sectiunii se termina
+   inaintea ei, ramanea o pagina cu trei randuri si restul alb. La 128 mm tin
+   161 mm, si raman treizeci de milimetri, adica vreo paisprezece randuri. */
+.ilustratie img { max-height: 128mm; width: auto; max-width: 100%; margin: 0 auto; }
+.ilustratie.lata img { width: 100%; max-height: none; }
+
+/* numele volumului pe semititlu, cand cartea apare in doua tomuri */
+.semi-vol { margin-top: 6mm; font-family: var(--sans); font-size: 9pt;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--gri-45); }
+/* figura ingusta se centreaza in oglinda, cu tot cu legenda ei */
+.ilustratie.ingusta { margin-left: auto; margin-right: auto; }
+
+/* ------------------ banda cronologică de deschidere de capitol ------------ */
+.banda-cron { margin: 4mm 0 6mm; break-inside: avoid; }
+.banda-cron svg { display: block; width: 100%; height: auto; }
+.cg-ax { stroke: var(--negru); stroke-width: .32; }
+.cg-grad { stroke: var(--gri-45); stroke-width: .22; }
+.cg-an { font-family: var(--sans); font-size: 3.1px; fill: var(--gri-45);
+  font-variant-numeric: tabular-nums; }
+.cg-trim { stroke: var(--gri-45); stroke-width: .16; }
+.cg-pct { fill: var(--negru); }
+.cg-pct-gol { fill: #fff; stroke: var(--negru); stroke-width: .3; }
+.cg-durata { fill: var(--negru); opacity: .15; }
+.cg-data { font-family: var(--sans); font-size: 3px; font-weight: 600;
+  fill: var(--negru); font-variant-numeric: tabular-nums; }
+.cg-ctx { fill: var(--gri-45); opacity: .2; }
+
+/* Bare comparative — panza in milimetri, ca a benzilor. */
+.b-grid { stroke: #d2d2d2; stroke-width: .18; }
+.b-ax { font-family: var(--sans); font-size: 2.9px; fill: var(--gri-45);
+  font-variant-numeric: tabular-nums; }
+.b-bara { fill: var(--negru); }
+.b-rest { fill: var(--negru); fill-opacity: .15; stroke: var(--negru); stroke-width: .3; }
+.b-gol { fill: none; stroke: var(--negru); stroke-width: .28; stroke-dasharray: 1 .8; }
+.b-must { stroke: var(--negru); stroke-width: .35; }
+.b-filet { stroke: #b8b8b8; stroke-width: .3; }
+.b-nume { font-family: var(--sans); font-size: 3.1px; font-weight: 600; fill: var(--negru); }
+.b-sub { font-family: var(--sans); font-size: 2.7px; fill: var(--gri-45); }
+.b-val { font-family: var(--sans); font-size: 2.9px; font-weight: 600; fill: var(--negru);
+  font-variant-numeric: tabular-nums; }
+.b-val-in { fill: #fff; }
+/* Pragul de pe banda cu ora: o singura linie verticala, mai groasa decat axa,
+   cu cate un total scris de-o parte si de alta. */
+.cg-prag { stroke: var(--negru); stroke-width: .55; }
+.cg-prag-et { font-family: var(--sans); font-size: 2.9px; font-weight: 600;
+  fill: var(--negru); font-variant-numeric: tabular-nums; }
+.banda-ceas { break-inside: avoid; margin: 4mm 0 6mm; }
+.cg-ctx-cap { fill: var(--gri-70); }
+.cg-lupa { fill: none; stroke: var(--gri-45); stroke-width: .16; stroke-dasharray: .8 .7; }
+.cg-mic { font-family: var(--sans); font-size: 2.8px; fill: var(--gri-45); }
+
+
+/* tărm, lacuri, brațele Deltei — din geometria reală */
+.m-tarm { fill: none; stroke: var(--gri-45); stroke-width: .5; stroke-linejoin: round; }
+.m-lac { fill: #d7d7d7; stroke: var(--gri-45); stroke-width: .35; }
+.m-rau-mic { fill: none; stroke: var(--gri-45); stroke-width: .55;
+  stroke-linejoin: round; stroke-linecap: round; }
+
+/* trepte hipsometrice și curbe de nivel — din ETOPO1 */
+.m-relief { stroke: none; }
+.m-h0 { fill: #f5f5f5; }
+.m-h1 { fill: #e6e6e6; }
+.m-h2 { fill: #d1d1d1; }
+.m-h3 { fill: #b6b6b6; }
+.m-h4 { fill: #9a9a9a; }
+.m-nivel-halo { fill: none; stroke: #fff; stroke-width: 1.4; opacity: .38; stroke-linejoin: round; }
+.m-nivel { fill: none; stroke: var(--gri-45); stroke-width: .45; opacity: .32; stroke-linejoin: round; }
+.leg-h0 { background: #f5f5f5; } .leg-h1 { background: #e6e6e6; }
+.leg-h2 { background: #d1d1d1; } .leg-h3 { background: #b6b6b6; } .leg-h4 { background: #9a9a9a; }
+
+/* banda vieților: cine trăiește când */
+.vt-epoca { fill: #000; opacity: .07; }
+.vt-epoca-et { font-family: var(--sans); font-size: 2.6px; fill: var(--gri-45); }
+.vt-bara { fill: var(--gri-70); opacity: .85; }
+.vt-bara.vt-aprox { fill: none; stroke: var(--gri-70); stroke-width: .35; }
+.vt-pct { fill: #000; }
+.vt-nume { font-family: var(--sans); font-size: 3px; font-weight: 600; fill: #000; }
+.vt-sageata { fill: none; stroke: var(--gri-70); stroke-width: .3; stroke-linecap: round; stroke-linejoin: round; }
+.vieti { margin-top: 4mm; break-inside: avoid; page-break-inside: avoid; }
+.banda-vieti { margin: 1.5mm 0 0; }
+
+/* tabelele din materialul final */
+.tabel-cutie { margin: 3mm 0 0; }
+/* Tabelele din corpul capitolului poarta celule de proza, nu etichete scurte
+   ca cele din aparat: prima coloana ramane ingusta si fixa — acolo sta anul
+   sau locul — iar celelalte isi impart restul oglinzii. */
+.tabel-cap { margin: 5mm 0; break-inside: auto; }
+.tabel-cap table { table-layout: fixed; font-size: 7.8pt; line-height: 10.4pt; }
+.tabel-cap th:first-child, .tabel-cap td:first-child { width: 22mm; padding-right: 3mm; }
+.tabel-cap td:first-child { font-family: var(--sans); font-size: 7.2pt; }
+.tabel-cap td { hyphens: auto; }
+/* Un rand care nu e de acelasi fel cu celelalte se desparte printr-un filet:
+   Baraganul e o deportare, nu o inchisoare, si nu trebuie citit in sir cu ele. */
+.tabel-cap tr.rupe td { border-top: .4pt solid currentColor; padding-top: 2mm; }
+table { border-collapse: collapse; width: 100%; font-size: 8.2pt; line-height: 11pt; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; page-break-inside: avoid; }
+th, td { text-align: left; vertical-align: top; padding: 1.1mm 2mm 1.1mm 0;
+  border-bottom: .3pt solid #d8d8d8; hyphens: none; }
+th { font-family: var(--sans); font-size: 7pt; font-weight: 600; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--gri-45); border-bottom: .6pt solid #9a9a9a;
+  padding-bottom: 1.4mm; }
+td.num, th.num { font-family: var(--sans); font-variant-numeric: tabular-nums; white-space: nowrap; }
+tbody tr:last-child td { border-bottom: 0; }
+.tabel-intro { font-size: 8.6pt; line-height: 12pt; color: var(--gri-45); margin: 1.5mm 0 0;
+  text-indent: 0; max-width: 100mm; }
+.anexa table a { color: inherit; text-decoration: none; }
+.d-et-bara { font-family: var(--sans); font-size: 10.5px; font-weight: 600; fill: #fff; }
