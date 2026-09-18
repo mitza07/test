@@ -9,6 +9,7 @@ import { bandaCronologica } from '../build/cronograf.mjs'
 import { bandaVietilor } from '../build/vieti.mjs'
 import { toateTabelele, sectiuneTabel } from '../build/tabele.mjs'
 import { cifreleCartii, exactitateaHartilor } from '../build/cifre-carte.mjs'
+import { creditScurt } from '../build/credit.mjs'
 import { diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagramaEtnic } from '../build/diagrame.mjs'
 import { PLAN, PLAN_TEME } from '../build/build.mjs'
 import { tipografic } from '../build/tipo.mjs'
@@ -248,8 +249,7 @@ function figIlustratie(m) {
   const nume = `il/${String(n).padStart(3, '0')}.jpg`
   cpSync(m.redus, OUT + '/OEBPS/' + nume)
   pozeIncluse.push(nume)
-  const credit = [m.autor, m.data, m.sursa, /domeniu public/i.test(m.tipLicenta) ? 'domeniu public' : m.licenta]
-    .filter(Boolean).join(' · ')
+  const credit = creditScurt(m)
   return `<figure class="ilustratie"><img src="${nume}" alt="${esc(m.legenda).slice(0, 200)}"/>
 <figcaption><b>Ilustrația ${n}.</b> ${esc(m.legenda)} <span class="sursa">${esc(credit)}</span></figcaption></figure>`
 }

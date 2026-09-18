@@ -8,6 +8,7 @@ import { bandaCronologica } from './cronograf.mjs'
 import { bandaVietilor } from './vieti.mjs'
 import { toateTabelele, sectiuneTabel } from './tabele.mjs'
 import { cifreleCartii } from './cifre-carte.mjs'
+import { creditScurt } from './credit.mjs'
 import { tipografic } from './tipo.mjs'
 
 const esc = (s) => tipografic(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -80,7 +81,7 @@ function figura(cheie) {
     if (t === 'ceda') return `<span><i class="lin" style="border-top-color:var(--chinovar);border-top-style:dashed"></i>${esc(txt)}</span>`
     if (t === 'campanie') return `<span><i class="lin" style="border-top-color:var(--chinovar)"></i>${esc(txt)}</span>`
     if (t === 'hasu') return `<span><i class="hasu"></i>${esc(txt)}</span>`
-    if (t === 'batalie') return `<span><i class="lin" style="border:0;color:var(--chinovar)">✕</i>${esc(txt)}</span>`
+    if (t === 'batalie') return `<span><i style="border:0;width:auto;height:auto;color:var(--chinovar)">✕</i>${esc(txt)}</span>`
     if (t === 'sit') return `<span><i style="border:0;color:var(--chinovar)">▲</i>${esc(txt)}</span>`
     if (t === 'oras') return `<span><i style="border:0">●</i>${esc(txt)}</span>`
     if (t === 'capitala') return `<span><i style="border:0">◉</i>${esc(txt)}</span>`
@@ -131,11 +132,17 @@ function figuraIlustratie(m) {
   const n = ++nrIl
   const nume = incorporeaza(m.local.split('/').pop())
   if (!nume) return ''
-  const credit = [m.autor, m.data, m.sursa, /domeniu public/i.test(m.tipLicenta) ? 'domeniu public' : m.licenta]
-    .filter(Boolean).join(' · ')
+  const credit = creditScurt(m)
+  /* Fara width si height, pana cand imaginea intra in raza de incarcare locul
+     ei are inaltime zero: pagina crestea cu vreo suta saizeci de mii de pixeli
+     pe masura ce se citea, si tot ce era dedesubt sarea. Browserul deduce
+     raportul din perechea de atribute si rezerva locul dinainte. */
+  const lat = m.pxLatime || m.latime || 0
+  const inalt = m.pxInaltime || m.inaltime || 0
+  const masura = (lat && inalt) ? ` width="${lat}" height="${inalt}"` : ''
   return `<figure class="ilustratie" id="il-${n}">
 <a href="${esc(m.pagina)}" target="_blank" rel="noopener"><img loading="lazy" decoding="async"
- src="${nume}" alt="${esc(m.legenda)}"/></a>
+ src="${nume}"${masura} alt="${esc(m.legenda)}"/></a>
 <figcaption><b>Ilustrația ${n}.</b> ${esc(m.legenda)}<small>${esc(credit)}</small></figcaption>
 </figure>`
 }
@@ -343,12 +350,14 @@ ${atlas.map(figuraIlustratie).join('')}</div>
 </main>
 
 <section class="capitol aparat" id="aparat">
+ <div class="banda">
   <div class="corp">
     <div class="rubrica">Material final</div>
     <h2 class="cap-titlu" style="margin-top:.4rem">Tot ce e în carte, așezat ca să poată fi căutat</h2>
     <p class="cap-rezumat">Volumul are două sute de fișe de oameni împrăștiate câte cinci prin patruzeci de secțiuni, patruzeci de dispute istoriografice fiecare la coada capitolului ei și o sută șaizeci de cifre. Aici nu se adaugă nimic: se strâng la un loc.</p>
   </div>
-  ${TABELE.map((t) => `<div class="corp" id="${t.id}">${sectiuneTabel(t, { esc, nivel: 'h3' })}</div>`).join('')}
+  ${TABELE.map((t) => `<div id="${t.id}">${sectiuneTabel(t, { esc, nivel: 'h3' })}</div>`).join('')}
+ </div>
 </section>
 
 <footer class="colofon">

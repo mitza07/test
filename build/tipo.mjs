@@ -33,6 +33,14 @@ export function tipografic(text) {
   /* trei puncte → elipsa */
   s = s.replace(/\.\.\./g, '…')
 
+  /* O data ISO — "2011-06-12", cum vin datele din manifestul de imagini — nu e
+     un interval de ani: se pune deoparte cat tine indreptarea si se aseaza la
+     loc dupa. Altfel iesea "2011–06–12". */
+  const puse = []
+  s = s.replace(/\b\d{4}-\d{2}-\d{2}(?:[T ]\d{2}:\d{2}(?::\d{2})?)?\b/g, (m) => {
+    puse.push(m); return `\u0000${puse.length - 1}\u0000`
+  })
+
   /* interval de numere, fara spatii: 1867-1944 → 1867–1944 */
   s = s.replace(/(\d)\s?-\s?(?=\d)/g, '$1–')
 
@@ -73,5 +81,6 @@ export function tipografic(text) {
   /* apostroful ramas, in nume ca O'Shea */
   s = s.replace(/'/g, '’')
 
+  s = s.replace(/\u0000(\d+)\u0000/g, (_, i) => puse[Number(i)])
   return s
 }

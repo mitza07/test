@@ -137,7 +137,9 @@ export function diagramaLexic() {
   LEXIC.forEach((d, i) => {
     const w = (d.v / total) * (x1 - x0)
     s.push(`<rect x="${f(x)}" y="${mt}" width="${f(w)}" height="${BH}" fill="${d.c}"/>`)
-    if (w > 40) s.push(`<text class="d-et" x="${f(x + w / 2)}" y="${mt + BH / 2 + 4}" text-anchor="middle" fill="var(--surface)" font-weight="600">${d.v.toFixed(1).replace('.', ',')}%</text>`)
+    /* clasa .d-et are propriul "fill" in foaia de stil, care bate atributul de
+         prezentare: procentul iesea gri pe bara colorata, la 1,2:1. Clasa lui. */
+      if (w > 40) s.push(`<text class="d-et-bara" x="${f(x + w / 2)}" y="${mt + BH / 2 + 4}" text-anchor="middle">${d.v.toFixed(1).replace('.', ',')}%</text>`)
     /* legenda pe doua randuri sub bara */
     const col = i % 5, rand = Math.floor(i / 5)
     const lx = x0 + col * ((x1 - x0) / 5), ly = mt + BH + 26 + rand * 17
@@ -162,7 +164,7 @@ export function diagramaEtnic() {
     date.forEach((d, i) => {
       const w = (d[1] / 100) * (x1 - x0)
       s.push(`<rect x="${f(x)}" y="${f(y)}" width="${f(w)}" height="${BH}" fill="${CULORI[i % CULORI.length]}"/>`)
-      if (w > 46) s.push(`<text class="d-et" x="${f(x + w / 2)}" y="${f(y + BH / 2 + 4)}" text-anchor="middle" fill="var(--surface)" font-weight="600">${String(d[1]).replace('.', ',')}%</text>`)
+      if (w > 46) s.push(`<text class="d-et-bara" x="${f(x + w / 2)}" y="${f(y + BH / 2 + 4)}" text-anchor="middle">${String(d[1]).replace('.', ',')}%</text>`)
       if (w > 24) s.push(`<text class="d-et" x="${f(x + w / 2)}" y="${f(y + BH + 14)}" text-anchor="middle">${esc(d[0])}</text>`)
       x += w
     })

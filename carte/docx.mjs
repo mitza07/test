@@ -9,6 +9,7 @@ import { PLAN, PLAN_TEME } from '../build/build.mjs'
 import { HARTI } from '../build/harti.mjs'
 import { SUBT_DIAG } from './tipar.mjs'
 import { toateTabelele } from '../build/tabele.mjs'
+import { creditScurt } from '../build/credit.mjs'
 import { tipografic } from '../build/tipo.mjs'
 
 const RAD = new URL('./', import.meta.url).pathname
@@ -98,8 +99,7 @@ function pune(m, stare) {
   let cx = lat ? Math.min(LAT_TEXT, Math.round((lat / 200) * EMU)) : LAT_TEXT
   let cy = Math.round(cx * raport)
   if (cy > INALT_MAX) { cy = INALT_MAX; cx = Math.round(cy / raport) }
-  const credit = [m.autor, m.data, m.sursa, /domeniu public/i.test(m.tipLicenta) ? 'domeniu public' : m.licenta]
-    .filter(Boolean).join(' · ')
+  const credit = creditScurt(m)
   return imagine(id, cx, cy, m.legenda, nr) + p(`Ilustrația ${nr}. ${m.legenda} [${credit}]`, 'Legenda')
 }
 

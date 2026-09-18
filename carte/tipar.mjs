@@ -10,6 +10,7 @@ import { bandaCronologica } from '../build/cronograf.mjs'
 import { bandaVietilor } from '../build/vieti.mjs'
 import { toateTabelele, sectiuneTabel } from '../build/tabele.mjs'
 import { cifreleCartii, exactitateaHartilor } from '../build/cifre-carte.mjs'
+import { creditScurt } from '../build/credit.mjs'
 import { readFileSync as citeste, existsSync as exista, statSync as stat } from 'fs'
 import { tipografic } from '../build/tipo.mjs'
 
@@ -34,14 +35,7 @@ const POZE = process.env.POZE === 'ecran' ? 'ecran' : 'tipar'
 let nrIl = 0
 const ilustratiiFolosite = []
 
-function creditScurt(m) {
-  const p = []
-  if (m.autor && !/neidentificat|unknown/i.test(m.autor)) p.push(m.autor.slice(0, 70))
-  if (m.data) p.push(m.data.slice(0, 24))
-  p.push(m.sursa || 'Wikimedia Commons')
-  p.push(/domeniu public/i.test(m.tipLicenta) ? 'domeniu public' : m.licenta)
-  return p.filter(Boolean).join(' · ')
-}
+/* creditul se scrie o singura data, in build/credit.mjs */
 
 function figuraIlustratie(m) {
   const n = ++nrIl
@@ -389,7 +383,7 @@ ${TABELE.map((t) => `<section class="anexa" id="${t.id}">
   <div class="lista-figuri">${listaFig}</div>
   <h3>Proveniența ilustrațiilor</h3>
   <div class="proveniente">${ilustratiiFolosite.map((m) =>
-    `<p><b>Ilustrația ${m.n}.</b> ${esc(m.legenda.slice(0, 90))}… ${esc(m.autor || '')}${m.data ? ', ' + esc(m.data) : ''}. ${esc(m.sursa)}, ${esc(/domeniu public/i.test(m.tipLicenta) ? 'domeniu public' : m.licenta)}. ${esc(m.pagina)}</p>`).join('')}</div>
+    `<p><b>Ilustrația ${m.n}.</b> ${esc(m.legenda.slice(0, 90))}… ${esc(creditScurt(m))}. ${esc(m.pagina)}</p>`).join('')}</div>
 </section>
 
 <section class="anexa" id="indice">
