@@ -10,6 +10,7 @@ import { HARTI } from '../build/harti.mjs'
 import { SUBT_DIAG } from './tipar.mjs'
 import { toateTabelele } from '../build/tabele.mjs'
 import { CEASURI } from '../build/ceasuri.mjs'
+import { cifreleCartii, cuDe } from '../build/cifre-carte.mjs'
 import { aseaza } from '../build/asezare.mjs'
 import { creditScurt } from '../build/credit.mjs'
 import { tipografic } from '../build/tipo.mjs'
@@ -25,6 +26,9 @@ const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 
 const TITLU = 'Istoria României'
 const SUBTITLU = 'în 3.026 de ani'
 const AUTOR = '[numele autorului]'
+/* Anul de pe pagina de drepturi. Fix, ca in volumul tiparit: altfel manuscrisul
+   si-ar schimba singur editia de la o compilare la alta. */
+const AN = 2026
 const EMU = 914400            /* unitati englezesti metrice intr-un inch */
 const LAT_TEXT = 6 * EMU      /* latimea coloanei de text a manuscrisului */
 const INALT_MAX = Math.round(7.2 * EMU)
@@ -138,6 +142,7 @@ function pune(m, stare) {
   let cy = Math.round(cx * raport)
   if (cy > INALT_MAX) { cy = INALT_MAX; cx = Math.round(cy / raport) }
   const credit = creditScurt(m)
+  ;(stare.proveniente = stare.proveniente || []).push({ nr, legenda: m.legenda, credit, pagina: m.pagina })
   return imagine(id, cx, cy, m.legenda, nr) + p(`Ilustrația ${nr}. ${m.legenda} [${credit}]`, 'Legenda')
 }
 
@@ -288,8 +293,39 @@ export function construiesteDocx(continut) {
   const teme = PLAN_TEME.map((pl) => ({ ...pl, ...(temeById[pl.id] || {}) })).filter((c) => c.sectiuni?.length)
 
   const stare = { id: 0, nr: 0, nrFig: 0, rels: [] }
+  const NUM = cifreleCartii(0)
   const b = []
   b.push(p(TITLU, 'Titlu'), p(SUBTITLU, 'Subtitlu'), pgol(), p(AUTOR, 'Subtitlu'), saltPagina())
+
+  /* Pagina de drepturi si nota asupra redactarii. Manuscrisul mergea pana acum
+     de la pagina de titlu drept in capitolul intai: un editor primea textul
+     fara descrierea CIP de completat, fara avertismentul asupra redactarii si
+     fara proveniente. Nimic din ce urmeaza nu e nou — e ce scrie si in volumul
+     tiparit, adus si aici, ca cele patru formate sa spuna acelasi lucru. */
+  b.push(p('Descrierea CIP a Bibliotecii Naționale a României', 'Heading2'))
+  b.push(p('[Se completează cu descrierea primită de la Centrul Național CIP și se tipărește ' +
+    'aici, în forma exactă în care a fost transmisă. Fără ea, exemplarele de depozit legal ' +
+    'nu sunt conforme.]', 'Aparat'))
+  b.push(p('ISBN [se completează]', 'Aparat'))
+  b.push(p(`Ediția întâi, ${AN}.`, 'Aparat'))
+  b.push(p('Hărțile și diagramele sunt originale, generate din contururi în coordonate ' +
+    'geografice reale. Nu reproduc hărți publicate.', 'Aparat'))
+  b.push(p('Notă asupra redactării', 'Heading2'))
+  b.push(p('Textul acestui volum a fost redactat cu ajutorul unui model de limbaj și trecut ' +
+    `printr-o a doua verificare, tot automată, care a corectat ${cuDe(NUM.corectii, 'erori')} de date, nume ` +
+    'și cifre. Verificarea automată nu înlocuiește lectura unui istoric asupra izvoarelor. ' +
+    'Cititorul este avertizat că, în absența unei verificări de specialitate, volumul trebuie ' +
+    'citit ca sinteză, nu ca lucrare de referință, iar afirmațiile importante merită ' +
+    'confruntate cu bibliografia indicată în nota finală.', 'Aparat'))
+  b.push(saltPagina())
+
+  /* Cuprinsul: fara numere de pagina, fiindca editorul repagineaza oricum. */
+  b.push(p('Cuprins', 'Heading1'))
+  cap.forEach((c, i) => b.push(p(`Capitolul ${ROMAN[i + 1]}. ${c.titlu} · ${c.per}`, 'Aparat')))
+  b.push(p('Priviri transversale', 'Heading2'))
+  teme.forEach((c) => b.push(p(c.titlu, 'Aparat')))
+  b.push(saltPagina())
+
   cap.forEach((c, i) => b.push(sectiune(c, `Capitolul ${ROMAN[i + 1]}`, ILUSTRATII[c.id] || [], stare)))
   teme.forEach((c) => b.push(sectiune(c, 'Priviri transversale', ILUSTRATII[c.id] || [], stare)))
   /* materialul final: tabelele, apoi plansa cartografica */
@@ -302,6 +338,25 @@ export function construiesteDocx(continut) {
     b.push(p('Hărțile de mai jos nu sunt ilustrații ale textului, ci izvoare în sine.', 'Rezumat'))
     b.push(...atlas.map((m) => pune(m, stare)))
   }
+
+  /* Proveniente: licenta si pagina de origine a fiecarei ilustratii. Un
+     manuscris fara ele nu se poate tipari legal. */
+  b.push(saltPagina(), p('Proveniența ilustrațiilor', 'Heading1'))
+  b.push(p('Fiecare ilustrație, cu autorul, licența și pagina de unde a fost luată. ' +
+    'Numerotarea este cea din acest manuscris.', 'Rezumat'))
+  for (const m of stare.proveniente || [])
+    b.push(p(`Ilustrația ${m.nr}. ${m.legenda} — ${m.credit}. ${m.pagina}`, 'Aparat'))
+
+  b.push(saltPagina(), p('Notă asupra metodei', 'Heading1'))
+  b.push(p('Volumul a fost redactat capitol cu capitol și trecut apoi printr-o verificare ' +
+    'factuală separată, care a urmărit datele, numele proprii, cifrele și atribuirea citatelor. ' +
+    `Au rezultat ${cuDe(NUM.corectii, 'corecții')}, consemnate capitol cu capitol în fișierul de lucru al ediției, ` +
+    'nu în volum. Acolo unde o cifră este disputată în literatura de specialitate — numărul ' +
+    'victimelor răscoalei din 1907, bilanțul Holocaustului din România, numărul morților din ' +
+    'decembrie 1989 — ea este dată ca interval, cu menționarea disputei, nu ca valoare unică.'))
+  b.push(p('Hărțile și diagramele sunt originale, generate din contururi în coordonate ' +
+    'geografice reale — Natural Earth pentru cursurile de apă și țărm, ETOPO1 al agenției ' +
+    'NOAA pentru relief, amândouă în domeniul public. Nu reproduc hărți publicate.'))
 
   writeFileSync(OUT + '/word/document.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
