@@ -11,6 +11,8 @@ import { HARTI } from '../build/harti.mjs'
 import { diagramaPopulatie, diagramaLexic, diagramaEtnic, diagramaTeritoriu } from '../build/diagrame.mjs'
 import { bandaCronologica } from '../build/cronograf.mjs'
 import { bandaVietilor } from '../build/vieti.mjs'
+import { bandaZilelor } from '../build/ceas.mjs'
+import { CEASURI } from '../build/ceasuri.mjs'
 import { PLAN, PLAN_TEME } from '../build/build.mjs'
 
 const DIAGRAME = { populatie: diagramaPopulatie, lexic: diagramaLexic,
@@ -38,6 +40,10 @@ const figuri = [
     gen: () => bandaCronologica(c, { de: -6000, la: 2026 }) })),
   ...sectiuni.map((c) => ({ k: 'vieti-' + c.id, tip: 'vieti', lat: 1400,
     gen: () => bandaVietilor(c, { de: c.de, la: c.la }) })),
+  /* benzile pe ceas: capitolele in care unitatea de masura e ziua, nu anul */
+  ...sectiuni.filter((c) => CEASURI[c.id]).map((c) => ({ k: 'ceas-' + c.id, tip: 'ceas', lat: 1600,
+    titlu: CEASURI[c.id].titlu, jos: CEASURI[c.id].jos,
+    gen: () => bandaZilelor(c, CEASURI[c.id]) })),
 ].filter((f) => f.gen())
 
 const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' })

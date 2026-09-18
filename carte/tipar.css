@@ -387,6 +387,12 @@ figcaption { break-inside: avoid; page-break-inside: avoid; }
 .cg-data { font-family: var(--sans); font-size: 3px; font-weight: 600;
   fill: var(--negru); font-variant-numeric: tabular-nums; }
 .cg-ctx { fill: var(--gri-45); opacity: .2; }
+/* Pragul de pe banda cu ora: o singura linie verticala, mai groasa decat axa,
+   cu cate un total scris de-o parte si de alta. */
+.cg-prag { stroke: var(--negru); stroke-width: .55; }
+.cg-prag-et { font-family: var(--sans); font-size: 2.9px; font-weight: 600;
+  fill: var(--negru); font-variant-numeric: tabular-nums; }
+.banda-ceas { break-inside: avoid; margin: 4mm 0 6mm; }
 .cg-ctx-cap { fill: var(--gri-70); }
 .cg-lupa { fill: none; stroke: var(--gri-45); stroke-width: .16; stroke-dasharray: .8 .7; }
 .cg-mic { font-family: var(--sans); font-size: 2.8px; fill: var(--gri-45); }

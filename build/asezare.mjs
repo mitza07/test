@@ -25,6 +25,7 @@
    fata pline si pe cele din spate goale: lucrul j merge in golul
    floor(j*g/n). Pentru n=8, g=6 iese 0,0,1,2,3,3,4,5 — nu 1,1,1,1,1,1,2. */
 import { tabeleleSectiunii } from './tabele-capitol.mjs'
+import { ceasulSectiunii } from './ceasuri.mjs'
 
 export function imparte(lucruri, goluri) {
   const cos = Array.from({ length: Math.max(goluri, 0) }, () => [])
@@ -40,8 +41,8 @@ export function imparte(lucruri, goluri) {
  * `r` da randatoarele formatului — fiecare intoarce un sir gata scris, sau
  * "" daca formatul acela nu stie sa deseneze blocul:
  *   proza(subcapitol, i), ilustratie(m), harta(cheie), diagrama(cheie),
- *   tabel(t), citat(c), cifre(c), vieti(c), figuri(c), cronologie(c),
- *   controversa(c)
+ *   tabel(t), ceas(c, cfg), citat(c), cifre(c), vieti(c), figuri(c),
+ *   cronologie(c), controversa(c)
  *
  * Ce se raspandeste printre subcapitole: hartile (ele arata locul despre care
  * vorbeste capitolul, deci intra devreme), banda vietilor, ilustratiile,
@@ -60,6 +61,8 @@ export function aseaza(c, r) {
   const pune = (x) => { if (bun(x)) flux.push(x) }
   for (const k of c.harti || []) pune(r.harta && r.harta(k))
   pune(r.vieti && r.vieti(c))
+  const ceas = ceasulSectiunii(c.id)
+  if (ceas) pune(r.ceas && r.ceas(c, ceas))
   for (const t of tabeleleSectiunii(c.id)) pune(r.tabel && r.tabel(t))
   const poze = (r.poze || []).map((m) => r.ilustratie(m)).filter(bun)
   /* Cifrele la o treime, citatul la doua treimi: doua respiratii in mijlocul

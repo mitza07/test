@@ -6,6 +6,7 @@ import { HARTI } from './harti.mjs'
 import { cronograma, diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagramaEtnic } from './diagrame.mjs'
 import { bandaCronologica } from './cronograf.mjs'
 import { bandaVietilor } from './vieti.mjs'
+import { bandaZilelor } from './ceas.mjs'
 import { toateTabelele, sectiuneTabel, tabelHtml } from './tabele.mjs'
 import { aseaza } from './asezare.mjs'
 import { cifreleCartii } from './cifre-carte.mjs'
@@ -170,6 +171,16 @@ function blocuriCapitol(c) {
        aici si se scot din coloana la asezare. */
     harta: (k) => LAT + figura(k),
     diagrama: (k) => LAT + diagrama(k),
+    /* Capitolul in care unitatea de masura nu e anul, ci ziua. */
+    ceas: (c, cfg) => {
+      const b = bandaZilelor(c, cfg)
+      if (!b) return ''
+      /* Ca la celelalte figuri ale editiei de ecran: fara numar, fiindca pe
+         web nu exista o lista de figuri la care sa trimita. */
+      return LAT + `<figure class="lat-plin banda-ceas"><div class="figura">
+<svg viewBox="${b.vb}" role="img" aria-label="${esc(cfg.titlu)}" preserveAspectRatio="xMidYMid meet">${b.body}</svg>
+<figcaption><b>${esc(cfg.titlu)}</b> — ${esc(cfg.jos)}</figcaption></div></figure>`
+    },
     tabel: (t) => `<div class="tabel-cap" id="${t.id}"><div class="rubrica-m">${esc(t.titlu)}</div>
 <p class="tabel-intro">${esc(t.intro)}</p>${tabelHtml(t, { esc, legaturi: false })}</div>`,
     citat: (c) => c.citat && c.citat.text

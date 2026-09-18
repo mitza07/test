@@ -7,6 +7,7 @@ import { execFileSync } from 'child_process'
 import { HARTI } from '../build/harti.mjs'
 import { bandaCronologica } from '../build/cronograf.mjs'
 import { bandaVietilor } from '../build/vieti.mjs'
+import { bandaZilelor } from '../build/ceas.mjs'
 import { aseaza } from '../build/asezare.mjs'
 import { toateTabelele, sectiuneTabel, tabelHtml } from '../build/tabele.mjs'
 import { cifreleCartii, exactitateaHartilor } from '../build/cifre-carte.mjs'
@@ -290,6 +291,13 @@ function corpul(c) {
       ilustratie: figIlustratie,
       harta: figHarta,
       diagrama: figDiagrama,
+      ceas: (c, cfg) => {
+        const b = bandaZilelor(c, cfg)
+        if (!b) return ''
+        const n = ++nrFig
+        return `<figure class="banda-ceas"><svg xmlns="http://www.w3.org/2000/svg" class="diagrama" viewBox="${b.vb}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(cfg.titlu)}">${strangeClase(b.body)}</svg>
+<figcaption><b>Diagrama ${n}. ${esc(cfg.titlu)}</b> ${esc(cfg.jos)}</figcaption></figure>`
+      },
       tabel: (t) => `<h2>${esc(t.titlu)}</h2><p class="tabel-intro">${esc(t.intro)}</p>` +
         tabelHtml(t, { esc, legaturi: false }),
       citat: (c) => c.citat?.text

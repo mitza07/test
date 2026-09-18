@@ -352,6 +352,8 @@ tbody tr:last-child td { border-bottom: 0; }
 
 /* ------------------ banda cronologică de deschidere de capitol ------------ */
 .banda-cron { margin: 2rem 0 0; max-width: var(--masura); }
+.banda-ceas { margin: 2.2rem 0; }
+.banda-ceas svg { display: block; width: 100%; height: auto; }
 .banda-cron svg { display: block; width: 100%; height: auto; }
 .cg-ax { stroke: var(--ink); stroke-width: .32; }
 .cg-grad { stroke: var(--muted); stroke-width: .22; }
@@ -364,6 +366,11 @@ tbody tr:last-child td { border-bottom: 0; }
 .cg-data { font-family: var(--sans); font-size: 3px; font-weight: 600;
   fill: var(--ink); font-variant-numeric: tabular-nums; }
 .cg-ctx { fill: var(--muted); opacity: .22; }
+/* Pragul de pe banda cu ora: o singura linie verticala, mai groasa decat axa,
+   cu cate un total scris de-o parte si de alta. */
+.cg-prag { stroke: var(--ink); stroke-width: .55; }
+.cg-prag-et { font-family: var(--sans); font-size: 2.9px; font-weight: 600;
+  fill: var(--ink); font-variant-numeric: tabular-nums; }
 .cg-ctx-cap { fill: var(--chinovar); }
 .cg-lupa { fill: none; stroke: var(--muted); stroke-width: .16; stroke-dasharray: .8 .7; }
 .cg-mic { font-family: var(--sans); font-size: 2.8px; fill: var(--muted); }
