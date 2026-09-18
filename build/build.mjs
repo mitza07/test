@@ -6,7 +6,7 @@ import { HARTI } from './harti.mjs'
 import { cronograma, diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagramaEtnic } from './diagrame.mjs'
 import { bandaCronologica } from './cronograf.mjs'
 import { bandaVietilor } from './vieti.mjs'
-import { toateTabelele, sectiuneTabel } from './tabele.mjs'
+import { toateTabelele, sectiuneTabel, tabelHtml } from './tabele.mjs'
 import { aseaza } from './asezare.mjs'
 import { cifreleCartii } from './cifre-carte.mjs'
 import { creditScurt } from './credit.mjs'
@@ -170,6 +170,8 @@ function blocuriCapitol(c) {
        aici si se scot din coloana la asezare. */
     harta: (k) => LAT + figura(k),
     diagrama: (k) => LAT + diagrama(k),
+    tabel: (t) => `<div class="tabel-cap" id="${t.id}"><div class="rubrica-m">${esc(t.titlu)}</div>
+<p class="tabel-intro">${esc(t.intro)}</p>${tabelHtml(t, { esc, legaturi: false })}</div>`,
     citat: (c) => c.citat && c.citat.text
       ? `<figure class="citat"><blockquote>„${esc(c.citat.text)}”</blockquote>
 <figcaption><b style="font-family:var(--sans);letter-spacing:.05em">${esc(c.citat.autor)}</b>${c.citat.context ? ' — ' + esc(c.citat.context) : ''}</figcaption></figure>`

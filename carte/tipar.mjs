@@ -8,7 +8,7 @@ import { cronograma, diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagra
 import { PLAN, PLAN_TEME } from '../build/build.mjs'
 import { bandaCronologica } from '../build/cronograf.mjs'
 import { bandaVietilor } from '../build/vieti.mjs'
-import { toateTabelele, sectiuneTabel } from '../build/tabele.mjs'
+import { toateTabelele, sectiuneTabel, tabelHtml } from '../build/tabele.mjs'
 import { aseaza } from '../build/asezare.mjs'
 import { cifreleCartii, exactitateaHartilor } from '../build/cifre-carte.mjs'
 import { creditScurt } from '../build/credit.mjs'
@@ -182,6 +182,8 @@ function blocuri(c, termeni) {
     ilustratie: figuraIlustratie,
     harta: figuraHarta,
     diagrama: figuraDiagrama,
+    tabel: (t) => `<div class="tabel-cap" id="${t.id}"><div class="cap-mic">${esc(t.titlu)}</div>
+<p class="tabel-intro">${esc(t.intro)}</p>${tabelHtml(t, { esc, legaturi: false })}</div>`,
     citat: (c) => c.citat && c.citat.text
       ? `<div class="citat"><blockquote>${esc(c.citat.text)}</blockquote>
 <div class="sursa"><b>${esc(c.citat.autor)}</b>${c.citat.context ? ' · ' + esc(c.citat.context) : ''}</div></div>`

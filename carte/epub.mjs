@@ -8,7 +8,7 @@ import { HARTI } from '../build/harti.mjs'
 import { bandaCronologica } from '../build/cronograf.mjs'
 import { bandaVietilor } from '../build/vieti.mjs'
 import { aseaza } from '../build/asezare.mjs'
-import { toateTabelele, sectiuneTabel } from '../build/tabele.mjs'
+import { toateTabelele, sectiuneTabel, tabelHtml } from '../build/tabele.mjs'
 import { cifreleCartii, exactitateaHartilor } from '../build/cifre-carte.mjs'
 import { creditScurt } from '../build/credit.mjs'
 import { diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagramaEtnic } from '../build/diagrame.mjs'
@@ -117,6 +117,9 @@ th { font-size: 0.86em; letter-spacing: 0.07em; text-transform: uppercase; opaci
   border-bottom: 1px solid currentColor; }
 td.num, th.num { white-space: nowrap; }
 .tabel-intro { text-indent: 0; font-size: 0.85em; opacity: 0.72; margin-bottom: 0.8em; }
+/* Un rand care nu e de acelasi fel cu celelalte se desparte printr-un filet:
+   Baraganul e o deportare, nu o inchisoare. */
+tr.rupe td { border-top: 1px solid currentColor; padding-top: 0.6em; }
 figure.banda-timp { margin: 1.1em 0; page-break-inside: avoid; }
 figure.banda-timp svg { width: 100%; height: auto; display: block; }
 .legenda-harta { text-indent: 0; text-align: left; font-size: 0.72em; line-height: 1.7;
@@ -287,6 +290,8 @@ function corpul(c) {
       ilustratie: figIlustratie,
       harta: figHarta,
       diagrama: figDiagrama,
+      tabel: (t) => `<h2>${esc(t.titlu)}</h2><p class="tabel-intro">${esc(t.intro)}</p>` +
+        tabelHtml(t, { esc, legaturi: false }),
       citat: (c) => c.citat?.text
         ? `<blockquote><p>${esc(c.citat.text)}</p></blockquote>
 <p class="sursa"><b>${esc(c.citat.autor)}</b>${c.citat.context ? ' · ' + esc(c.citat.context) : ''}</p>`

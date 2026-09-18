@@ -210,6 +210,7 @@ function sectiune(c, eticheta, poze, stare) {
     ilustratie: (m) => pune(m, stare),
     harta: (cheie) => puneFigura(cheie, stare),
     diagrama: (cheie) => puneFigura(cheie, stare),
+    tabel: (t) => p(t.titlu, 'Heading2') + p(t.intro, 'Legenda') + tabelDocx(t) + pgol(),
     citat: (c) => c.citat?.text
       ? p('Citat', 'Heading2') + p(`„${c.citat.text}” — ${c.citat.autor}. ${c.citat.context || ''}`.trim(), 'Rezumat')
       : '',

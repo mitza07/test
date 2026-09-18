@@ -166,7 +166,7 @@ export function tabelHtml(t, optiuni = {}) {
       if (leg && i === 0 && r.spre) v = `<a href="#${r.spre}">${v}</a>`
       return `<td${c.clasa ? ` class="${c.clasa}"` : ''}>${v}</td>`
     }).join('')
-    return `<tr>${celule}</tr>`
+    return `<tr${r.rupe ? ' class="rupe"' : ''}>${celule}</tr>`
   }).join('')
   return `<div class="tabel-cutie"><table><thead><tr>${cap}</tr></thead><tbody>${randuri}</tbody></table></div>`
 }

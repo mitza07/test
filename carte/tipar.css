@@ -423,6 +423,17 @@ figcaption { break-inside: avoid; page-break-inside: avoid; }
 
 /* tabelele din materialul final */
 .tabel-cutie { margin: 3mm 0 0; }
+/* Tabelele din corpul capitolului poarta celule de proza, nu etichete scurte
+   ca cele din aparat: prima coloana ramane ingusta si fixa — acolo sta anul
+   sau locul — iar celelalte isi impart restul oglinzii. */
+.tabel-cap { margin: 5mm 0; break-inside: auto; }
+.tabel-cap table { table-layout: fixed; font-size: 7.8pt; line-height: 10.4pt; }
+.tabel-cap th:first-child, .tabel-cap td:first-child { width: 22mm; padding-right: 3mm; }
+.tabel-cap td:first-child { font-family: var(--sans); font-size: 7.2pt; }
+.tabel-cap td { hyphens: auto; }
+/* Un rand care nu e de acelasi fel cu celelalte se desparte printr-un filet:
+   Baraganul e o deportare, nu o inchisoare, si nu trebuie citit in sir cu ele. */
+.tabel-cap tr.rupe td { border-top: .4pt solid currentColor; padding-top: 2mm; }
 table { border-collapse: collapse; width: 100%; font-size: 8.2pt; line-height: 11pt; }
 thead { display: table-header-group; }
 tr { break-inside: avoid; page-break-inside: avoid; }
