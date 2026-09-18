@@ -11,7 +11,7 @@ import { bandaVietilor } from '../build/vieti.mjs'
 import { bandaZilelor } from '../build/ceas.mjs'
 import { toateTabelele, sectiuneTabel, tabelHtml } from '../build/tabele.mjs'
 import { aseaza } from '../build/asezare.mjs'
-import { cifreleCartii, exactitateaHartilor } from '../build/cifre-carte.mjs'
+import { cifreleCartii, exactitateaHartilor, cuDe } from '../build/cifre-carte.mjs'
 import { creditScurt } from '../build/credit.mjs'
 import { readFileSync as citeste, existsSync as exista, statSync as stat } from 'fs'
 import { tipografic } from '../build/tipo.mjs'
@@ -352,7 +352,7 @@ ${blocuri(c, termeni)}
   <div class="avertisment">
     <p><b>Notă asupra redactării.</b> Textul acestui volum a fost redactat cu ajutorul
     unui model de limbaj și trecut printr-o a doua verificare, tot automată, care a
-    corectat 818 de erori de date, nume și cifre. Verificarea automată nu înlocuiește
+    corectat ${cuDe(NUM.corectii, 'erori')} de date, nume și cifre. Verificarea automată nu înlocuiește
     lectura unui istoric asupra izvoarelor. Cititorul este avertizat că, în absența
     unei verificări de specialitate, volumul trebuie citit ca sinteză, nu ca lucrare
     de referință, iar afirmațiile importante merită confruntate cu bibliografia
@@ -399,7 +399,8 @@ ${TABELE.map((t) => `<section class="anexa" id="${t.id}">
   <h2>Notă asupra metodei</h2>
   <p>Volumul a fost redactat capitol cu capitol și trecut apoi printr-o verificare
   factuală separată, care a urmărit datele, numele proprii, cifrele și atribuirea
-  citatelor. Au rezultat 818 de corecții, consemnate în aparatul de lucru al ediției.
+  citatelor. Au rezultat ${cuDe(NUM.corectii, 'corecții')}, consemnate capitol cu capitol
+  în fișierul de lucru al ediției, nu în volum.
   Acolo unde o cifră este disputată în literatura de specialitate — numărul victimelor
   răscoalei din 1907, bilanțul Holocaustului din România, numărul morților din
   decembrie 1989 — ea este dată ca interval, cu menționarea disputei, nu ca valoare

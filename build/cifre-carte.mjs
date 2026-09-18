@@ -96,10 +96,29 @@ export function cifreleCartii(volum = 0) {
     cifre: ale.reduce((a, x) => a + (x.cifre || []).length, 0),
     citate: ale.filter((x) => x.citat?.text).length,
     dispute: ale.filter((x) => x.controversa).length,
+    /* Corecturile consemnate la verificarea factuala, numarate — nu scrise de
+       mana. Nota asupra redactarii le pomeneste pe coperta si in prefata, si o
+       cifra scrisa de mana acolo se departeaza tacut de realitate la prima
+       recitire a unui capitol. */
+    corectii: Object.entries(c.corectii || {})
+      .filter(([id]) => idAle.has(id))
+      .reduce((a, [, v]) => a + (Array.isArray(v) ? v.length : 0), 0),
     cuvinte: ale.reduce((a, x) => a + cuv(x), 0),
     ani: la - de,
     de, la,
   }
+}
+
+/**
+ * Acordul lui "de" cu numeralul. In romaneste, numeralele de la 20 in sus cer
+ * "de" — "douazeci de erori" —, in afara de cele ale caror ultime doua cifre
+ * cad intre 01 si 19: "o suta una erori", "818 erori", dar "820 de erori".
+ * Cartea scria "818 de erori" in trei locuri.
+ */
+export function cuDe(n, substantiv) {
+  const ultimele = Math.abs(Math.round(n)) % 100
+  const de = Math.abs(n) >= 20 && !(ultimele >= 1 && ultimele <= 19)
+  return `${n.toLocaleString('ro-RO')}${de ? ' de' : ''} ${substantiv}`
 }
 
 /* rulat direct, tipareste ce stie — util cand se scrie PUBLICARE.md */

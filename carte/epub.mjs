@@ -10,7 +10,7 @@ import { bandaVietilor } from '../build/vieti.mjs'
 import { bandaZilelor } from '../build/ceas.mjs'
 import { aseaza } from '../build/asezare.mjs'
 import { toateTabelele, sectiuneTabel, tabelHtml } from '../build/tabele.mjs'
-import { cifreleCartii, exactitateaHartilor } from '../build/cifre-carte.mjs'
+import { cifreleCartii, exactitateaHartilor, cuDe } from '../build/cifre-carte.mjs'
 import { creditScurt } from '../build/credit.mjs'
 import { diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagramaEtnic } from '../build/diagrame.mjs'
 import { PLAN, PLAN_TEME } from '../build/build.mjs'
@@ -370,7 +370,7 @@ writeFileSync(OUT + '/OEBPS/titlu.xhtml', pag('Pagina de titlu',
 <p class="fara-alineat" style="margin-top:2em">${esc(AUTOR)}</p>
 <div class="caseta" style="margin-top:3em"><p class="eticheta">Notă asupra redactării</p>
 <p>Textul acestui volum a fost redactat cu ajutorul unui model de limbaj și trecut printr-o
-a doua verificare, tot automată, care a corectat 818 de erori de date, nume și cifre.
+a doua verificare, tot automată, care a corectat ${cuDe(NUM.corectii, 'erori')} de date, nume și cifre.
 Verificarea automată nu înlocuiește lectura unui istoric asupra izvoarelor. Volumul se
 citește ca sinteză, nu ca lucrare de referință.</p>
 <p style="margin-top:.7em">Hărțile și diagramele sunt originale, generate din contururi în
@@ -424,7 +424,7 @@ ${ILUSTRATII.atlas.map(figIlustratie).join('')}`))
 
 writeFileSync(OUT + '/OEBPS/nota.xhtml', pag('Notă asupra metodei',
   `<h1>Notă asupra metodei</h1>
-<p class="prim">Volumul a fost redactat capitol cu capitol și trecut apoi printr-o verificare factuală separată, care a urmărit datele, numele proprii, cifrele și atribuirea citatelor. Au rezultat 818 de corecții. Acolo unde o cifră este disputată în literatura de specialitate — numărul victimelor răscoalei din 1907, bilanțul Holocaustului din România, numărul morților din decembrie 1989 — ea este dată ca interval, cu menționarea disputei.</p>
+<p class="prim">Volumul a fost redactat capitol cu capitol și trecut apoi printr-o verificare factuală separată, care a urmărit datele, numele proprii, cifrele și atribuirea citatelor. Au rezultat ${cuDe(NUM.corectii, 'corecții')}, consemnate capitol cu capitol în fișierul de lucru al ediției, nu în volum. Acolo unde o cifră este disputată în literatura de specialitate — numărul victimelor răscoalei din 1907, bilanțul Holocaustului din România, numărul morților din decembrie 1989 — ea este dată ca interval, cu menționarea disputei.</p>
 <h2>Despre hărți</h2>
 <p class="prim">Cele ${NUM.harti} hărți ale volumului sunt desenate din coordonate geografice reale. Fiecare hotar istoric este definit o singură dată și reutilizat, astfel încât suprafețele să se îmbine exact. Hotarele care merg pe apă sunt decupate din cursul real al râului, luat din Natural Earth; relieful vine din ETOPO1, modelul de teren al NOAA — amândouă în domeniul public. ${TEXT_ARII}</p>
 <h2>Ce lipsește</h2>
