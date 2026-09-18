@@ -25,7 +25,11 @@ const TITLU = 'Istoria României'
 const SUBTITLU = 'în 3.026 de ani'
 const AUTOR = '[numele autorului]'
 const LIMBA = 'ro'
-const UID = 'urn:uuid:3c0a6f2e-9b41-4d77-8e55-istoria-romaniei-2026'
+/* Editia compacta e alta editie, nu acelasi fisier mai mic: are ilustratiile
+   reduse, deci trebuie sa se poata deosebi la incarcare si in biblioteca. */
+const MIC = Boolean(process.env.EPUB_MIC)
+const UID = MIC ? 'urn:uuid:3c0a6f2e-9b41-4d77-8e55-istoria-romaniei-2026-compact'
+  : 'urn:uuid:3c0a6f2e-9b41-4d77-8e55-istoria-romaniei-2026'
 
 const DIAG = { populatie: diagramaPopulatie, lexic: diagramaLexic, etnic: diagramaEtnic, teritoriu: diagramaTeritoriu }
 const SUBT_DIAG = {
@@ -52,6 +56,8 @@ const STIL = `
   src: url("fonturi/Literata-600.ttf"); }
 @font-face { font-family: "Spectral"; font-weight: normal; font-style: normal;
   src: url("fonturi/Spectral-300.ttf"); }
+@font-face { font-family: "Spectral"; font-weight: normal; font-style: italic;
+  src: url("fonturi/Spectral-400i.ttf"); }
 @font-face { font-family: "Spectral"; font-weight: bold; font-style: normal;
   src: url("fonturi/Spectral-600.ttf"); }
 
@@ -73,7 +79,9 @@ p + p { margin-top: 0; }
   margin-bottom: 1.4em; }
 figure { margin: 1.6em 0; page-break-inside: avoid; text-align: center; }
 figure svg { max-width: 100%; height: auto; }
-figure.ilustratie img { max-width: 100%; max-height: 88vh; height: auto; }
+/* "max-width" numai plafoneaza, nu intinde: o poza de 520 px statea la 44 la
+   suta din coloana pe orice ecran mai lat, ca si cum ar fi fost pusa gresit. */
+figure.ilustratie img { width: 100%; max-width: 100%; max-height: 88vh; height: auto; }
 figure.ilustratie figcaption .sursa { display: block; margin-top: .35em;
   font-size: .88em; opacity: .82; font-style: italic; }
 figcaption { font-size: 0.76em; line-height: 1.45; opacity: 0.78; text-align: left;
@@ -236,9 +244,14 @@ function figDiagrama(cheie) {
 const ILUSTRATII = {}
 if (existsSync(RAD + 'ilustratii/manifest.json'))
   for (const m of JSON.parse(readFileSync(RAD + 'ilustratii/manifest.json', 'utf8'))) {
-    /* varianta de ecran, nu cea de tipar: un EPUB de 136 MB s-ar plati la
-       livrare, pe megaoctet, la fiecare exemplar vandut */
-    const redus = RAD + (process.env.EPUB_MIC ? 'ilustratii/il/' : 'ilustratii/ecran/') + m.local.split('/').pop()
+    /* Varianta de ecran, nu cea de tipar: un EPUB de 136 MB s-ar plati la
+       livrare, pe megaoctet, la fiecare exemplar vandut. Editia compacta isi
+       are directorul ei — ilustratii/epub-mic/ — nu pe cel al paginii web:
+       acolo fiecare octet se umfla cu 37 la suta ca data-URI si tot trebuie sa
+       incapa in 16 MB, constrangeri pe care un EPUB nu le are, fiindca tine
+       fisierele binar, in zip. Si reducerea de acolo e oarba la ce e in poza:
+       o harta veche cu text de citit ajungea la 520 px, ca un portret. */
+    const redus = RAD + (MIC ? 'ilustratii/epub-mic/' : 'ilustratii/ecran/') + m.local.split('/').pop()
     if (!existsSync(redus)) continue
     ;(ILUSTRATII[m.cap] = ILUSTRATII[m.cap] || []).push({ ...m, redus })
   }
@@ -314,7 +327,7 @@ writeFileSync(OUT + '/META-INF/container.xml', `<?xml version="1.0" encoding="UT
 </container>`)
 /* stil.css se scrie la sfarsit, dupa ce s-au compus toate paginile: abia
    atunci se stie ce clase folosesc SVG-urile. Vezi mai jos. */
-for (const f of ['Literata-400.ttf','Literata-400i.ttf','Literata-600.ttf','Spectral-300.ttf','Spectral-600.ttf'])
+for (const f of ['Literata-400.ttf','Literata-400i.ttf','Literata-600.ttf','Spectral-300.ttf','Spectral-400i.ttf','Spectral-600.ttf'])
   cpSync(RAD + 'fonturi/' + f, OUT + '/OEBPS/fonturi/' + f)
 
 /* Coperta de carte electronica: cea a volumului intreg. Daca lipseste — se
