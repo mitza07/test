@@ -9,6 +9,7 @@ import { PLAN, PLAN_TEME } from '../build/build.mjs'
 import { HARTI } from '../build/harti.mjs'
 import { SUBT_DIAG } from './tipar.mjs'
 import { toateTabelele } from '../build/tabele.mjs'
+import { aseaza } from '../build/asezare.mjs'
 import { creditScurt } from '../build/credit.mjs'
 import { tipografic } from '../build/tipo.mjs'
 
@@ -198,45 +199,33 @@ function sectiuneaTabel(t) {
 }
 
 /* --- un capitol sau o tema ------------------------------------------------ */
+/* Impartirea blocurilor printre subcapitole sta in build/asezare.mjs, comuna
+   celor patru formate; aici raman numai randatoarele. */
 function sectiune(c, eticheta, poze, stare) {
-  const b = []
-  b.push(p(eticheta, 'Perioada'))
-  b.push(p(c.titlu, 'Heading1'))
-  if (c.per) b.push(p(c.per, 'Perioada'))
-  if (c.rezumat) b.push(p(c.rezumat, 'Rezumat'), pgol())
-  const sec = c.sectiuni || []
-  const intre = sec.length > 1 ? Math.floor(poze.length / sec.length) : 0
-  let k = 0
-  sec.forEach((s, i) => {
-    b.push(p(s.subtitlu, 'Heading2'))
-    for (const x of s.paragrafe || []) b.push(p(x))
-    if (i < sec.length - 1) { b.push(...poze.slice(k, k + intre).map((m) => pune(m, stare))); k += intre }
-  })
-  b.push(...poze.slice(k).map((m) => pune(m, stare)))
-  for (const cheie of c.harti || []) b.push(puneFigura(cheie, stare))
-  for (const cheie of c.diagrame || []) b.push(puneFigura(cheie, stare))
-
-  if (c.cronologie?.length) {
-    b.push(p('Cronologie', 'Heading2'))
-    b.push(puneFigura('banda-' + c.id, stare))
-    for (const x of c.cronologie) b.push(p(`${x.an} — ${x.eveniment}`, 'Aparat'))
-  }
-  if (c.figuri?.length) {
-    b.push(p('Oameni', 'Heading2'))
-    b.push(puneFigura('vieti-' + c.id, stare))
-    for (const x of c.figuri) b.push(p(`${x.nume} (${x.ani}), ${x.rol}. ${x.descriere}`, 'Aparat'))
-  }
-  if (c.cifre?.length) {
-    b.push(p('Cifre', 'Heading2'))
-    for (const x of c.cifre) b.push(p(`${x.valoare} — ${x.eticheta}. ${x.nota || ''}`.trim(), 'Aparat'))
-  }
-  if (c.citat?.text) {
-    b.push(p('Citat', 'Heading2'))
-    b.push(p(`„${c.citat.text}” — ${c.citat.autor}. ${c.citat.context || ''}`.trim(), 'Rezumat'))
-  }
-  if (c.controversa) { b.push(p('Ce se discută', 'Heading2')); b.push(p(c.controversa)) }
-  b.push(saltPagina())
-  return b.join('')
+  const cap = p(eticheta, 'Perioada') + p(c.titlu, 'Heading1') + (c.per ? p(c.per, 'Perioada') : '')
+  return cap + aseaza(c, {
+    poze,
+    rezumat: (c) => c.rezumat ? p(c.rezumat, 'Rezumat') + pgol() : '',
+    proza: (s) => p(s.subtitlu, 'Heading2') + (s.paragrafe || []).map((x) => p(x)).join(''),
+    ilustratie: (m) => pune(m, stare),
+    harta: (cheie) => puneFigura(cheie, stare),
+    diagrama: (cheie) => puneFigura(cheie, stare),
+    citat: (c) => c.citat?.text
+      ? p('Citat', 'Heading2') + p(`„${c.citat.text}” — ${c.citat.autor}. ${c.citat.context || ''}`.trim(), 'Rezumat')
+      : '',
+    cifre: (c) => c.cifre?.length
+      ? p('Cifre', 'Heading2') + c.cifre.map((x) => p(`${x.valoare} — ${x.eticheta}. ${x.nota || ''}`.trim(), 'Aparat')).join('')
+      : '',
+    vieti: (c) => c.figuri?.length ? puneFigura('vieti-' + c.id, stare) : '',
+    figuri: (c) => c.figuri?.length
+      ? p('Oameni', 'Heading2') + c.figuri.map((x) => p(`${x.nume} (${x.ani}), ${x.rol}. ${x.descriere}`, 'Aparat')).join('')
+      : '',
+    cronologie: (c) => c.cronologie?.length
+      ? p('Cronologie', 'Heading2') + puneFigura('banda-' + c.id, stare) +
+        c.cronologie.map((x) => p(`${x.an} — ${x.eveniment}`, 'Aparat')).join('')
+      : '',
+    controversa: (c) => c.controversa ? p('Ce se discută', 'Heading2') + p(c.controversa) : '',
+  }).join('') + saltPagina()
 }
 
 export function construiesteDocx(continut) {

@@ -7,6 +7,7 @@ import { cronograma, diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagra
 import { bandaCronologica } from './cronograf.mjs'
 import { bandaVietilor } from './vieti.mjs'
 import { toateTabelele, sectiuneTabel } from './tabele.mjs'
+import { aseaza } from './asezare.mjs'
 import { cifreleCartii } from './cifre-carte.mjs'
 import { creditScurt } from './credit.mjs'
 import { tipografic } from './tipo.mjs'
@@ -154,50 +155,59 @@ function bandaCap(c) {
   return `<figure class="banda-cron"><svg viewBox="${b.vb}" role="img" aria-label="Reperele capitolului, la scară" preserveAspectRatio="xMidYMid meet">${b.body}</svg></figure>`
 }
 
-function corpCapitol(c) {
-  const p = []
-  if (c.rezumat) p.push(`<p class="cap-rezumat">${esc(c.rezumat)}</p>`)
-  p.push(bandaCap(c))
-  const poze = ILUSTRATII[c.id] || []
-  const sec = c.sectiuni || []
-  const intre = sec.length > 1 ? Math.floor(poze.length / sec.length) : 0
-  let k = 0
-  sec.forEach((s, i) => {
-    p.push(`<section class="sectiune"><h3>${esc(s.subtitlu)}</h3><div class="proza">` +
-      (s.paragrafe || []).map((x) => `<p>${esc(x)}</p>`).join('') + `</div></section>`)
-    if (i < sec.length - 1) { p.push(poze.slice(k, k + intre).map(figuraIlustratie).join('')); k += intre }
-  })
-  p.push(poze.slice(k).map(figuraIlustratie).join(''))
-  return p.join('')
-}
+/* Impartirea blocurilor printre subcapitole sta in asezare.mjs, comuna celor
+   patru formate; aici raman numai randatoarele. */
+const LAT = '\u0000lat\u0000'
 
-function anexeCapitol(c) {
-  const p = []
-  if (c.citat && c.citat.text) {
-    p.push(`<figure class="citat"><blockquote>„${esc(c.citat.text)}”</blockquote>
-<figcaption><b style="font-family:var(--sans);letter-spacing:.05em">${esc(c.citat.autor)}</b>${c.citat.context ? ' — ' + esc(c.citat.context) : ''}</figcaption></figure>`)
-  }
-  if (c.cifre && c.cifre.length) {
-    p.push(`<div class="cifre">` + c.cifre.map((x) =>
-      `<div class="cifra"><b>${esc(x.valoare)}</b><span>${esc(x.eticheta)}</span><small>${esc(x.nota)}</small></div>`).join('') + `</div>`)
-  }
-  if (c.figuri && c.figuri.length) {
+function blocuriCapitol(c) {
+  const blocuri = aseaza(c, {
+    poze: ILUSTRATII[c.id] || [],
+    rezumat: (c) => c.rezumat ? `<p class="cap-rezumat">${esc(c.rezumat)}</p>` : '',
+    proza: (s) => `<section class="sectiune"><h3>${esc(s.subtitlu)}</h3><div class="proza">` +
+      (s.paragrafe || []).map((x) => `<p>${esc(x)}</p>`).join('') + `</div></section>`,
+    ilustratie: figuraIlustratie,
+    /* Hartile si diagramele stau mai late decat masura de citit; se insemneaza
+       aici si se scot din coloana la asezare. */
+    harta: (k) => LAT + figura(k),
+    diagrama: (k) => LAT + diagrama(k),
+    citat: (c) => c.citat && c.citat.text
+      ? `<figure class="citat"><blockquote>„${esc(c.citat.text)}”</blockquote>
+<figcaption><b style="font-family:var(--sans);letter-spacing:.05em">${esc(c.citat.autor)}</b>${c.citat.context ? ' — ' + esc(c.citat.context) : ''}</figcaption></figure>`
+      : '',
+    cifre: (c) => (c.cifre || []).length
+      ? `<div class="cifre">` + c.cifre.map((x) =>
+        `<div class="cifra"><b>${esc(x.valoare)}</b><span>${esc(x.eticheta)}</span><small>${esc(x.nota)}</small></div>`).join('') + `</div>`
+      : '',
     /* Anii celor cinci oameni stau scrisi in fise, dar nimeni nu-i aseaza in
        cap unul langa altul cat citeste: banda ii aseaza. */
-    const bv = bandaVietilor(c, { de: c.de, la: c.la })
-    if (bv) p.push(`<div class="vieti"><div class="rubrica-m">Cine trăiește când</div>
-<figure class="banda-cron banda-vieti"><svg viewBox="${bv.vb}" role="img" aria-label="Viețile oamenilor capitolului, la scară" preserveAspectRatio="xMidYMid meet">${bv.body}</svg></figure></div>`)
-    p.push(`<div class="figuri">` + c.figuri.map((x) =>
-      `<div class="pers"><div class="pers-cap"><span class="pers-nume">${esc(x.nume)}</span><span class="pers-ani">${esc(x.ani)}</span></div><div class="pers-rol">${esc(x.rol)}</div><p>${esc(x.descriere)}</p></div>`).join('') + `</div>`)
+    vieti: (c) => {
+      if (!(c.figuri || []).length) return ''
+      const bv = bandaVietilor(c, { de: c.de, la: c.la })
+      return bv ? `<div class="vieti"><div class="rubrica-m">Cine trăiește când</div>
+<figure class="banda-cron banda-vieti"><svg viewBox="${bv.vb}" role="img" aria-label="Viețile oamenilor capitolului, la scară" preserveAspectRatio="xMidYMid meet">${bv.body}</svg></figure></div>` : ''
+    },
+    figuri: (c) => (c.figuri || []).length
+      ? `<div class="figuri">` + c.figuri.map((x) =>
+        `<div class="pers"><div class="pers-cap"><span class="pers-nume">${esc(x.nume)}</span><span class="pers-ani">${esc(x.ani)}</span></div><div class="pers-rol">${esc(x.rol)}</div><p>${esc(x.descriere)}</p></div>`).join('') + `</div>`
+      : '',
+    cronologie: (c) => (c.cronologie || []).length
+      ? `<div class="cronologie"><div class="rubrica-m">Repere</div><dl class="cron-lista">` +
+        c.cronologie.map((x) => `<dt>${esc(x.an)}</dt><dd>${esc(x.eveniment)}</dd>`).join('') + `</dl></div>`
+      : '',
+    controversa: (c) => c.controversa
+      ? `<div class="controversa"><div class="rubrica">Dispută istoriografică</div><p>${esc(c.controversa)}</p></div>`
+      : '',
+  })
+  /* Se strang cele inguste in cate o coloana de citit, iar hartile raman
+     intre ele, la latimea lor. */
+  const out = []
+  let col = []
+  const inchide = () => { if (col.length) { out.push(`<div class="corp">${col.join('')}</div>`); col = [] } }
+  for (const b of blocuri) {
+    if (b.startsWith(LAT)) { inchide(); out.push(b.slice(LAT.length)) } else col.push(b)
   }
-  if (c.cronologie && c.cronologie.length) {
-    p.push(`<div class="cronologie"><div class="rubrica-m">Repere</div><dl class="cron-lista">` +
-      c.cronologie.map((x) => `<dt>${esc(x.an)}</dt><dd>${esc(x.eveniment)}</dd>`).join('') + `</dl></div>`)
-  }
-  if (c.controversa) {
-    p.push(`<div class="controversa"><div class="rubrica">Dispută istoriografică</div><p>${esc(c.controversa)}</p></div>`)
-  }
-  return p.join('')
+  inchide()
+  return out.join('')
 }
 
 /* --- pagina -------------------------------------------------------------- */
@@ -237,30 +247,23 @@ export function construieste(continut) {
   const TABELE = toateTabelele([...cap, ...teme.map((t) => ({ ...t, tema: true, per: 'transversal' }))])
 
   const corpCapitole = cap.map((c, i) => {
-    const fig = (c.harti || []).map(figura).join('')
-    const dia = (c.diagrame || []).map(diagrama).join('')
     const ani = Math.abs(c.la - c.de)
     return `<article class="capitol" id="${c.id}">
 <header class="cap-cap"><div class="cap-meta">
 <span class="cap-per">${esc(c.per)}</span>
 <span class="cap-durata">${ani >= 2 ? ani + ' ani' : 'un an'} · capitolul ${i + 1} din ${cap.length}</span>
 </div><h2 class="cap-titlu">${esc(c.titlu)}</h2></header>
-<div class="corp">${corpCapitol(c)}</div>
-${fig}${dia}
-<div class="corp">${anexeCapitol(c)}</div>
+${blocuriCapitol(c)}
 </article>`
   }).join('')
 
   const corpTeme = teme.map((c) => {
-    const dia = (c.diagrame || []).map(diagrama).join('')
     return `<article class="capitol" id="${c.id}">
 <header class="cap-cap"><div class="cap-meta">
 <span class="cap-per">Secțiune tematică</span>
 <span class="cap-durata">de la antichitate până azi</span>
 </div><h2 class="cap-titlu">${esc(c.titlu)}</h2></header>
-<div class="corp">${corpCapitol(c)}</div>
-${dia}
-<div class="corp">${anexeCapitol(c)}</div>
+${blocuriCapitol(c)}
 </article>`
   }).join('')
 

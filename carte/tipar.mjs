@@ -9,6 +9,7 @@ import { PLAN, PLAN_TEME } from '../build/build.mjs'
 import { bandaCronologica } from '../build/cronograf.mjs'
 import { bandaVietilor } from '../build/vieti.mjs'
 import { toateTabelele, sectiuneTabel } from '../build/tabele.mjs'
+import { aseaza } from '../build/asezare.mjs'
 import { cifreleCartii, exactitateaHartilor } from '../build/cifre-carte.mjs'
 import { creditScurt } from '../build/credit.mjs'
 import { readFileSync as citeste, existsSync as exista, statSync as stat } from 'fs'
@@ -170,54 +171,48 @@ function figuraDiagrama(cheie) {
 }
 
 /* --- corpul unei sectiuni ------------------------------------------------- */
-/* Ilustratiile se intercaleaza intre sectiuni, nu se ingramadesc la coada
-   capitolului: dupa fiecare sectiune intra partea ei din teanc, iar restul
-   se aseaza la sfarsit. Plansa cartografica ramane un bloc compact. */
-function corp(c, termeni, poze = []) {
-  const sec = c.sectiuni || []
-  const intre = sec.length > 1 ? Math.floor(poze.length / sec.length) : 0
-  const p = []
-  if (c.rezumat) p.push(`<p class="cap-rezumat">${marcheaza(esc(c.rezumat), termeni)}</p>`)
-  let k = 0
-  sec.forEach((s, i) => {
-    p.push(`<section class="sectiune"><h3>${esc(s.subtitlu)}</h3><div class="proza">` +
-      (s.paragrafe || []).map((x) => `<p>${marcheaza(esc(x), termeni)}</p>`).join('') + `</div></section>`)
-    if (i < sec.length - 1) { p.push(poze.slice(k, k + intre).map(figuraIlustratie).join('')); k += intre }
-  })
-  p.push(poze.slice(k).map(figuraIlustratie).join(''))
-  return p.join('')
-}
-
-function aparat(c, termeni) {
-  const p = []
-  if (c.citat && c.citat.text) {
-    p.push(`<div class="citat"><blockquote>${esc(c.citat.text)}</blockquote>
-<div class="sursa"><b>${esc(c.citat.autor)}</b>${c.citat.context ? ' · ' + esc(c.citat.context) : ''}</div></div>`)
-  }
-  if (c.cifre && c.cifre.length) {
-    p.push(`<div class="cifre"><div class="cap-mic">Cifre</div>` + c.cifre.map((x) =>
-      `<div class="cifra"><b>${esc(x.valoare)}</b><div><span>${esc(x.eticheta)}</span><small>${esc(x.nota)}</small></div></div>`).join('') + `</div>`)
-  }
-  if (c.figuri && c.figuri.length) {
-    const bv = bandaVietilor(c, { de: c.de, la: c.la })
-    if (bv) p.push(`<div class="vieti"><div class="cap-mic">Cine trăiește când</div>
-<figure class="banda-cron banda-vieti"><svg viewBox="${bv.vb}" role="img" aria-label="Viețile oamenilor capitolului, la scară" preserveAspectRatio="xMidYMid meet">${bv.body}</svg></figure></div>`)
-    p.push(`<div class="figuri"><div class="cap-mic">Figuri</div>` + c.figuri.map((x) =>
-      `<div class="pers"><div class="pers-cap">${marcheaza(esc(x.nume), termeni)} <span class="pers-ani">${esc(x.ani)}</span></div>
-<div class="pers-rol">${esc(x.rol)}</div><p>${marcheaza(esc(x.descriere), termeni)}</p></div>`).join('') + `</div>`)
-  }
-  if (c.cronologie && c.cronologie.length) {
+/* Impartirea propriu-zisa sta in build/asezare.mjs, comuna celor patru formate.
+   Aici raman numai randatoarele: cum arata fiecare bloc la tipar. */
+function blocuri(c, termeni) {
+  return aseaza(c, {
+    poze: ILUSTRATII[c.id] || [],
+    rezumat: (c) => c.rezumat ? `<p class="cap-rezumat">${marcheaza(esc(c.rezumat), termeni)}</p>` : '',
+    proza: (s) => `<section class="sectiune"><h3>${esc(s.subtitlu)}</h3><div class="proza">` +
+      (s.paragrafe || []).map((x) => `<p>${marcheaza(esc(x), termeni)}</p>`).join('') + `</div></section>`,
+    ilustratie: figuraIlustratie,
+    harta: figuraHarta,
+    diagrama: figuraDiagrama,
+    citat: (c) => c.citat && c.citat.text
+      ? `<div class="citat"><blockquote>${esc(c.citat.text)}</blockquote>
+<div class="sursa"><b>${esc(c.citat.autor)}</b>${c.citat.context ? ' · ' + esc(c.citat.context) : ''}</div></div>`
+      : '',
+    cifre: (c) => (c.cifre || []).length
+      ? `<div class="cifre"><div class="cap-mic">Cifre</div>` + c.cifre.map((x) =>
+        `<div class="cifra"><b>${esc(x.valoare)}</b><div><span>${esc(x.eticheta)}</span><small>${esc(x.nota)}</small></div></div>`).join('') + `</div>`
+      : '',
+    vieti: (c) => {
+      if (!(c.figuri || []).length) return ''
+      const bv = bandaVietilor(c, { de: c.de, la: c.la })
+      return bv ? `<div class="vieti"><div class="cap-mic">Cine trăiește când</div>
+<figure class="banda-cron banda-vieti"><svg viewBox="${bv.vb}" role="img" aria-label="Viețile oamenilor capitolului, la scară" preserveAspectRatio="xMidYMid meet">${bv.body}</svg></figure></div>` : ''
+    },
+    figuri: (c) => (c.figuri || []).length
+      ? `<div class="figuri"><div class="cap-mic">Figuri</div>` + c.figuri.map((x) =>
+        `<div class="pers"><div class="pers-cap">${marcheaza(esc(x.nume), termeni)} <span class="pers-ani">${esc(x.ani)}</span></div>
+<div class="pers-rol">${esc(x.rol)}</div><p>${marcheaza(esc(x.descriere), termeni)}</p></div>`).join('') + `</div>`
+      : '',
     /* Nu grid: Paged.js nu pastreaza atribuirea pe coloane cand grila se rupe
        peste pagina — perechile se decaleaza cu o celula si anul ajunge in
        coloana larga, iar textul in cea ingusta. Alineat atarnat, care se
        fragmenteaza corect fiindca e simplu text curgator. */
-    p.push(`<div class="cronologie"><div class="cap-mic">Repere</div><div class="cron-lista">` +
-      c.cronologie.map((x) => `<p class="cron-r"><b>${esc(x.an)}</b>${marcheaza(esc(x.eveniment), termeni)}</p>`).join('') + `</div></div>`)
-  }
-  if (c.controversa) {
-    p.push(`<div class="controversa"><div class="cap-mic">Dispută istoriografică</div><p>${marcheaza(esc(c.controversa), termeni)}</p></div>`)
-  }
-  return p.join('')
+    cronologie: (c) => (c.cronologie || []).length
+      ? `<div class="cronologie"><div class="cap-mic">Repere</div><div class="cron-lista">` +
+        c.cronologie.map((x) => `<p class="cron-r"><b>${esc(x.an)}</b>${marcheaza(esc(x.eveniment), termeni)}</p>`).join('') + `</div></div>`
+      : '',
+    controversa: (c) => c.controversa
+      ? `<div class="controversa"><div class="cap-mic">Dispută istoriografică</div><p>${marcheaza(esc(c.controversa), termeni)}</p></div>`
+      : '',
+  }).join('')
 }
 
 /* ========================================================================== */
@@ -255,10 +250,7 @@ export function construiesteTipar(continut, optiuni = {}) {
 <div class="cap-per">${esc(c.per)}</div>
 </header>
 ${figuraBanda(c)}
-${corp(c, termeni, ILUSTRATII[c.id] || [])}
-${(c.harti || []).map(figuraHarta).join('')}
-${(c.diagrame || []).map(figuraDiagrama).join('')}
-${aparat(c, termeni)}
+${blocuri(c, termeni)}
 </article>`).join('')
 
   const corpTeme = teme.map((c) => `<article class="capitol" id="${c.id}">
@@ -268,9 +260,7 @@ ${aparat(c, termeni)}
 <div class="cap-per">de la antichitate până azi</div>
 </header>
 ${figuraBanda(c)}
-${corp(c, termeni, ILUSTRATII[c.id] || [])}
-${(c.diagrame || []).map(figuraDiagrama).join('')}
-${aparat(c, termeni)}
+${blocuri(c, termeni)}
 </article>`).join('')
 
   /* cuprins */

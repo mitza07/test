@@ -7,6 +7,7 @@ import { execFileSync } from 'child_process'
 import { HARTI } from '../build/harti.mjs'
 import { bandaCronologica } from '../build/cronograf.mjs'
 import { bandaVietilor } from '../build/vieti.mjs'
+import { aseaza } from '../build/asezare.mjs'
 import { toateTabelele, sectiuneTabel } from '../build/tabele.mjs'
 import { cifreleCartii, exactitateaHartilor } from '../build/cifre-carte.mjs'
 import { creditScurt } from '../build/credit.mjs'
@@ -275,36 +276,41 @@ function banda(b, eticheta) {
 }
 
 function corpul(c) {
-  let s = ''
-  if (c.rezumat) s += `<p class="rezumat">${esc(c.rezumat)}</p>`
-  s += banda(bandaCronologica(c, { de: -6000, la: 2026 }), 'Reperele capitolului, la scară')
-  /* pozele se intercaleaza intre sectiuni, ca in editia tiparita */
-  const poze = ILUSTRATII[c.id] || []
-  const sectiuni = c.sectiuni || []
-  const intre = sectiuni.length > 1 ? Math.floor(poze.length / sectiuni.length) : 0
-  let k = 0
-  sectiuni.forEach((sec, j) => {
-    s += `<h2>${esc(sec.subtitlu)}</h2>`
-    ;(sec.paragrafe || []).forEach((p, i) => { s += `<p${i === 0 ? ' class="prim"' : ''}>${esc(p)}</p>` })
-    if (j < sectiuni.length - 1) { s += poze.slice(k, k + intre).map(figIlustratie).join(''); k += intre }
-  })
-  s += poze.slice(k).map(figIlustratie).join('')
-  s += (c.harti || []).map(figHarta).join('')
-  s += (c.diagrame || []).map(figDiagrama).join('')
-  if (c.citat?.text) s += `<blockquote><p>${esc(c.citat.text)}</p></blockquote>
+  /* Impartirea blocurilor printre subcapitole sta in build/asezare.mjs, comuna
+     celor patru formate; aici raman numai randatoarele. */
+  const cap = c.rezumat ? `<p class="rezumat">${esc(c.rezumat)}</p>` : ''
+  return cap + banda(bandaCronologica(c, { de: -6000, la: 2026 }), 'Reperele capitolului, la scară') +
+    aseaza(c, {
+      poze: ILUSTRATII[c.id] || [],
+      proza: (sec) => `<h2>${esc(sec.subtitlu)}</h2>` +
+        (sec.paragrafe || []).map((p, i) => `<p${i === 0 ? ' class="prim"' : ''}>${esc(p)}</p>`).join(''),
+      ilustratie: figIlustratie,
+      harta: figHarta,
+      diagrama: figDiagrama,
+      citat: (c) => c.citat?.text
+        ? `<blockquote><p>${esc(c.citat.text)}</p></blockquote>
 <p class="sursa"><b>${esc(c.citat.autor)}</b>${c.citat.context ? ' · ' + esc(c.citat.context) : ''}</p>`
-  if (c.cifre?.length) { s += `<h2>Cifre</h2>` + c.cifre.map((x) =>
-    `<p class="cifra"><b>${esc(x.valoare)}</b> — ${esc(x.eticheta)}<em>${esc(x.nota)}</em></p>`).join('') }
-  if (c.figuri?.length) {
-    s += `<h2>Cine trăiește când</h2>` + banda(bandaVietilor(c, { de: c.de, la: c.la }), 'Viețile oamenilor capitolului, la scară')
-    s += `<h2>Figuri</h2>` + c.figuri.map((x) =>
-    `<p class="pers"><span class="nume">${esc(x.nume)}</span> <span class="ani">${esc(x.ani)}</span>
+        : '',
+      cifre: (c) => c.cifre?.length
+        ? `<h2>Cifre</h2>` + c.cifre.map((x) =>
+          `<p class="cifra"><b>${esc(x.valoare)}</b> — ${esc(x.eticheta)}<em>${esc(x.nota)}</em></p>`).join('')
+        : '',
+      vieti: (c) => c.figuri?.length
+        ? `<h2>Cine trăiește când</h2>` + banda(bandaVietilor(c, { de: c.de, la: c.la }), 'Viețile oamenilor capitolului, la scară')
+        : '',
+      figuri: (c) => c.figuri?.length
+        ? `<h2>Figuri</h2>` + c.figuri.map((x) =>
+          `<p class="pers"><span class="nume">${esc(x.nume)}</span> <span class="ani">${esc(x.ani)}</span>
 <span class="rol">${esc(x.rol)}</span>${esc(x.descriere)}</p>`).join('')
-  }
-  if (c.cronologie?.length) { s += `<h2>Repere</h2><dl>` + c.cronologie.map((x) =>
-    `<dt>${esc(x.an)}</dt><dd>${esc(x.eveniment)}</dd>`).join('') + `</dl>` }
-  if (c.controversa) s += `<div class="caseta"><p class="eticheta">Dispută istoriografică</p><p>${esc(c.controversa)}</p></div>`
-  return s
+        : '',
+      cronologie: (c) => c.cronologie?.length
+        ? `<h2>Repere</h2><dl>` + c.cronologie.map((x) =>
+          `<dt>${esc(x.an)}</dt><dd>${esc(x.eveniment)}</dd>`).join('') + `</dl>`
+        : '',
+      controversa: (c) => c.controversa
+        ? `<div class="caseta"><p class="eticheta">Dispută istoriografică</p><p>${esc(c.controversa)}</p></div>`
+        : '',
+    }).join('')
 }
 
 const pag = (titlu, corp, clasa = '') => `<?xml version="1.0" encoding="utf-8"?>
