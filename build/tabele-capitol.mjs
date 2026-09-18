@@ -117,7 +117,92 @@ const INCHISORI = {
   ],
 }
 
-const TOATE = [ORTOGRAFIE, INCHISORI]
+/* stiinta — Intre revendicare si document */
+const REVENDICARI = {
+  id: 'tc-revendicari',
+  sectiune: 'stiinta',
+  titlu: 'Ce e documentat și ce se revendică',
+  intro: 'Fiecare dintre aceste nume poartă, în discursul public, o revendicare mai mare decât fapta documentată. ' +
+    'Fapta documentată nu e mică; despărțirea celor două coloane e tot ce lipsea.',
+  izvor: 'tema „Știința și tehnica românească”, secțiunile despre invenții și despre revendicările contestate',
+  coloane: [
+    { cheie: 'cine', et: 'Cine și când' },
+    { cheie: 'da', et: 'Ce e documentat' },
+    { cheie: 'nu', et: 'Ce nu e' },
+  ],
+  randuri: [
+    { cine: 'Conrad Haas, manuscrisul de la Sibiu, 1529–1569',
+      da: 'Cea mai timpurie descriere europeană a rachetei cu trepte.',
+      nu: 'Experimente sau ecou în literatura tehnică a vremii.' },
+    { cine: 'Petrache Poenaru, brevetul francez nr. 3208, 25 mai 1827',
+      da: 'Unul dintre primele brevete de acest fel.',
+      nu: 'Invenția stiloului: instrumente cu rezervor existau din secolul al XVIII-lea.' },
+    { cine: 'Traian Vuia, 18 martie 1906',
+      da: 'Decolare autonomă de pe roți, circa doisprezece metri, la un metru înălțime.',
+      nu: 'Zbor susținut.' },
+    { cine: 'Henri Coandă, octombrie 1910',
+      da: 'Aparatul cu ventilator carenat, expus la Paris, și efectul Coandă.',
+      nu: 'Zborul de la Issy-les-Moulineaux din decembrie 1910, susținut numai de declarații date după 1955.' },
+    { cine: 'Nicolae Paulescu, 31 august 1921',
+      da: 'Anterioritatea publicării, recunoscută de istoricii medicinei.',
+      nu: 'Furtul deliberat al descoperirii.' },
+    { cine: 'Ștefan Odobleja, 1938–1939',
+      da: 'Tratarea reacției inverse, cu nouă ani înaintea lui Wiener.',
+      nu: 'Că Wiener i-ar fi cunoscut cartea.' },
+    { cine: 'Horia Hulubei, elementul 87, 1936–1939',
+      da: '',
+      nu: 'Revendicarea a fost infirmată de identificarea franciului de către Marguerite Perey.' },
+  ],
+}
+
+/* mancare — filierele bucatariei */
+const FILIERE = {
+  id: 'tc-filiere',
+  sectiune: 'mancare',
+  titlu: 'Din ce limbi vine ce se mănâncă',
+  intro: 'Bucătăria de azi e un depozit de filiere: fiecare stăpânire și fiecare vecinătate a lăsat în ea ' +
+    'un rând de cuvinte, iar cuvintele au venit odată cu felurile.',
+  izvor: 'tema „Hrana”, secțiunea despre straturile bucătăriei',
+  coloane: [
+    { cheie: 'de_unde', et: 'Filiera' },
+    { cheie: 'ce', et: 'Ce a intrat odată cu cuvântul' },
+  ],
+  randuri: [
+    { de_unde: 'Otomană', ce: 'Sarma, ciorba, musacaua, chiftelele, iahnia, pilaful, ghiveciul, baclavaua, cataiful, sarailia, rahatul, telemeaua, braga, salepul.' },
+    { de_unde: 'Grecească, prin epoca fanariotă', ce: 'Sosurile de lămâie și ou, plachia.' },
+    { de_unde: 'Maghiară', ce: 'Gulașul, papricașul, langoșul, boiaua de ardei.' },
+    { de_unde: 'Săsească', ce: 'Mezelurile afumate, panificația dulce, răspândirea cartofului.' },
+    { de_unde: 'Slavă și rusă', ce: 'Borșul, zacusca, salata de bœuf, derivată din salata Olivier.' },
+    { de_unde: 'Austriacă', ce: 'Șnițelul, cozonacii.' },
+    { de_unde: 'Fond mai vechi, cu nume propriu', rupe: true,
+      ce: 'Meiul și mălaiul — care însemna făină de mei —, brânza de burduf, cașcavalul, urda.' },
+  ],
+}
+
+/* mancare — norma scrisa si ratia reala */
+const RATIA = {
+  id: 'tc-ratia',
+  sectiune: 'mancare',
+  titlu: 'Norma scrisă și rația găsită, 1982–1989',
+  intro: 'Programul de alimentație pornea de la premisa că românii sunt supraalimentați și fixa, prin lege, ' +
+    'cât are voie să mănânce un om. Coloana din dreapta e ce se găsea cu adevărat, după județ și an. Cartelele ' +
+    'reapăruseră în octombrie 1981, pentru prima dată după 1954.',
+  izvor: 'tema „Hrana”, secțiunea despre programul de alimentație rațională și despre penurie',
+  coloane: [
+    { cheie: 'ce', et: 'Ce se măsoară' },
+    { cheie: 'norma', et: 'Norma oficială' },
+    { cheie: 'ratia', et: 'Cât se găsea' },
+  ],
+  randuri: [
+    { ce: 'Calorii pe zi', norma: '2.700–2.800, față de circa 3.300 de la care pornea programul', ratia: '' },
+    { ce: 'Carne pe an și pe locuitor', norma: 'Circa 39 de kilograme', ratia: 'Obiect de distribuție ocazională' },
+    { ce: 'Pâine pe zi și de persoană', norma: '', ratia: '300–500 de grame' },
+    { ce: 'Zahăr pe lună', norma: '', ratia: 'Un kilogram' },
+    { ce: 'Ulei pe lună', norma: '', ratia: 'Un litru' },
+  ],
+}
+
+const TOATE = [ORTOGRAFIE, INCHISORI, REVENDICARI, FILIERE, RATIA]
 
 /** Tabelele din corpul unei sectiuni, dupa id. */
 export function tabeleleSectiunii(id) {
