@@ -393,6 +393,7 @@ figcaption { break-inside: avoid; page-break-inside: avoid; }
 .b-ax { font-family: var(--sans); font-size: 2.9px; fill: var(--gri-45);
   font-variant-numeric: tabular-nums; }
 .b-bara { fill: var(--negru); }
+.b-rest { fill: var(--negru); fill-opacity: .15; stroke: var(--negru); stroke-width: .3; }
 .b-gol { fill: none; stroke: var(--negru); stroke-width: .28; stroke-dasharray: 1 .8; }
 .b-must { stroke: var(--negru); stroke-width: .35; }
 .b-filet { stroke: #b8b8b8; stroke-width: .3; }

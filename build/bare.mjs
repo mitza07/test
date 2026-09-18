@@ -29,6 +29,12 @@ const mii = (n) => n.toLocaleString('ro-RO')
  *                 sub   perioada sau lamurirea, pe randul mic
  *                 v     valoarea barei
  *                 de,la intervalul, cand cartea da unul
+ *                 vEt   ce se scrie in dreptul barei, cand cifra desenata nu e
+ *                       una pe care cartea o tipareste: bara recoltei legale
+ *                       sta la mijlocul intervalului 18-20, dar scrie "18–20",
+ *                       fiindca "19" nu e scris nicaieri in carte
+ *                 deschis  bara goala pe dinauntru: un rest, nu o marime de
+ *                       acelasi fel cu celelalte
  *                 din   totalul din care s-a pierdut, ca bara goala in spate
  *                 dinEt ce se scrie in dreapta despre raportul cu "din"
  *                 rupt  randul se desparte printr-un filet: nu e de acelasi fel
@@ -87,7 +93,7 @@ export function bareComparative(d) {
     /* Intregul, cu partea inauntru: bara goala e putin mai inalta decat cea
        plina, ca sa se citeasca drept cadru, nu drept a doua bara. */
     if (r.din) s.push(`<rect class="b-gol" x="${f(X0)}" y="${f(y - 0.8)}" width="${f(X(r.din) - X0)}" height="${f(H_BARA + 1.6)}"/>`)
-    s.push(`<rect class="b-bara" x="${f(X0)}" y="${f(y)}" width="${f(Math.max(X(r.v) - X0, 0.3))}" height="${H_BARA}"/>`)
+    s.push(`<rect class="${r.deschis ? 'b-rest' : 'b-bara'}" x="${f(X0)}" y="${f(y)}" width="${f(Math.max(X(r.v) - X0, 0.3))}" height="${H_BARA}"/>`)
     /* mustata intervalului, cand cartea da unul */
     if (r.de && r.la) {
       const yc = y + H_BARA / 2
@@ -102,9 +108,10 @@ export function bareComparative(d) {
        lunga ca sa stea pe acelasi rand: se muta dedesubt, in corp mic, lipita
        de capatul barei si trasa in panza daca ar iesi. */
     const xc = Math.max(X(r.v), X(r.la || 0))
-    const latVal = mii(r.v).length * 1.62
+    const et = r.vEt || mii(r.v)
+    const latVal = et.length * 1.62
     const inauntru = xc + latVal + 2 > X1
-    s.push(`<text class="${inauntru ? 'b-val b-val-in' : 'b-val'}" x="${f(inauntru ? xc - 1.4 : xc + 1.4)}" y="${f(y + 3.3)}" text-anchor="${inauntru ? 'end' : 'start'}">${esc(mii(r.v))}</text>`)
+    s.push(`<text class="${inauntru ? 'b-val b-val-in' : 'b-val'}" x="${f(inauntru ? xc - 1.4 : xc + 1.4)}" y="${f(y + 3.3)}" text-anchor="${inauntru ? 'end' : 'start'}">${esc(et)}</text>`)
     if (r.dinEt) {
       const latDin = r.dinEt.length * 1.38
       const xd = Math.min(X0 + 1, X1 - latDin)

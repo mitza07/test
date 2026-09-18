@@ -394,6 +394,8 @@ tbody tr:last-child td { border-bottom: 0; }
 .b-ax { font-family: var(--sans); font-size: 2.9px; fill: var(--muted);
   font-variant-numeric: tabular-nums; }
 .b-bara { fill: var(--voronet); }
+/* restul, nu o marime de acelasi fel cu celelalte: bara goala pe dinauntru */
+.b-rest { fill: var(--voronet); fill-opacity: .17; stroke: var(--voronet); stroke-width: .3; }
 .b-gol { fill: none; stroke: var(--ink); stroke-width: .28; stroke-dasharray: 1 .8; }
 .b-must { stroke: var(--ink); stroke-width: .35; }
 .b-filet { stroke: var(--rule); stroke-width: .3; }

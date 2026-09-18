@@ -89,7 +89,11 @@ const INCHISORI = {
     { loc: 'Sighet', ce: 'Închisoare pentru elita interbelică, după arestările din noaptea de 5 spre 6 mai 1950',
       cine: 'Miniștri, parlamentari, ierarhi, academicieni',
       morti: 'Peste cincizeci au murit acolo, îngropați fără nume; Iuliu Maniu, la 5 februarie 1953' },
-    { loc: 'Aiud', ce: 'Închisoare', cine: 'Legionarii și ofițerii', morti: 'Vasile Luca, în 1963' },
+    /* Numele mortului trebuie sa spuna cine era: citit de-a curmezisul, randul
+       il aseza altfel in categoria coloanei de alaturi, iar Vasile Luca era
+       lider comunist epurat in 1952, nu legionar si nu ofiter. */
+    { loc: 'Aiud', ce: 'Închisoare', cine: 'Legionarii și ofițerii',
+      morti: 'Vasile Luca, lider comunist epurat în 1952, în 1963' },
     { loc: 'Gherla', ce: 'Închisoare și loc al „reeducării”', cine: 'Deținuții tineri', morti: '' },
     { loc: 'Pitești', ce: '„Reeducarea”, între decembrie 1949 și 1952, extinsă la Gherla, Târgu Ocna, Ocnele Mari și pe șantierul Canalului',
       cine: 'Tinerii încarcerați, torturați de propriii colegi de celulă',
@@ -101,9 +105,12 @@ const INCHISORI = {
     { loc: 'Canalul Dunăre–Marea Neagră', ce: 'Muncă forțată; șantier deschis în 1949 și abandonat în 1953',
       cine: 'Colonii la Poarta Albă, Peninsula și Capul Midia',
       morti: 'Disputat: documentele interne consemnează câteva sute, estimările memorialistice merg până la câteva mii' },
-    { loc: 'Delta Dunării', ce: 'Lagăre de muncă', cine: 'Periprava și Salcia', morti: '' },
-    { loc: 'Baia Sprie și Cavnic', ce: 'Muncă forțată în minele de neferoase', cine: '', morti: '' },
-    { loc: 'Balta Brăilei', ce: 'Muncă forțată', cine: '', morti: '' },
+    /* Trei randuri aproape goale in trei coloane din patru — atat spune cartea
+       despre ele — se strang intr-unul: un tabel diluat pare ca ascunde ceva
+       ce nu are. */
+    { loc: 'Colonii de muncă', ce: 'Muncă forțată',
+      cine: 'Lagărele din Delta Dunării, la Periprava și Salcia; minele de neferoase de la Baia Sprie și Cavnic; Balta Brăilei',
+      morti: '' },
     { loc: 'Bărăganul', rupe: true, ce: 'Deportare, nu detenție: 17–18 iunie 1951, lăsați în câmp deschis',
       cine: 'Aproximativ 40.000–44.000 de persoane din fâșia de frontieră cu Iugoslavia — români, germani, sârbi, refugiați basarabeni, aromâni, foști proprietari',
       morti: 'Au întemeiat optsprezece localități noi; cei mai mulți s-au putut întoarce abia din 1955–1956' },
