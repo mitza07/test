@@ -2,6 +2,7 @@
    continut.json. Rezultatul verificat are prioritate fata de draftul brut. */
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'fs'
 import { TITLURI } from './titluri.mjs'
+import { indreapta } from './indreptari.mjs'
 
 const RADACINA = process.argv[2]
 const dosare = readdirSync(RADACINA).filter((d) => d.startsWith('wf_'))
@@ -42,6 +43,11 @@ if (existsSync(new URL('./continut-partial.json', import.meta.url))) {
 
 for (const k in teme) teme[k].per = 'transversal'
 const out = { capitole: Object.values(capitole), teme: Object.values(teme), corectii }
+/* Indreptarile facute de mana, peste ce au cules workflow-urile: locurile in
+   care doua capitole spuneau altfel acelasi lucru. Fara ele, o refacere a
+   continutului ar readuce nepotrivirile. */
+const { prinse, ratate } = indreapta(out)
+for (const r of ratate) console.warn(`ATENȚIE: îndreptarea ${r.unde}·${r.cine}·${r.camp} n-a prins: ${r.cauza}`)
 writeFileSync(new URL('./continut.json', import.meta.url), JSON.stringify(out, null, 1))
 const nc = Object.values(corectii).reduce((n, c) => n + c.length, 0)
-console.log(`${out.capitole.length}/22 capitole · ${out.teme.length}/6 teme · ${verificate.size} verificate · ${nc} corecții aplicate`)
+console.log(`${out.capitole.length}/22 capitole · ${out.teme.length}/6 teme · ${verificate.size} verificate · ${nc} corecții aplicate · ${prinse} îndreptări`)
