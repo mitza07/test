@@ -84,14 +84,14 @@ Numărul maxim de pagini la 6 × 9 inch depinde de cerneală și de hârtie:
 | Color premium, hârtie albă | 24 – 828 |
 
 Asta a decis structura cărții. Cu 147.479 de cuvinte și 371 de ilustrații, într-un
-singur volum macheta dă **1.102 pagini** — peste plafonul de 828, indiferent de
+singur volum macheta dă **1.104 pagini** — peste plafonul de 828, indiferent de
 hârtie și cerneală. De aceea cartea apare **în două volume**, tăiate acolo unde o
 cere și structura ei:
 
 | | Pagini | Cotor (crem) | Intră la |
 |---|---|---|---|
 | **Volumul I — Cronologia** (23 de capitole) | 580 | 36,8 mm | toate variantele, inclusiv color standard |
-| **Volumul II — Priviri transversale** (17 teme + atlasul) | 536 | 34,0 mm | toate variantele, inclusiv color standard |
+| **Volumul II — Priviri transversale** (17 teme + atlasul) | 538 | 34,2 mm | toate variantele, inclusiv color standard |
 
 Amândouă stau sub 600, deci **color standard e disponibil pentru amândouă** — varianta
 cea mai ieftină la culoare. Color premium și alb-negru rămân și ele posibile; macheta
@@ -108,8 +108,8 @@ plafonul KDP.
 - Cotor = număr de pagini × **0,002252″** (hârtie albă) sau × **0,0025″** (crem)
 
 Calculat pe hârtie crem: **volumul I, 580 de pagini → cotor 36,8 mm**; **volumul II,
-536 de pagini → cotor 34,0 mm**. Copertele sunt deja generate la aceste dimensiuni
-(`Istoria-Romaniei-coperta-vol1.pdf`, 348,0 × 235,0 mm, și `-vol2.pdf`, 345,2 × 235,0 mm),
+538 de pagini → cotor 34,2 mm**. Copertele sunt deja generate la aceste dimensiuni
+(`Istoria-Romaniei-coperta-vol1.pdf`, 348,0 × 235,0 mm, și `-vol2.pdf`, 345,3 × 235,0 mm),
 cu bleed de 3,2 mm și cu dreptunghiul alb de 48 × 26 mm rezervat codului de bare.
 
 Dacă se schimbă ceva în text sau în hărți, paginația se poate muta, iar cotorul odată cu
@@ -123,7 +123,7 @@ for v in 1 2; do node pdf.mjs --volum=$v; node pdf.mjs --volum=$v --color; done
 POZE=ecran node pdf.mjs --volum=1 --color   # copiile ușoare, de citit pe ecran
 POZE=ecran node pdf.mjs --volum=2 --color
 node coperta.mjs 580 --volum=1       # numărul de pagini se ia din .paginatie-*.json
-node coperta.mjs 536 --volum=2
+node coperta.mjs 538 --volum=2
 node epub.mjs && node docx.mjs
 ```
 
@@ -194,15 +194,15 @@ de 238.397 reali, România Mare 299.399 față de 295.049, Dobrogea 15.789 faț�
 |---|---|---|
 | `Istoria-Romaniei-interior-vol1-color.pdf` | interiorul volumului I, color | 580 pag. · 64 MB |
 | `Istoria-Romaniei-interior-vol1-alb-negru.pdf` | idem, alb-negru, aceeași paginație | 580 pag. · 64 MB |
-| `Istoria-Romaniei-interior-vol2-color.pdf` | interiorul volumului II, color | 536 pag. · 94 MB |
-| `Istoria-Romaniei-interior-vol2-alb-negru.pdf` | idem, alb-negru | 536 pag. · 94 MB |
+| `Istoria-Romaniei-interior-vol2-color.pdf` | interiorul volumului II, color | 538 pag. · 94 MB |
+| `Istoria-Romaniei-interior-vol2-alb-negru.pdf` | idem, alb-negru | 538 pag. · 94 MB |
 | `Istoria-Romaniei-coperta-vol1.pdf` | copertă completă, față–cotor–spate, cu bleed | 348,0 × 235,0 mm |
-| `Istoria-Romaniei-coperta-vol2.pdf` | idem, volumul II | 345,2 × 235,0 mm |
+| `Istoria-Romaniei-coperta-vol2.pdf` | idem, volumul II | 345,3 × 235,0 mm |
 | `Istoria-Romaniei.epub` | ediția digitală, cu hărțile ca SVG și cu legendele lor | 41 MB |
 | `Istoria-Romaniei-compact.epub` | idem, cu ilustrațiile puse la două măsuri după ce e în ele | 25 MB |
 | `Istoria-Romaniei-manuscris.docx` | manuscrisul pentru editură, cu stiluri numite, cu toate imaginile la 300 dpi, cu proveniențele și cu materialul final | 161 MB |
-| `Istoria-Romaniei-vol1-de-citit.pdf`, `-vol2-` | copiile ușoare, de citit pe ecran | 580 + 536 pag. · 20 + 26 MB |
-| `Istoria-Romaniei-interior-color.pdf` | volumul întreg, pentru citit pe ecran | 1.102 pag. · 158 MB |
+| `Istoria-Romaniei-vol1-de-citit.pdf`, `-vol2-` | copiile ușoare, de citit pe ecran | 580 + 538 pag. · 20 + 26 MB |
+| `Istoria-Romaniei-interior-color.pdf` | volumul întreg, pentru citit pe ecran | 1.104 pag. · 158 MB |
 | `coperta-ebook-vol1.png`, `-vol2.png` | coperta de ebook, 1600 × 2560 px | — |
 
 ### Costul de livrare al EPUB-ului, la KDP
