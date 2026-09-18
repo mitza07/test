@@ -13,6 +13,8 @@ import { bandaCronologica } from '../build/cronograf.mjs'
 import { bandaVietilor } from '../build/vieti.mjs'
 import { bandaZilelor } from '../build/ceas.mjs'
 import { CEASURI } from '../build/ceasuri.mjs'
+import { bareComparative } from '../build/bare.mjs'
+import { BARE } from '../build/bare-carte.mjs'
 import { PLAN, PLAN_TEME } from '../build/build.mjs'
 
 const DIAGRAME = { populatie: diagramaPopulatie, lexic: diagramaLexic,
@@ -48,6 +50,9 @@ const figuri = [
   ...sectiuni.filter((c) => CEASURI[c.id]).map((c) => ({ k: 'ceas-' + c.id, tip: 'ceas',
     titlu: CEASURI[c.id].titlu, jos: CEASURI[c.id].jos,
     gen: () => bandaZilelor(c, CEASURI[c.id]) })),
+  /* barele comparative: cifre de acelasi fel, pe o singura scara */
+  ...BARE.map((b) => ({ k: 'bare-' + b.id, tip: 'bare', titlu: b.titlu, jos: b.jos,
+    gen: () => bareComparative(b) })),
 ].filter((f) => f.gen())
 
 const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' })

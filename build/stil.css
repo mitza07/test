@@ -386,6 +386,22 @@ tbody tr:last-child td { border-bottom: 0; }
 .cg-data { font-family: var(--sans); font-size: 3px; font-weight: 600;
   fill: var(--ink); font-variant-numeric: tabular-nums; }
 .cg-ctx { fill: var(--muted); opacity: .22; }
+
+/* Bare comparative. Panza lor e in milimetri, ca a benzilor, nu in pixeli ca a
+   diagramelor mari: de aceea isi au clasele lor, si nu le refolosesc pe .d-*,
+   al caror corp de litera e socotit pentru alta scara. */
+.b-grid { stroke: var(--rule-2); stroke-width: .18; }
+.b-ax { font-family: var(--sans); font-size: 2.9px; fill: var(--muted);
+  font-variant-numeric: tabular-nums; }
+.b-bara { fill: var(--voronet); }
+.b-gol { fill: none; stroke: var(--ink); stroke-width: .28; stroke-dasharray: 1 .8; }
+.b-must { stroke: var(--ink); stroke-width: .35; }
+.b-filet { stroke: var(--rule); stroke-width: .3; }
+.b-nume { font-family: var(--sans); font-size: 3.1px; font-weight: 600; fill: var(--ink); }
+.b-sub { font-family: var(--sans); font-size: 2.7px; fill: var(--muted); }
+.b-val { font-family: var(--sans); font-size: 2.9px; font-weight: 600; fill: var(--ink);
+  font-variant-numeric: tabular-nums; }
+.b-val-in { fill: var(--surface); }
 /* Pragul de pe banda cu ora: o singura linie verticala, mai groasa decat axa,
    cu cate un total scris de-o parte si de alta. */
 .cg-prag { stroke: var(--ink); stroke-width: .55; }

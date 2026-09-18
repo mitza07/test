@@ -8,6 +8,7 @@ import { HARTI } from '../build/harti.mjs'
 import { bandaCronologica } from '../build/cronograf.mjs'
 import { bandaVietilor } from '../build/vieti.mjs'
 import { bandaZilelor } from '../build/ceas.mjs'
+import { bareComparative } from '../build/bare.mjs'
 import { aseaza } from '../build/asezare.mjs'
 import { toateTabelele, sectiuneTabel, tabelHtml } from '../build/tabele.mjs'
 import { cifreleCartii, exactitateaHartilor, cuDe } from '../build/cifre-carte.mjs'
@@ -297,6 +298,13 @@ function corpul(c) {
         const n = ++nrFig
         return `<figure class="banda-ceas"><svg xmlns="http://www.w3.org/2000/svg" class="diagrama" viewBox="${b.vb}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(cfg.titlu)}">${strangeClase(b.body)}</svg>
 <figcaption><b>Diagrama ${n}. ${esc(cfg.titlu)}</b> ${esc(cfg.jos)}</figcaption></figure>`
+      },
+      bare: (b) => {
+        const r = bareComparative(b)
+        if (!r) return ''
+        const n = ++nrFig
+        return `<figure class="bare"><svg xmlns="http://www.w3.org/2000/svg" class="diagrama" viewBox="${r.vb}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(b.titlu)}">${strangeClase(r.body)}</svg>
+<figcaption><b>Diagrama ${n}. ${esc(b.titlu)}</b> ${esc(b.jos)}</figcaption></figure>`
       },
       tabel: (t) => `<h2>${esc(t.titlu)}</h2><p class="tabel-intro">${esc(t.intro)}</p>` +
         tabelHtml(t, { esc, legaturi: false }),

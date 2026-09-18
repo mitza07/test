@@ -387,6 +387,20 @@ figcaption { break-inside: avoid; page-break-inside: avoid; }
 .cg-data { font-family: var(--sans); font-size: 3px; font-weight: 600;
   fill: var(--negru); font-variant-numeric: tabular-nums; }
 .cg-ctx { fill: var(--gri-45); opacity: .2; }
+
+/* Bare comparative — panza in milimetri, ca a benzilor. */
+.b-grid { stroke: #d2d2d2; stroke-width: .18; }
+.b-ax { font-family: var(--sans); font-size: 2.9px; fill: var(--gri-45);
+  font-variant-numeric: tabular-nums; }
+.b-bara { fill: var(--negru); }
+.b-gol { fill: none; stroke: var(--negru); stroke-width: .28; stroke-dasharray: 1 .8; }
+.b-must { stroke: var(--negru); stroke-width: .35; }
+.b-filet { stroke: #b8b8b8; stroke-width: .3; }
+.b-nume { font-family: var(--sans); font-size: 3.1px; font-weight: 600; fill: var(--negru); }
+.b-sub { font-family: var(--sans); font-size: 2.7px; fill: var(--gri-45); }
+.b-val { font-family: var(--sans); font-size: 2.9px; font-weight: 600; fill: var(--negru);
+  font-variant-numeric: tabular-nums; }
+.b-val-in { fill: #fff; }
 /* Pragul de pe banda cu ora: o singura linie verticala, mai groasa decat axa,
    cu cate un total scris de-o parte si de alta. */
 .cg-prag { stroke: var(--negru); stroke-width: .55; }

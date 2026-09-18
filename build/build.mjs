@@ -7,6 +7,7 @@ import { cronograma, diagramaTeritoriu, diagramaPopulatie, diagramaLexic, diagra
 import { bandaCronologica } from './cronograf.mjs'
 import { bandaVietilor } from './vieti.mjs'
 import { bandaZilelor } from './ceas.mjs'
+import { bareComparative } from './bare.mjs'
 import { toateTabelele, sectiuneTabel, tabelHtml } from './tabele.mjs'
 import { aseaza } from './asezare.mjs'
 import { cifreleCartii } from './cifre-carte.mjs'
@@ -180,6 +181,13 @@ function blocuriCapitol(c) {
       return LAT + `<figure class="lat-plin banda-ceas"><div class="figura">
 <svg viewBox="${b.vb}" role="img" aria-label="${esc(cfg.titlu)}" preserveAspectRatio="xMidYMid meet">${b.body}</svg>
 <figcaption><b>${esc(cfg.titlu)}</b> — ${esc(cfg.jos)}</figcaption></div></figure>`
+    },
+    bare: (b) => {
+      const r = bareComparative(b)
+      if (!r) return ''
+      return LAT + `<figure class="lat-plin bare"><div class="figura">
+<svg viewBox="${r.vb}" role="img" aria-label="${esc(b.titlu)}" preserveAspectRatio="xMidYMid meet">${r.body}</svg>
+<figcaption><b>${esc(b.titlu)}</b> — ${esc(b.jos)}</figcaption></div></figure>`
     },
     tabel: (t) => `<div class="tabel-cap" id="${t.id}"><div class="rubrica-m">${esc(t.titlu)}</div>
 <p class="tabel-intro">${esc(t.intro)}</p>${tabelHtml(t, { esc, legaturi: false })}</div>`,

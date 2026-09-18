@@ -9,6 +9,7 @@ import { PLAN, PLAN_TEME } from '../build/build.mjs'
 import { bandaCronologica } from '../build/cronograf.mjs'
 import { bandaVietilor } from '../build/vieti.mjs'
 import { bandaZilelor } from '../build/ceas.mjs'
+import { bareComparative } from '../build/bare.mjs'
 import { toateTabelele, sectiuneTabel, tabelHtml } from '../build/tabele.mjs'
 import { aseaza } from '../build/asezare.mjs'
 import { cifreleCartii, exactitateaHartilor, cuDe } from '../build/cifre-carte.mjs'
@@ -192,6 +193,17 @@ function blocuri(c, termeni) {
       return `<figure id="${id}" class="banda-ceas">
 <svg class="diagrama" viewBox="${b.vb}" preserveAspectRatio="xMidYMid meet">${b.body}</svg>
 <figcaption><span class="fig-nr">Diagrama ${n}</span><b>${esc(cfg.titlu)}</b> ${esc(cfg.jos)}</figcaption>
+</figure>`
+    },
+    bare: (b) => {
+      const r = bareComparative(b)
+      if (!r) return ''
+      const n = ++nrFig
+      const id = 'fig' + n
+      figuriLista.push({ n, id, titlu: b.titlu, tip: 'Diagrama' })
+      return `<figure id="${id}" class="bare">
+<svg class="diagrama" viewBox="${r.vb}" preserveAspectRatio="xMidYMid meet">${r.body}</svg>
+<figcaption><span class="fig-nr">Diagrama ${n}</span><b>${esc(b.titlu)}</b> ${esc(b.jos)}</figcaption>
 </figure>`
     },
     tabel: (t) => `<div class="tabel-cap" id="${t.id}"><div class="cap-mic">${esc(t.titlu)}</div>

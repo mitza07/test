@@ -10,6 +10,7 @@ import { HARTI } from '../build/harti.mjs'
 import { SUBT_DIAG } from './tipar.mjs'
 import { toateTabelele } from '../build/tabele.mjs'
 import { CEASURI } from '../build/ceasuri.mjs'
+import { BARE } from '../build/bare-carte.mjs'
 import { cifreleCartii, cuDe } from '../build/cifre-carte.mjs'
 import { aseaza } from '../build/asezare.mjs'
 import { creditScurt } from '../build/credit.mjs'
@@ -175,7 +176,10 @@ function puneFigura(cheie, stare) {
   /* Banda cu ora isi poarta titlul in configuratia ei, fiindca difera de la
      un capitol la altul — nu toate se desfac pe acelasi ceas. */
   const ceas = cheie.startsWith('ceas-') ? CEASURI[cheie.slice(5)] : null
-  const banda = ceas ? [ceas.titlu, ceas.jos] : TITLU_BANDA[(cheie.split('-')[0])]
+  const bara = cheie.startsWith('bare-') ? BARE.find((x) => x.id === cheie.slice(5)) : null
+  const banda = ceas ? [ceas.titlu, ceas.jos]
+    : bara ? [bara.titlu, bara.jos]
+    : TITLU_BANDA[(cheie.split('-')[0])]
   const [titlu, jos] = h ? [h.titlu, h.jos] : banda || (SUBT_DIAG[cheie] || ['', ''])
   if (!titlu) return ''
   const id = ++stare.id
@@ -256,6 +260,7 @@ function sectiune(c, eticheta, poze, stare) {
     harta: (cheie) => puneFigura(cheie, stare),
     diagrama: (cheie) => puneFigura(cheie, stare),
     ceas: (c) => puneFigura('ceas-' + c.id, stare),
+    bare: (b) => puneFigura('bare-' + b.id, stare),
     tabel: (t) => p(t.titlu, 'Heading2') + p(t.intro, 'Legenda') + tabelDocx(t) + pgol(),
     citat: (c) => c.citat?.text
       ? p('Citat', 'Heading2') + p(`„${c.citat.text}” — ${c.citat.autor}. ${c.citat.context || ''}`.trim(), 'Rezumat')
