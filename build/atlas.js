@@ -47,6 +47,10 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
      note:   [{ p:[lon,lat], text, clasa }]
    }
    --------------------------------------------------------------------------- */
+/* Etichetele care n-au incaput nicaieri fara sa se atinga de altceva. Gol
+   inseamna ca harta se citeste; verifica-l cu "node valida-harti.mjs". */
+export const ETICHETE_SUPRAPUSE = []
+
 export function harta(spec) {
   const [lonA, latA, lonB, latB] = spec.view
   const [x0, y1] = proj([lonA, latA])
@@ -149,6 +153,40 @@ export function harta(spec) {
   s.push(`</g>`)
 
   /* locuri */
+  /* Eticheta unui loc statea unde-i spunea mana: anc si sus, scrise la fiecare
+     loc in parte. Cand doua locuri cad aproape — Durostorum si Tropaeum
+     Traiani sunt la saizeci si opt de kilometri, adica sub zece milimetri pe
+     harta — si amandoua isi vor eticheta la dreapta, cele doua nume se scriu
+     unul peste altul. Asa au ramas: nu exista nimic care sa le desparta.
+
+     Aici se incearca, pentru fiecare loc, pozitiile pe rand — intai cea ceruta
+     de mana, apoi celelalte trei — si se ia prima care nu se atinge de nimic
+     asezat inainte. Etichetele mari, ale regiunilor, sunt asezate pe harta
+     inainte, deci intra si ele in socoteala. Ce nu incape nicaieri se
+     consemneaza in ETICHETE_SUPRAPUSE, ca sa se vada la verificare. */
+  const LAT_LITERA = 4.9        /* latimea medie a unei litere la 10 px */
+  const SUS_TEXT = 3.6, JOS_TEXT = 1.4
+  const asezate = []
+  const seAting = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1
+  const cutie = (px, py, nume, anc, sus) => {
+    const w = nume.length * LAT_LITERA
+    const dx = anc === 'end' ? -6.5 : anc === 'middle' ? 0 : 6.5
+    const dy = sus ? -7.5 : anc === 'middle' ? 13 : 3.8
+    const x = px + dx, y = py + dy
+    const x0 = anc === 'end' ? x - w : anc === 'middle' ? x - w / 2 : x
+    return { x0, x1: x0 + w, y0: y - SUS_TEXT, y1: y + JOS_TEXT, x, y, anc }
+  }
+  /* semnele locurilor sunt si ele obstacole: un nume peste un cerc nu se citeste */
+  for (const o of spec.locuri || []) {
+    const [px, py] = proj([o.p[0], o.p[1]])
+    asezate.push({ x0: px - 5, x1: px + 5, y0: py - 5.5, y1: py + 5.5 })
+  }
+  for (const n of spec.note || []) {
+    const [px, py] = proj(n.p)
+    const w = String((n.text || [''])[0] || '').length * 6.2
+    asezate.push({ x0: px - w / 2, x1: px + w / 2, y0: py - 6, y1: py + 6 })
+  }
+
   for (const o of spec.locuri || []) {
     const [lon, lat, nume] = o.p
     const [px, py] = proj([lon, lat])
@@ -163,10 +201,25 @@ export function harta(spec) {
     } else {
       s.push(`<circle class="m-loc m-oras" cx="${fmt(px)}" cy="${fmt(py)}" r="2.6"/>`)
     }
-    const anc = o.anc || 'start'
-    const dx = anc === 'end' ? -6.5 : anc === 'middle' ? 0 : 6.5
-    const dy = o.sus ? -7.5 : anc === 'middle' ? 13 : 3.8
-    s.push(`<text class="m-et m-et-loc" x="${fmt(px + dx)}" y="${fmt(py + dy)}" text-anchor="${anc}">${esc(nume)}</text>`)
+    /* intai cum cere mana, apoi dreapta, stanga, sus, jos */
+    const cerut = { anc: o.anc || 'start', sus: Boolean(o.sus) }
+    const variante = [cerut,
+      { anc: 'start', sus: false }, { anc: 'end', sus: false },
+      { anc: 'start', sus: true }, { anc: 'end', sus: true },
+      { anc: 'middle', sus: true }, { anc: 'middle', sus: false }]
+    let c = null
+    for (const v of variante) {
+      const k = cutie(px, py, nume, v.anc, v.sus)
+      /* propriul semn nu se socoteste obstacol pentru propria eticheta */
+      const ale = asezate.filter((b) => !(b.x0 === px - 5 && b.y0 === py - 5.5))
+      if (!ale.some((b) => seAting(k, b))) { c = k; break }
+    }
+    if (!c) {
+      c = cutie(px, py, nume, cerut.anc, cerut.sus)
+      ETICHETE_SUPRAPUSE.push({ nume, harta: spec.titlu || '?' })
+    }
+    asezate.push(c)
+    s.push(`<text class="m-et m-et-loc" x="${fmt(c.x)}" y="${fmt(c.y)}" text-anchor="${c.anc}">${esc(nume)}</text>`)
   }
 
   /* etichete de regiune si note libere */
