@@ -12,6 +12,7 @@ import { manifest as manifestVechi } from './program.mjs'
 import { PLAN, PLAN_TEME } from '../build/build.mjs'
 import { SELECTIE } from './selectie.mjs'
 import { SELECTIE2 } from './selectie2.mjs'
+import { SELECTIE3 } from './selectie3.mjs'
 
 const RAD = new URL('./', import.meta.url).pathname
 const UA = 'IstoriaRomaniei-carte/1.0 (contact: mitza0704@gmail.com)'
@@ -61,7 +62,7 @@ export function manifestMare() {
   for (const m of manifestVechi()) adauga({ ...m, cap: m.cap === 'harti' ? 'atlas' : m.cap, val: 1 })
   /* selectia mare */
   let lipsa = 0
-  for (const [id, cap, legenda] of [...SELECTIE, ...SELECTIE2]) {
+  for (const [id, cap, legenda] of [...SELECTIE, ...SELECTIE2, ...SELECTIE3]) {
     const [g, i] = id.split(':')
     const c = lista(g)?.[Number(i)]
     if (!c) { console.error(`lipsă: ${id}`); lipsa++; continue }
